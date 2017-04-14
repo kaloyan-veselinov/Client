@@ -1,0 +1,67 @@
+################### Concepte général : #######################
+
+L'idée est d'avoir un gestionnaire de mot de passe qui permet à
+l'utilisateur d'avoir autant  de mots de passe que de comptes sans 
+pour autant avoir à les retenir (en utilisant le nombre souhaité de 
+mots de passe maître). 
+
+Pour cela le mot de passe du compte (par exemple google.com) est généré 
+à partir de deux trois éléments : 
+	-l'identifiant entré par l'utilisateur
+	-le mot de passe maître entré par l'utilisateur
+	-le nom de domaine du site sur lequel on souhaite créer le compte
+
+De plus le mot de passe associé au compte n'est gardé en mémoire nul part mais est
+regénéré à chaque utilisation.
+(Aller voir la partie suivante ainsi que le diagramme de séquence pour plus de détails).
+
+Du coups lorsque vous voulez créer un compte sur un site, vous remplissez normalement
+tous les champs sauf le mot de passe. Il faut ensuite ouvrir le gestionnaire 
+et et lui fournir l'identifiant et le nom de domaine (en soit on peut mettre 
+n'importe quoi dans ces champs par exemple mettre un identifiant différent et
+mettre le domaine yahoo.com au lieu de google.com, ça marchera quand même mais 
+du coups ça fait des trucs en plus à retenir pour rien).
+Le programme va alors ajouter le compte à la base de donnée.
+
+Il faut ensuite enregistrer la manière dont le mot de passe est écrit par l'utilisateur.
+Pour cela le programme demande à l'utilisateur d'entrer le mot de passe N fois.
+Ces informations sont ensuite associées au compte dans la base de donnée.
+
+Le programme génère ensuite un mot de passe qu'il suffit de copier/coller dans le champ
+de mot de passe du site (utilisation similaire à KeePassX si vous voulez aller voir).
+
+Pour se connecter ensuite au compte, pour récupérer le mot de passe il suffit de remplir
+les champs identifiant, domaine et mot de pasee maître du programme, la manière d'écrire 
+est alors vérifiée si le résultat est positif le mot de passe est regénéré. Il suffit alors
+de le copier/coller de nouveau.
+
+
+################## Détails techniques ###########################
+
+!!!!!!!!! Work in progress tout n'est pas encore défini et je suis 
+bien sur ouvert à toutes les suggestions et surtout j'ai encore rien
+testé !!!!!!!!!!!!!!
+
+Lors de la création d'un nouveau mot de passe, l'utilisateur entre deux 
+fois le mot de passe (classique) ainsi qu'un identifiant et un nom de 
+domaine associé. Si les deux mots de passe correspondent, le tout est hashé 
+et envoyé dans la base de donnée pour y être stocké. 
+
+L'utilisateur procède alors à plusieurs saisies répétées du mot de passe mâitre,
+c'est là que le programme effectue les mesures de temps et de pression. On chiffre 
+alors les résultats (le protocol utilisé est pas encore défini) et on masque le nombre 
+de valeurs en ajoutant des données de bourrage pour arriver par exemple à 20 valeurs,
+pour cela on peut par exemple utiliser des valeurs négatives qui seront donc ignorées 
+lors du traitement. Ces données sont ensuites envoyées dans la base de donnée et associées
+aux hashs de l'identifiant et du nom de domaine. En parallèle on crée l'arbre de décision 
+associé à ces valeurs.
+
+Un mot de passe est ensuite généré à partir de l'identifiant, du nom de domaine et du mot de passe 
+maître (protocol à définir).
+
+Losrque l'utilisateur veut récupérer le mot de passe, il entre l'identifiant, le nom de 
+domaine et le mot de passe maître associé qui sont alors hashés et comparées aux hashs de la 
+base de donnée. En parallèle, on prend les mesures sur la saisie du mot de passe maître. 
+Les mesures passent par l'arbre de décision. Si le test est négatif, la connection est rejetée,
+si il est positif  on regénère le mot de passe, on ajoute les mesures à la base de donnée et 
+on met à jour l'arbre de déscision. 
