@@ -25,7 +25,7 @@ Le programme va alors ajouter le compte à la base de donnée.
 
 Il faut ensuite enregistrer la manière dont le mot de passe est écrit par l'utilisateur.
 Pour cela le programme demande à l'utilisateur d'entrer le mot de passe N fois.
-Ces informations sont ensuite associées au compte dans la base de donnée.
+Ces informations (sauf le nom de domaine) sont ensuite associées au compte dans la base de donnée.
 
 Le programme génère ensuite un mot de passe qu'il suffit de copier/coller dans le champ
 de mot de passe du site (utilisation similaire à KeePassX si vous voulez aller voir).
@@ -36,6 +36,7 @@ est alors vérifiée si le résultat est positif le mot de passe est regénéré
 de le copier/coller de nouveau.
 
 
+
 ################## Détails techniques ###########################
 
 !!!!!!!!! Work in progress tout n'est pas encore défini et je suis 
@@ -44,7 +45,7 @@ testé !!!!!!!!!!!!!!
 
 Lors de la création d'un nouveau mot de passe, l'utilisateur entre deux 
 fois le mot de passe (classique) ainsi qu'un identifiant et un nom de 
-domaine associé. Si les deux mots de passe correspondent, le tout est hashé 
+domaine associé. Si les deux mots de passe correspondent, l'identifiane et le mot de passe sont hashés 
 et envoyé dans la base de donnée pour y être stocké. 
 
 L'utilisateur procède alors à plusieurs saisies répétées du mot de passe mâitre,
@@ -53,7 +54,7 @@ alors les résultats (le protocol utilisé est pas encore défini) et on masque 
 de valeurs en ajoutant des données de bourrage pour arriver par exemple à 20 valeurs,
 pour cela on peut par exemple utiliser des valeurs négatives qui seront donc ignorées 
 lors du traitement. Ces données sont ensuites envoyées dans la base de donnée et associées
-aux hashs de l'identifiant et du nom de domaine. En parallèle on crée l'arbre de décision 
+aux hashs de l'identifiant et du mot de passe. En parallèle on crée l'arbre de décision 
 associé à ces valeurs.
 
 Un mot de passe est ensuite généré à partir de l'identifiant, du nom de domaine et du mot de passe 
@@ -65,3 +66,58 @@ base de donnée. En parallèle, on prend les mesures sur la saisie du mot de pas
 Les mesures passent par l'arbre de décision. Si le test est négatif, la connection est rejetée,
 si il est positif  on regénère le mot de passe, on ajoute les mesures à la base de donnée et 
 on met à jour l'arbre de déscision. 
+
+Pourquoi est-ce-qu'on ne conserve pas le domaine dans la base de donnée? 
+
+La raison est que l'idée est que le gestionnaire ne garde pas en mémoire le mot
+de passe de connection au compte. En effet dans le cas où la base de donnée viendrait à être 
+compromise par quelqu'un, cette persone n'aurait en réalité accés que aux identifiants et au 
+mot de passe maître qui dans le cadre de ce système ont finalement peu de valeur sans le nom
+de domaine associé étant donné que celui-ci intervient dans la génération du mot de passe de 
+connection. De plus on pourait faire en sorte que le nom de domaine intervienne dans la fonction
+de hash ce qui permet de ne pas pouvoir remonter (en supposant qu'il y ait une faille dans la fonction
+de hash) jusqu'aux identifiants et mot de passe maître réels sans utiliser le bon nom de domaine.
+
+De plus ce n'est pas nécessaire techniquement car comme l'utilisateur donne le nom de domaine 
+au moment de récupérer son mot de passe, si il donne le mauvais nom de domaine, le mot de 
+passe généré ne sera pas le bon et idem si le mauvais identifiant.
+
+Du coups est-ce-qu'on ne peut pas aller jusqu'à ne conserver que l'identifiant et pas le mot de 
+passe maître, on se priverait par contre alors d'un système de récupération de mot de passe.
+(une fois de plus donnez votre avis).
+
+################### Et si j'ai un problème pour me connecter ######################
+
+!!!!!!!!!!!! Même chose qu'au dessus mais en pire, j'ai tout juste commencé à y réfléchir
+il y a absolument rien de définitif à ce qui est écrit en dessous, c'est juste des propositions!!!!
+
+J'ai identifié deux cas limite au système tel je l'ai imaginé pour le moment :
+
+	-comme pour tout gestionnaire de mot de passe, il faut considérer qu'il y a un risque que
+l'utilisateur oublie son mot de passe maître ou son identifiant.
+	-On a aussi un problème si pour une raison ou une autre l'utilisateur n'était plus dans
+la capacité d'écrire son mot de passe de manière habituelle, par exemple dans le cas d'une blessure.
+
+Pour le premier problème, on pourrait demander à la personne de passer par la procédure de récupération 
+et/ou changent de mot de passe du site et de recommencer le procéssus de création de mot de passe.
+cependant c'est compliqué de demander à l'utilisateur de changer tous ses mots de passe dans le cas 
+où il aurait utilisé le même mot de passe maître pour tous ses comptes (ce qui est quand même le but d'un gestionnaire 
+de mot de passe).
+
+Comme je l'ai évoqué plus tôt on pourrait également conserver le mot de passe de manière chiffée et utiliser une 
+procédure de récupération de mot de passe classique.
+
+Enfin une solution plus complexe serait conserver le mot de passe maître sous la forme d'un hash cette fois et
+de demander à l'utilisateur de créer un nouveau mot de passe maître associé à un identifiant qui prendrait le dessus sur 
+au choix tous les mots de passe maîtres ou seulement ceux associés à l'indentifiant.
+
+Ensuite pour la deuxième limite, la solution la plus logique serait  de proposer une méthode d'authentification 
+alternative de manière temporaire si il ne s'agit que d'un problème temporaire et sinon de proposer de réinitialiser la base
+de donné des mesures.
+
+Pour les méthodes d'authentification alternatives, voila les solutions que j'ai en tête pour le moment :
+	-tout simplement désactiver de manière temporaire la reconnaissance de frappe
+	-utiliser une méthode d'authentifaication par code OTP (par exemple impléménter la possibilité 
+d'utiliser google authentificator, mais j'ai pas encore cherché à voir à quel point c'était compliqué à faire).
+	-envoyer un code par mail (en supposant que la personne puisse accéder à son mail)
+	     
