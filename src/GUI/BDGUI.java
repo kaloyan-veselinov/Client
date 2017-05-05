@@ -61,8 +61,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		System.out.println(userID);
 		initTimes();
 		entries = new Entry[15];
-		setLocation(200,200);
-		setSize(350,160);
+
 
 		
 		

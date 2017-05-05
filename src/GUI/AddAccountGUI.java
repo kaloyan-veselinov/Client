@@ -39,8 +39,6 @@ public class AddAccountGUI extends JPanel {
 	SpringLayout layout;
 	
 	public AddAccountGUI(final JPanel menuPane,final MenuGUI f){
-		setLocation(200,200);
-		setSize(350,160);
 		setBackground(Color.darkGray);
 		layout = (SpringLayout) menuPane.getLayout();
 	//	setResizable(false);
