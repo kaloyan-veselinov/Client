@@ -1,0 +1,12 @@
+
+public class Encrypt {
+
+	
+	public static void main (String [] args){
+		String password = "password";
+		String text = "thisisatest";
+		double value = 15.47;
+		
+		String encryptedPassword = Encryption.encryptPassword(password);
+	}
+}
