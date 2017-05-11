@@ -4,41 +4,49 @@ import java.math.BigDecimal;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.jasypt.util.text.StrongTextEncryptor;
 
 public class Encryption {
 	
-	public  String encryptPassword(String plain){
+	public static String encryptPassword(String plain){
 		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
 		return encryptor.encryptPassword(plain);
 	}
 	
-	public  boolean checkPassword(String encryptedPassword, String plainPassword){
+	public static boolean checkPassword(String encryptedPassword, String plainPassword){
 		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
 		return encryptor.checkPassword(plainPassword, encryptedPassword);
 	}
 	
-	public  String encryptValue (Double value, String password){
+	public static String encryptValue (Double value, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor();
 		encryptor.setPassword(password);
 		return encryptor.encrypt(value.toString());
 	}
 	
-	public  double decryptValue (String encryptedValue, String password){
+	public static double decryptValue (String encryptedValue, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor();
 		encryptor.setPassword(password);
 		Double decrypted = Double.valueOf(encryptor.decrypt(encryptedValue));
 		return decrypted;
 	}
 	
-	public  String encryptText (String plainText, String password){
+	public static  String encryptText (String plainText, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
 		encryptor.setPassword(password);
 		return encryptor.encrypt(plainText);
 	}
 	
-	public  String decryptText (String encryptedText, String password){
+	public static String decryptText (String encryptedText, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
 		encryptor.setPassword(password);
 		return encryptor.decrypt(encryptedText);
+	}
+	
+	public static String password (String password, String masterPassword){
+		StrongTextEncryptor encryptor = new StrongTextEncryptor();
+		encryptor.setPassword(masterPassword);
+		return encryptor.encrypt(password);
+
 	}
 }

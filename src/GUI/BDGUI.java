@@ -47,9 +47,11 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	Entry[] entries;
 	float lastT = 0;
 	float curT = 0;
+	String domaine;
+	int passwordLength;
 	
 	
-	public BDGUI(final Password p, String userId){
+	public BDGUI(final Password p, String userId,String domaine,int passwordLength, MenuGUI f){
 		//On initialise tout
 		tempChar = new ArrayList<Character>(p.getPassword().length);
 		tempTimeDD = new ArrayList<Float>(p.getPassword().length);
@@ -58,6 +60,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		t0 = -1;
 		this.p = p;
 		this.userID = userId;
+		this.domaine = domaine;
 		System.out.println(userID);
 		initTimes();
 		entries = new Entry[15];
@@ -113,7 +116,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						pressed[numPsswd] = listToDoubleArray(tempPressed);
 						timesUD[numPsswd] = listToDoubleArray(tempTimeUD);
 						entries[numPsswd] = new Entry (timesDD[numPsswd],tempChar,pressed[numPsswd],timesUD[numPsswd],rShift,lShift,
-								capsLock,lCtrl,rCtrl,altGr,userID);
+								capsLock,lCtrl,rCtrl,altGr,userID,p.getPassword().toString());
 						modToZero();
 						numPsswd++;
 						progressBar.repaint();
@@ -155,11 +158,11 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 					        int accountId = Insert.addCompte( entries[0],conn);
 					        
 							for (int i=0; i<entries.length;i++){
-								int mesureId = Insert.addMesure(entries[i],accountId,conn);
-								Insert.addChar(entries[i],mesureId,conn);
-								Insert.addModifieurs(entries[i],mesureId,conn);
+								//int mesureId = Insert.addMesure(entries[i],accountId,conn);
+								//Insert.addChar(entries[i],mesureId,conn);
+								//Insert.addModifieurs(entries[i],mesureId,conn);
 							}
-							System.exit(0);
+							f.showPasswordPane(userId, p.getPassword().toString(), domaine,passwordLength);
 						}
 					}
 					tempTimeDD.clear();

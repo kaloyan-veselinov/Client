@@ -21,6 +21,7 @@ public class MenuGUI extends JFrame {
 	JButton create;
 	JButton request;
 	BDGUI bdGui;
+	PasswordPane passwordPane;
 	
 	
 	GetPasswordGUI getPsswdPane;
@@ -80,8 +81,8 @@ public class MenuGUI extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	public void initBdGui(){
-		bdGui = new BDGUI(Main.p,Main.userId);
+	public void initBdGui(String domaine,int passwordLength){
+		bdGui = new BDGUI(Main.p,Main.userId,domaine,passwordLength,this);
 		mainPane.add(bdGui);
 		layout.putConstraint(SpringLayout.WEST, bdGui, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, bdGui, 0, SpringLayout.EAST, mainPane);
@@ -90,6 +91,24 @@ public class MenuGUI extends JFrame {
 		bdGui.setVisible(true);
 		System.out.println("test");
 		
+	}
+	
+	public void showPasswordPane(String login,String masterPassword, String domaine,int passwordLength){
+		passwordPane = new PasswordPane(login,masterPassword,domaine,passwordLength,this);
+		mainPane.add(passwordPane);
+		if(bdGui.isVisible()){
+			bdGui.setVisible(false);
+		}else if (requestPsswdPane.isVisible()){
+			requestPsswdPane.setVisible(false);
+		}
+		layout.putConstraint(SpringLayout.WEST, passwordPane, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, passwordPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, passwordPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, passwordPane, 0, SpringLayout.NORTH, mainPane);
+	}
+	
+	public void showMenuPane(){
+		menuPane.setVisible(true);
 	}
 	
 }
