@@ -1,14 +1,18 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import GUIElements.CancelButton;
+import Main.PasswordGetter;
 
 public class GetPasswordGUI extends JPanel{
 	
@@ -18,12 +22,14 @@ public class GetPasswordGUI extends JPanel{
 	
 	private JTextField domainField;
 	private JTextField idField;
-	private JTextField psswdField;
+	private JPasswordField psswdField;
 	
 	private JButton getPsswd;
 	private JButton cancel;
 	
-	public GetPasswordGUI(JPanel menuPane){
+	private MenuGUI f;
+	
+	public GetPasswordGUI(JPanel menuPane, MenuGUI f){
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);
 		
@@ -50,10 +56,21 @@ public class GetPasswordGUI extends JPanel{
 		idField = new JTextField();
 		this.add(idField);
 		
-		psswdField = new JTextField();
+		psswdField = new JPasswordField();
 		this.add(psswdField);
 		
 		getPsswd = new JButton("Get Password");
+		getPsswd.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
+				
+			}
+			
+			
+		});
 		this.add(getPsswd);
 		
 		layout.putConstraint(SpringLayout.NORTH, domainLabel, 10, SpringLayout.NORTH, this);

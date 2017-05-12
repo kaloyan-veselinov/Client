@@ -1,0 +1,15 @@
+package Encryption;
+
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
+public class Encryption {
+	
+	public String encryptePassword(String plane){
+		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+		return encryptor.encryptPassword(plane);
+	}
+	public String decryptPassword(String encrypted, byte[] key, byte[] iv){
+
+		
+	}
+}

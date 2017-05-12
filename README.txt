@@ -1,3 +1,8 @@
+############## Structure des branches ###################
+
+- chaque branche correspond à un des thèmes qu'on a défini ensemble, et non à l'auteur
+
+
 ############## Structure du Projet ######################
 
 -les fichiers .java sont dans le dossier src.
