@@ -1,0 +1,46 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Encrypt {
+
+	
+	public static void main (String [] args){
+		String password = "password";
+		String text = "thisisatest";
+		double value = 15.47;
+		
+		String encryptedPassword = Encryption.encryptPassword(password);
+		String encryptedText = Encryption.encryptText(text, password);
+		Byte encryptedValue = Encryption.encryptText(value.toString(), password);
+		
+		FileWriter writer = null;
+		
+		try {
+			writer = new FileWriter("encrytion.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			writer.write(encryptedPassword + "," + encryptedText + "," + encryptedValue);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			writer.flush();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		value = Encryption.decryptValue(encryptedValue, password);
+		System.out.println(value);
+		
+	}
+}

@@ -1,0 +1,6 @@
+INDEX VERSION 1.130+/home/jules/Nextcloud/INSA/P2I/code-java/Client/.metadata/.plugins/org.eclipse.jdt.core
+481939977.index
+1171527272.index
+482476003.index
+3487566441.index
+2437463177.index

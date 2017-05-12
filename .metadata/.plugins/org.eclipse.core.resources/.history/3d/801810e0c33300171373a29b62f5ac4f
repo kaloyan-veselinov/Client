@@ -1,0 +1,44 @@
+import java.math.BigDecimal;
+
+import org.jasypt.util.numeric.BasicDecimalNumberEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.jasypt.util.text.BasicTextEncryptor;
+
+public class Encryption {
+	
+	public String encryptPassword(String plain){
+		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+		return encryptor.encryptPassword(plain);
+	}
+	
+	public boolean checkPassword(String encryptedPassword, String plainPassword){
+		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+		return encryptor.checkPassword(plainPassword, encryptedPassword);
+	}
+	
+	public double encryptValue (double value, String password){
+		BasicDecimalNumberEncryptor encryptor = new BasicDecimalNumberEncryptor();
+		encryptor.setPassword(password);
+		BigDecimal bigValue = new BigDecimal(value);
+		return encryptor.encrypt(bigValue).doubleValue();
+	}
+	
+	public double decryptValue (double encryptedValue, String password){
+		BasicDecimalNumberEncryptor encryptor = new BasicDecimalNumberEncryptor();
+		encryptor.setPassword(password);
+		BigDecimal bigValue = new BigDecimal(encryptedValue);
+		return encryptor.decrypt(bigValue).doubleValue();
+	}
+	
+	public String encryptText (String plainText, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(plainText);
+	}
+	
+	public String decryptText (String encryptedText, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		return encryptor.decrypt(encryptedText);
+	}
+}

@@ -1,0 +1,89 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Encrypt {
+
+	
+	public static void main (String [] args){
+		String password = "";
+		String text = "";
+		Double value = 0.0;
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Choisir un mot de passe");
+		password = sc.nextLine();
+		System.out.println("Choisir une chaine de caractères");
+		text = sc.nextLine();
+		System.out.println("Choisir une valeur (double)");
+		value = Double.valueOf(sc.nextLine());
+
+		
+		String encryptedPassword = Encryption.encryptPassword(password);
+		String encryptedText = Encryption.encryptText(text, password);
+		String encryptedValue = Encryption.encryptText(value.toString(), password);
+		
+		FileWriter writer = null;
+		
+		try {
+			writer = new FileWriter("encrytion.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			writer.write(encryptedPassword + "," + encryptedText + "," + encryptedValue);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			writer.flush();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	BufferedReader br= null;
+		
+		try {
+			br = new BufferedReader(new FileReader("encrytion.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String dpassword;
+		String dtext = "";
+		double dvalue = 0;
+		
+		String line;
+		
+		System.out.println("enter le mot de passe");
+		dpassword = sc.nextLine();
+		
+		try {
+			while((line = br.readLine())!=null){
+				String[] split = line.split(",");
+				if(Encryption.checkPassword(split[0], d)){
+					text = Encryption.decryptText(split[1], password);
+					value = Encryption.decryptValue((split[2]), password);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("texte : " + dtext + "      valeur : " + dvalue +"    pour le mot de passe : " + dpassword);
+		
+	}
+}

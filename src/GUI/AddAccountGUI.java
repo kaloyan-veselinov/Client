@@ -6,9 +6,13 @@ import Main.Password;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.FocusListener;
 
 import Main.Main;
 import Main.Password;
@@ -37,6 +41,10 @@ public class AddAccountGUI extends JPanel {
 	JLabel domainLabel;
 	JTextField domainField;
 	SpringLayout layout;
+	
+	JLabel passwordLengthLabel;
+	JTextField passwordLengthField;
+	JSlider passwordLengthSlider;
 	
 	public AddAccountGUI(final JPanel menuPane,final MenuGUI f){
 		setBackground(Color.darkGray);
@@ -109,7 +117,7 @@ public class AddAccountGUI extends JPanel {
 				if (psswdMatch == true){
 					Main.p = new Password (txt2.getPassword(),userIdField.getText());
 					Main.userId = userIdField.getText();
-					 f.initBdGui();
+					 f.initBdGui(domainField.getText(),passwordLengthSlider.getValue());
 
 					setVisible(false);
 				}else{
@@ -118,6 +126,46 @@ public class AddAccountGUI extends JPanel {
 				}
 			}
 		});
+		
+		passwordLengthLabel = new JLabel("Longueur :");
+		passwordLengthLabel.setForeground(Color.white);
+		
+		passwordLengthField = new JTextField("20");
+		passwordLengthField.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
+			}
+			
+		});
+		
+		passwordLengthField.addFocusListener(new FocusListener(){
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
+
+			}
+			
+		});
+		
+		passwordLengthSlider = new JSlider(8,50,20);
+		passwordLengthSlider.addChangeListener(new ChangeListener(){
+
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				passwordLengthField.setText(String.valueOf(passwordLengthSlider.getValue()));
+			}
+			
+		});
+		
 		
 		SpringLayout layout = new SpringLayout(); // le layout utilise pour le fenetre
 		
@@ -141,6 +189,9 @@ public class AddAccountGUI extends JPanel {
 		this.add(button1);
 		this.add(userIdLabel);
 		this.add(userIdField);
+		this.add(passwordLengthLabel);
+		this.add(passwordLengthField);
+		this.add(passwordLengthSlider);
 		
 
         
@@ -191,7 +242,14 @@ public class AddAccountGUI extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
-
+		layout.putConstraint(SpringLayout.WEST, passwordLengthLabel, 0, SpringLayout.WEST, domainLabel);
+		layout.putConstraint(SpringLayout.NORTH, passwordLengthLabel, 10, SpringLayout.SOUTH, domainLabel);
+		
+		layout.putConstraint(SpringLayout.WEST, passwordLengthSlider, 30, SpringLayout.EAST, passwordLengthLabel);
+		layout.putConstraint(SpringLayout.SOUTH, passwordLengthSlider, 0, SpringLayout.SOUTH, passwordLengthLabel);
+		
+		layout.putConstraint(SpringLayout.WEST, passwordLengthField, 30, SpringLayout.EAST, passwordLengthSlider);
+		layout.putConstraint(SpringLayout.SOUTH, passwordLengthField, 0, SpringLayout.SOUTH, passwordLengthSlider);
 		
 		//setContentPane(mainPanel);
 		setVisible(false);

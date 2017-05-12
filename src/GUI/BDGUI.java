@@ -8,9 +8,10 @@ import javax.swing.*;
 
 import Database.Insert;
 import Main.Entry;
+import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
-
+import Main.PasswordGetter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -47,9 +48,11 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	Entry[] entries;
 	float lastT = 0;
 	float curT = 0;
+	String domaine;
+	int passwordLength;
 	
 	
-	public BDGUI(final Password p, String userId){
+	public BDGUI(final Password p, String userId,String domaine,int passwordLength, MenuGUI f){
 		//On initialise tout
 		tempChar = new ArrayList<Character>(p.getPassword().length);
 		tempTimeDD = new ArrayList<Float>(p.getPassword().length);
@@ -58,6 +61,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		t0 = -1;
 		this.p = p;
 		this.userID = userId;
+		this.domaine = domaine;
 		System.out.println(userID);
 		initTimes();
 		entries = new Entry[15];
@@ -113,13 +117,15 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						pressed[numPsswd] = listToDoubleArray(tempPressed);
 						timesUD[numPsswd] = listToDoubleArray(tempTimeUD);
 						entries[numPsswd] = new Entry (timesDD[numPsswd],tempChar,pressed[numPsswd],timesUD[numPsswd],rShift,lShift,
-								capsLock,lCtrl,rCtrl,altGr,userID);
+								capsLock,lCtrl,rCtrl,altGr,userID,new String (p.getPassword()),domaine.hashCode(),passwordLength);
 						modToZero();
 						numPsswd++;
 						progressBar.repaint();
 						
 						
 						if (numPsswd>=15){ // si on en a ecrit 15, on les ecrits dans le fivhier csv
+							f.hideBdGui();
+							f.showLoadingPane();
 							Main.tests = true;
 							System.out.println("fait");
 							ecrire(timesDD);
@@ -159,7 +165,9 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 								Insert.addChar(entries[i],mesureId,conn);
 								Insert.addModifieurs(entries[i],mesureId,conn);
 							}
-							System.exit(0);
+							String generatedPassword = PasswordGetter.getPassword(new String (p.getPassword()), userId, domaine);
+							f.showPasswordPane(generatedPassword);
+							f.hideLoadingPane();
 						}
 					}
 					tempTimeDD.clear();
@@ -300,7 +308,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 			if(Arrays.equals(p.getPassword(), testPsswd)){
 				Main.compileMesures(times[i],p.getUserID());
 			}else{
-				System.out.println("'"+p.getPassword().toString()+"'");
+				System.out.println("'"+new String (p.getPassword())+"'");
 			}
 		}
 		Main.out.flush();
@@ -314,6 +322,10 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		lCtrl = 0;
 		rCtrl = 0;
 		altGr = 0;
+	}
+	
+	public void removeKeyStrokeListener(KeyStrokeListener listener){
+		
 	}
 
 }
