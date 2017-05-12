@@ -23,6 +23,7 @@ public class Entry {
 	private double []pressure;
 	private String userId;
 	private String password;
+	private int passwordLength;
 	
 	//les memes donnees une fois chiffrées
 	private String[] eTimesDD;
@@ -40,15 +41,20 @@ public class Entry {
 	private String[] ePressure;
 	private String eUserId;
 	private String ePassword;
+	private int domainHashCode;
+	private String ePasswordLength;
 	
 	
 
 	public Entry (double[]timesDD,ArrayList<Character>  tempChar,double[] pressed,double[] timesUD,
-			int rShift, int lShift, int capsLock, int lCtrl, int rCtrl, int altGr, String userId, String password){
+			int rShift, int lShift, int capsLock, int lCtrl, int rCtrl, int altGr, String userId, String password,
+			int domainHashCode,int passwordLength ){
 		pressure = new double[timesDD.length];
 		for (int i=0; i<timesDD.length;i++){
 			this.pressure[i] = 0;
 		}
+		this.setDomainHashCode(domainHashCode);
+		this.setPasswordLength(passwordLength);
 		this.password = password;
 		this.userId = userId;
 		this.timesDD = timesDD;
@@ -68,6 +74,7 @@ public class Entry {
 	}
 	
 	private void encryptData(){
+		ePasswordLength = Encryption.encryptValue((double)passwordLength, password);
 		eUserId = Encryption.encryptText(userId,password);
 		eRShift = Encryption.encryptValue((double)rShift,password);
 		eLShift = Encryption.encryptValue((double)lShift,password);
@@ -393,6 +400,30 @@ public class Entry {
 
 	public void setePassword(String ePassword) {
 		this.ePassword = ePassword;
+	}
+
+	public int getDomainHashCode() {
+		return domainHashCode;
+	}
+
+	public void setDomainHashCode(int domainHashCode) {
+		this.domainHashCode = domainHashCode;
+	}
+
+	public int getPasswordLength() {
+		return passwordLength;
+	}
+
+	public void setPasswordLength(int passwordLength) {
+		this.passwordLength = passwordLength;
+	}
+
+	public String getePasswordLength() {
+		return ePasswordLength;
+	}
+
+	public void setePasswordLength(String ePasswordLength) {
+		this.ePasswordLength = ePasswordLength;
 	}
 	
 	

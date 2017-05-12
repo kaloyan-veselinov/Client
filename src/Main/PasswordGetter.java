@@ -1,27 +1,33 @@
-import java.util.Scanner;
+package Main;
 
-import org.jasypt.util.password.StrongPasswordEncryptor;
-import org.jasypt.util.text.BasicTextEncryptor;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Iterator;
 
-public class Test {
+public class PasswordGetter {
 	
-	public static void main (String[] args){
-		String s1 = "";
-		String s2 = "";
-		String s3 = "";
-		Scanner sc = new Scanner (System.in);
-		while (!(s1.equals("exit"))){
-			s1 = sc.nextLine();
-			s2 = sc.nextLine();
-			s3 = sc.nextLine();
-			String password = generatePassword(s1,s2,s3);
-			System.out.println(password);
+	
+	public static String getPassword (String password, String login, String domain){
+		ResultSet rs = Database.Request.getLogin(domain.hashCode());
+		int passwordLength=0;
+		boolean correctAccount = false;
+		try {
+			while (rs.next()){
+				if(Encryption.Encryption.checkPassword(rs.getString("masterPsswd"), password)){
+					if(login.equals(Encryption.Encryption.decryptText(rs.getString("userId"), password))){
+						correctAccount = true;
+						passwordLength =(int)(Encryption.Encryption.decryptValue(rs.getString("passwordLength"), password));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return generatePassword(login,password,domain,passwordLength);
 	}
 	
-	public static  String generatePassword(String login, String masterPassword, String domaine){
-		int passwordLength = 50;
-		String password = login+domaine+masterPassword;
+	public static   String generatePassword(String login, String masterPassword, String domaine,int passwordLength){
 		Byte[] loginByte = new Byte[login.getBytes().length];
 		Byte[] mpByte = new Byte [masterPassword.getBytes().length];
 		Byte[] domainByte = new Byte [domaine.getBytes().length];
@@ -31,7 +37,7 @@ public class Test {
 		for (int i =0; i<mpByte.length;i++){
 			mpByte[i] = new Byte(masterPassword.getBytes()[i]);
 		}
-		for (int i =0; i<loginByte.length;i++){
+		for (int i =0; i<domainByte.length;i++){
 			domainByte[i] = new Byte(domaine.getBytes()[i]);
 		}
 		int[] passwordInt = new int[passwordLength];
@@ -58,6 +64,7 @@ public class Test {
 			passwordChar[i] = (char)(48+((passwordInt[i]*i)%78));
 		}
 		return new String(passwordChar);
+	
 	}
 
 }

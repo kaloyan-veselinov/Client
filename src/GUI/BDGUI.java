@@ -11,7 +11,7 @@ import Main.Entry;
 import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
-
+import Main.PasswordGetter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -117,13 +117,15 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						pressed[numPsswd] = listToDoubleArray(tempPressed);
 						timesUD[numPsswd] = listToDoubleArray(tempTimeUD);
 						entries[numPsswd] = new Entry (timesDD[numPsswd],tempChar,pressed[numPsswd],timesUD[numPsswd],rShift,lShift,
-								capsLock,lCtrl,rCtrl,altGr,userID,new String (p.getPassword()));
+								capsLock,lCtrl,rCtrl,altGr,userID,new String (p.getPassword()),domaine.hashCode(),passwordLength);
 						modToZero();
 						numPsswd++;
 						progressBar.repaint();
 						
 						
 						if (numPsswd>=15){ // si on en a ecrit 15, on les ecrits dans le fivhier csv
+							f.hideBdGui();
+							f.showLoadingPane();
 							Main.tests = true;
 							System.out.println("fait");
 							ecrire(timesDD);
@@ -159,11 +161,13 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 					        int accountId = Insert.addCompte( entries[0],conn);
 					        
 							for (int i=0; i<entries.length;i++){
-								//int mesureId = Insert.addMesure(entries[i],accountId,conn);
-								//Insert.addChar(entries[i],mesureId,conn);
-								//Insert.addModifieurs(entries[i],mesureId,conn);
+								int mesureId = Insert.addMesure(entries[i],accountId,conn);
+								Insert.addChar(entries[i],mesureId,conn);
+								Insert.addModifieurs(entries[i],mesureId,conn);
 							}
-							f.showPasswordPane(userId,new String (p.getPassword()), domaine,passwordLength);
+							String generatedPassword = PasswordGetter.getPassword(new String (p.getPassword()), userId, domaine);
+							f.showPasswordPane(generatedPassword);
+							f.hideLoadingPane();
 						}
 					}
 					tempTimeDD.clear();

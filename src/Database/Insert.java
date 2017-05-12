@@ -70,8 +70,8 @@ public class Insert {
 			e2.printStackTrace();
 		}
 
-        String insertCompte = "INSERT INTO Compte (userId,SystemUserId,masterPsswd,internId) VALUES (\""+e.geteUserId()+
-        		"\",\"thisisatest\",\""+e.getePassword()+"\","+id+");";
+        String insertCompte = "INSERT INTO Compte (userId,SystemUserId,masterPsswd,internId,domainHash,passwordLength) VALUES (\""+e.geteUserId()+
+        		"\",\"thisisatest\",\""+e.getePassword()+"\","+id+","+e.getDomainHashCode()+",\""+e.getePasswordLength()+"\");";
         
         try {
 			insertAccount = conn.prepareStatement(insertCompte);
