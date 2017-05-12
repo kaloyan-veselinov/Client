@@ -1,24 +1,19 @@
 package GUI;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import Database.Insert;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.SpringLayout;
+
 import Main.Entry;
 import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
-import Main.PasswordGetter;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import Main.TimingManager;
 
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
 									//(qui pour le moment est juste un fichier csv)
@@ -50,31 +45,25 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	float curT = 0;
 	String domaine;
 	int passwordLength;
+	public JPanel progressBar;
 	
 	
 	public BDGUI(final Password p, String userId,String domaine,int passwordLength, MenuGUI f){
 		//On initialise tout
-		tempChar = new ArrayList<Character>(p.getPassword().length);
-		tempTimeDD = new ArrayList<Float>(p.getPassword().length);
-		tempPressed = new ArrayList<Float>(p.getPassword().length);
-		tempTimeUD = new ArrayList<Float>(p.getPassword().length);
+		
 		t0 = -1;
 		this.p = p;
 		this.userID = userId;
 		this.domaine = domaine;
 		System.out.println(userID);
 		initTimes();
-		entries = new Entry[15];
-
-
-		
-		
+		entries = new Entry[15];		
 		
 		this.setBackground(Color.DARK_GRAY);
 		
 		// un panel servant de barre de progression pour compter le nombre de mots de passe 
 		// entres correctement
-		final JPanel progressBar = new JPanel(){
+		progressBar = new JPanel(){
 			
 		
 			public void paintComponent (Graphics g){
@@ -96,152 +85,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		label1.setForeground(Color.white);
 		
 		psswd = new JPasswordField ("",15);
-		psswd.addKeyListener(new KeyListener(){
-
-			public void keyPressed(KeyEvent arg0) {
-				lastT = curT;
-				curT = System.nanoTime();
-				
-				if(arg0.getKeyCode() == KeyEvent.VK_ENTER){ // si on appuie sur entre, on reinitialise le champ et on verifie le mot de passe
-					
-					lettre = 0;
-					psswd.setText("");
-					if(Main.passwordMatch(listToCharArray(tempChar) ,p.getPassword())){ // si il est bon, on l'ajoute
-						tempTimeDD.add(curT-lastT); // on ajoute l'intervalle de temps
-						tempChar.add(arg0.getKeyChar()); // on ajoute le caractere					t0 = -1;
-						float timeUD = tempTimeDD.get(tempTimeDD.size()-1)-(tempPressed.size()-1);
-						tempTimeUD.add(timeUD);
-						tempPressed.add((float)0);
-						tempTimeUD.add((float)0);
-						timesDD[numPsswd] = listToDoubleArray(tempTimeDD);
-						pressed[numPsswd] = listToDoubleArray(tempPressed);
-						timesUD[numPsswd] = listToDoubleArray(tempTimeUD);
-						entries[numPsswd] = new Entry (timesDD[numPsswd],tempChar,pressed[numPsswd],timesUD[numPsswd],rShift,lShift,
-								capsLock,lCtrl,rCtrl,altGr,userID,new String (p.getPassword()),domaine.hashCode(),passwordLength);
-						modToZero();
-						numPsswd++;
-						progressBar.repaint();
-						
-						
-						if (numPsswd>=15){ // si on en a ecrit 15, on les ecrits dans le fivhier csv
-							f.hideBdGui();
-							f.showLoadingPane();
-							Main.tests = true;
-							System.out.println("fait");
-							ecrire(timesDD);
-							Connection conn = null;
-							try {
-								Class.forName("com.mysql.jdbc.Driver").newInstance();
-							} catch (ClassNotFoundException e1) {
-								System.err.println("Could not find driver");
-								e1.printStackTrace();
-								System.exit(0);
-
-							} catch (InstantiationException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-								System.exit(0);
-
-							} catch (IllegalAccessException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-								System.exit(0);
-
-							}
-					        System.out.println("Driver Found...");
-					        try {
-								conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-							} catch (SQLException e1) {
-								System.err.println("Could not connect to the database");
-								e1.printStackTrace();
-								System.exit(0);
-							}
-					        System.out.println("Connected...");
-					        
-					        int accountId = Insert.addCompte( entries[0],conn);
-					        
-							for (int i=0; i<entries.length;i++){
-								int mesureId = Insert.addMesure(entries[i],accountId,conn);
-								Insert.addChar(entries[i],mesureId,conn);
-								Insert.addModifieurs(entries[i],mesureId,conn);
-							}
-							String generatedPassword = PasswordGetter.getPassword(new String (p.getPassword()), userId, domaine);
-							f.showPasswordPane(generatedPassword);
-							f.hideLoadingPane();
-						}
-					}
-					tempTimeDD.clear();
-					tempChar.clear();
-				}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT){
-					if (arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
-						lShift++;
-					}
-					else{
-						rShift++;
-					}
-				}else if(arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK){
-					capsLock++;
-				}else if(arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH){
-					altGr++;
-				}else if (arg0.getKeyCode() == KeyEvent.VK_CONTROL){
-					if(arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
-						lCtrlStatus=true;
-					}else{
-						rCtrlStatus = true;
-					}
-				}else if(arg0.getKeyCode() == KeyEvent.VK_ALT){
-					if (lCtrlStatus == true){
-						lCtrl++;
-					}
-					if (rCtrlStatus == true){
-						rCtrl++;
-					}
-				}
-				else{ // si ce n'est pas la touche entre, on prend en comte le caractere
-					if(t0<0){
-						t0 = System.nanoTime();
-						tempTimeDD.add((float) 0.0);
-						tempChar.add(arg0.getKeyChar()); // on ajoute le caractere
-					}else{
-						tempTimeDD.add(curT-lastT); // on ajoute l'intervalle de temps
-						tempChar.add(arg0.getKeyChar()); // on ajoute le caractere
-						
-					}
-					
-				}
-			}
-
-			public void keyReleased(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
-					t0 = -1;
-				}else if(arg0.getKeyCode() == KeyEvent.VK_CONTROL){
-					if (arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
-						lCtrlStatus = false;
-					}else{
-						rCtrlStatus = false;
-					}
-				}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT){
-					
-				}
-				else{
-					float t = System.nanoTime()-curT;
-					tempPressed.add(t);
-					if(tempChar.size()==1){
-						tempTimeUD.add((float)0);
-					}
-					else{
-						float timeUD = tempTimeDD.get(tempTimeDD.size()-1)-(tempPressed.size()-1);
-						tempTimeUD.add(timeUD);
-					}
-				}
-			}
-
-			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
+		psswd.addKeyListener(new TimingManager(psswd,p,userId,domaine,f,this));
 		
 		this.add(label1);
 		this.add(psswd);
@@ -279,26 +123,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		timesUD = new double[15][p.getPassword().length];
 	}
 	
-	// convertit la liste en tableau (j'ai appris depuis qu'il existe deja une methode pour le faire, on pourra le changer)
-	public char[] listToCharArray (ArrayList<Character> l ){
-		char[] c = new char[l.size()];
-		
-		
-		
-		for(int i =0; i<l.size(); i++){
-			c[i] = l.get(i);
-		}
-		return c;
-	}
 	
-	// idem
-	public double[] listToDoubleArray (ArrayList <Float> l){
-		double[] d = new double[l.size()];
-		for(int i=0; i<l.size(); i++){
-			d[i] = l.get(i);
-		}
-		return d;
-	}
 	
 	// ecrit le fichier csv
 	public void ecrire(double[][] times){
