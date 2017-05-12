@@ -79,8 +79,8 @@ public class PasswordPane extends JPanel {
 
 	}
 	
-	public  String generatePassword(String login, String masterPassword, String domaine){
-		String password = login+domaine+masterPassword;
+	public   String generatePassword(String login, String masterPassword, String domaine){
+		int passwordLength = 50;
 		Byte[] loginByte = new Byte[login.getBytes().length];
 		Byte[] mpByte = new Byte [masterPassword.getBytes().length];
 		Byte[] domainByte = new Byte [domaine.getBytes().length];
@@ -98,21 +98,27 @@ public class PasswordPane extends JPanel {
 		while(j<passwordLength){
 			for (int i=0;i<Math.max(loginByte.length,Math.max(mpByte.length,domainByte.length));i++){
 				if (j<passwordLength){
-					passwordInt[j] += loginByte[i%loginByte.length].intValue();
+					passwordInt[j] += loginByte[i%(loginByte.length-1)].intValue();
+					j++;
 				}
 				if (j<passwordLength){
-					passwordInt[j] += mpByte[i%mpByte.length].intValue();
+					passwordInt[j] += mpByte[i%(mpByte.length-1)].intValue();
+					j++;
 				}
 				if (j<passwordLength){
-					passwordInt[j] += domainByte[i%domainByte.length].intValue();
+					passwordInt[j] += domainByte[i%(domainByte.length-1)].intValue();
+					j++;
 				}
 			}
 		}
-		Byte genPasswordByte = passwordInt.byteValue();
-		String genPassword = genPasswordByte.toString();
-		return genPassword.substring(0,passwordLength);
-	}
+		
+		char [] passwordChar = new char[passwordLength];
+		for(int i=0; i<passwordLength; i++){
+			passwordChar[i] = (char)(48+((passwordInt[i]*i)%78));
+		}
+		return new String(passwordChar);
 	
+	}
 
 
 }

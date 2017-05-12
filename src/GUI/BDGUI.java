@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import Database.Insert;
 import Main.Entry;
+import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
 
@@ -116,7 +117,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						pressed[numPsswd] = listToDoubleArray(tempPressed);
 						timesUD[numPsswd] = listToDoubleArray(tempTimeUD);
 						entries[numPsswd] = new Entry (timesDD[numPsswd],tempChar,pressed[numPsswd],timesUD[numPsswd],rShift,lShift,
-								capsLock,lCtrl,rCtrl,altGr,userID,p.getPassword().toString());
+								capsLock,lCtrl,rCtrl,altGr,userID,new String (p.getPassword()));
 						modToZero();
 						numPsswd++;
 						progressBar.repaint();
@@ -162,7 +163,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 								//Insert.addChar(entries[i],mesureId,conn);
 								//Insert.addModifieurs(entries[i],mesureId,conn);
 							}
-							f.showPasswordPane(userId, p.getPassword().toString(), domaine,passwordLength);
+							f.showPasswordPane(userId,new String (p.getPassword()), domaine,passwordLength);
 						}
 					}
 					tempTimeDD.clear();
@@ -303,7 +304,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 			if(Arrays.equals(p.getPassword(), testPsswd)){
 				Main.compileMesures(times[i],p.getUserID());
 			}else{
-				System.out.println("'"+p.getPassword().toString()+"'");
+				System.out.println("'"+new String (p.getPassword())+"'");
 			}
 		}
 		Main.out.flush();
@@ -317,6 +318,10 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		lCtrl = 0;
 		rCtrl = 0;
 		altGr = 0;
+	}
+	
+	public void removeKeyStrokeListener(KeyStrokeListener listener){
+		
 	}
 
 }
