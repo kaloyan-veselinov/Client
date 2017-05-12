@@ -70,8 +70,8 @@ public class Insert {
 			e2.printStackTrace();
 		}
 
-        String insertCompte = "INSERT INTO Compte (userId,SystemUser,masterPsswd,internId) VALUES (\""+e.getUserId()+
-        		"\",\"thisisatest\",\"password\","+id+");";
+        String insertCompte = "INSERT INTO Compte (userId,SystemUserId,masterPsswd,internId,domainHash,passwordLength) VALUES (\""+e.geteUserId()+
+        		"\",\"thisisatest\",\""+e.getePassword()+"\","+id+","+e.getDomainHashCode()+",\""+e.getePasswordLength()+"\");";
         
         try {
 			insertAccount = conn.prepareStatement(insertCompte);
@@ -117,7 +117,7 @@ public class Insert {
 			e2.printStackTrace();
 		}
         
-        String insertMesure  = "INSERT INTO Mesure (Compte_internId,keyboardType,idMesure) VALUES ("+ID+",\""+e.getKeyboard()+"\","+nextId+");"; 
+        String insertMesure  = "INSERT INTO Mesure (Compte_internId,keyboardType,idMesure) VALUES ("+ID+",\""+e.geteLocalisation()+"\","+nextId+");"; 
         try {
 			insertEntry = conn.prepareStatement(insertMesure);
 		} catch (SQLException e1) {
@@ -153,7 +153,7 @@ public class Insert {
         
         for(int i=0; i<e.getTimesDD().length;i++){
         	insert = "INSERT INTO Chars (numChar,timeDD,timePressed,pressure,timeUD,travelSpeed,Mesure_idMesure) "
-        			+ "VALUES ("+(i+1)+","+e.getTimesDD()[i]+","+e.getPressed()[i]+","+e.getPressure()[i]+","+e.getTimesUD()[i]+","
+        			+ "VALUES ("+(i+1)+",\""+e.geteTimesDD()[i]+"\",\""+e.getePressed()[i]+"\",\""+e.getePressure()[i]+"\",\""+e.geteTimesUD()[i]+"\","
         			+ 0+"," + idMesure+");";
         	 try {
      			insertChar = conn.prepareStatement(insert);
@@ -188,8 +188,8 @@ public class Insert {
 			
 	        
 	        String insert = "INSERT INTO Modifieurs (LShift,RShift,LCtrl,RCtrl,AltGr,capsLock,idMesure) VALUES "
-	        		+ "("+e.getlShift()+","+e.getrShift()+","+e.getlCtrl()+","+e.getrCtrl()+","+e.getAltGr()+","+e.getCapsLock()
-	        		+"," + idMesure+");";
+	        		+ "(\""+e.geteLShift()+"\",\""+e.geteRShift()+"\",\""+e.geteLCtrl()+"\",\""+e.geteRCtrl()+"\",\""+e.geteAltGr()+"\",\""+e.geteCapsLock()
+	        		+"\"," + idMesure+");";
 	        try {
 				insertModifieur = conn.prepareStatement(insert);
 			} catch (SQLException e1) {

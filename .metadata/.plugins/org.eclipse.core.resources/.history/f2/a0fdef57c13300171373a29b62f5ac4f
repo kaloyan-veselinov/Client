@@ -1,0 +1,26 @@
+package Encryption;
+
+import java.math.BigDecimal;
+
+import org.jasypt.util.numeric.BasicDecimalNumberEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
+public class Encryption {
+	
+	public String encryptePassword(String plain){
+		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+		return encryptor.encryptPassword(plain);
+	}
+	
+	public boolean checkPassword(String encryptedPassword, String plainPassword){
+		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+		return encryptor.checkPassword(plainPassword, encryptedPassword);
+	}
+	
+	public String encrypteValue (double value, String password){
+		BasicDecimalNumberEncryptor encryptor = new BasicDecimalNumberEncryptor();
+		encryptor.setPassword(password);
+		BigDecimal bigValue = new BigDecimal(value);
+		encryptor.encrypt(bigValue);
+	}
+}
