@@ -108,10 +108,12 @@ public class TimingManager implements KeyListener {
 					modifiersCount = ((CharacterListener)strokes.get(i)).getModifiersCounter();
 					Arrays.fill(modifiersOrder, 0);
 					if(modifiersCount>0){
-						j=i-1;
+						j=i;
 						while((j>0) && (modifiersAdded<modifiersCount)){
-							while(!(strokes.get(j) instanceof ModifierListener))
+							do{
 								j--;
+							}
+							while(!(strokes.get(j) instanceof ModifierListener));
 							
 							if(strokes.get(j).getE().getKeyLocation()==KeyEvent.KEY_LOCATION_LEFT)
 								tempLocation=-1;
@@ -144,6 +146,7 @@ public class TimingManager implements KeyListener {
 								modifiersOrder[modifiersCount-modifiersAdded]=4;
 								break;
 							}
+							modifiersAdded++;
 						}							
 					}
 					//TODO add modifier sequence
