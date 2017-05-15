@@ -133,7 +133,6 @@ public class AddAccountGUI extends JPanel {
 		passwordLengthField = new JTextField("20");
 		passwordLengthField.addActionListener(new ActionListener(){
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
 			}
@@ -142,13 +141,11 @@ public class AddAccountGUI extends JPanel {
 		
 		passwordLengthField.addFocusListener(new FocusListener(){
 
-			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void focusLost(FocusEvent e) {
 				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
 
@@ -159,7 +156,6 @@ public class AddAccountGUI extends JPanel {
 		passwordLengthSlider = new JSlider(8,50,20);
 		passwordLengthSlider.addChangeListener(new ChangeListener(){
 
-			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				passwordLengthField.setText(String.valueOf(passwordLengthSlider.getValue()));
 			}

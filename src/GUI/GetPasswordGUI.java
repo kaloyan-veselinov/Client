@@ -29,7 +29,7 @@ public class GetPasswordGUI extends JPanel{
 	
 	private MenuGUI f;
 	
-	public GetPasswordGUI(JPanel menuPane, MenuGUI f){
+	public GetPasswordGUI(JPanel menuPane, final MenuGUI f){
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);
 		
@@ -62,7 +62,6 @@ public class GetPasswordGUI extends JPanel{
 		getPsswd = new JButton("Get Password");
 		getPsswd.addActionListener(new ActionListener(){
 
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
 				f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));

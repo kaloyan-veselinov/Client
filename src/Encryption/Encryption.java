@@ -75,4 +75,21 @@ public class Encryption {
 		return encryptor.encrypt(password);
 
 	}
+	
+	public static String encryptBoolean(boolean b,String password){
+		String s = "";
+		s= s+b;
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(s);
+	
+	}
+	
+	public static boolean decryptBoolean(String s, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		String decrypted = encryptor.decrypt(s);
+		boolean b = Boolean.parseBoolean(decrypted);
+		return b;
+	}
 }
