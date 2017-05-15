@@ -11,43 +11,28 @@ import GUI.BDGUI;
 import GUI.MenuGUI;
 
 public class TimingManager implements KeyListener {
-	final Password p; // le mot de passe
-	
-	int numPsswd = 0; // id du mot de passe qui s'incremente losqu'un mot de passe valide est entre
-	
-	String userID;
-	Entry[] entries;
-	String domaine;
-	int passwordLength;
-	JPasswordField psswd;
-	MenuGUI f;
-	String userId;
-	BDGUI guy;
-	
+	//Params de compte
+	final Password p; 
+	final String userId, domaine;
+		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
 	
 	//Tableau des caracteres avec tous leurs parametres associes (temps, pression, modifers)
-	KeyStroke[] keyStrokes;
-	
-	//Compteur du nombre de caracteres
-	int nbChar=0;	
+	ArrayList<KeyStroke> keyStrokes;
 		
 	//Params de mofiers
 	boolean lShift=false, rShift=false, lCtrl=false, rCtrl=false, lAlt=false, rAlt=false, capsLock=false;
 	
-	
-	public TimingManager(JPasswordField psswd, Password p, String userId, String domaine, MenuGUI f, BDGUI guy){
-		this.psswd=psswd;
+	public TimingManager(Password p, String userId, String domaine){
 		this.p=p;
-		this.f=f;
 		this.userId=userId;
-		this.guy=guy;
+		this.domaine=domaine;
 		strokes = new ArrayList<KeyStrokeListener>(2*p.getPassword().length);
-		keyStrokes=new KeyStroke[p.getPassword().length];
+		keyStrokes = new ArrayList<KeyStroke>(p.getPassword().length);
 	}
 	
-
+	@Override
 	public void keyPressed(KeyEvent arg0) {
 		
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
@@ -60,11 +45,9 @@ public class TimingManager implements KeyListener {
 				if(strokes.get(i) instanceof CharacterListener){
 					modifiersCount = ((CharacterListener)strokes.get(i)).getModifiersCounter();
 					Arrays.fill(modifiersOrder, 0);
-					keyStrokes[nbChar] = new KeyStroke(strokes.get(i).getE().getKeyChar(),strokes.get(i).getUpTime(),strokes.get(i).getDownTime());
-					//TODO add modifier sequence
-					//keyStrokes[nbChar].setModifierSequence(getModifierSequence(modifiersOrder));
+					keyStrokes.add(new KeyStroke(strokes.get(i).getE().getKeyChar(),strokes.get(i).getUpTime(),strokes.get(i).getDownTime()));
 					//TODO add pressure
-					//keyStrokes[nbChar].setPressure(getPressure());
+					//keyStrokes.get(keyStrokes.size()-1).setPressure(getPressure());
 					if(modifiersCount>0){
 						j=i;
 						while((j>0) && (modifiersAdded<modifiersCount)){
@@ -80,38 +63,38 @@ public class TimingManager implements KeyListener {
 							
 							switch(strokes.get(j).getE().getKeyCode()){
 							case KeyEvent.VK_SHIFT:
-								keyStrokes[nbChar].setShift(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));
+								keyStrokes.get(keyStrokes.size()-1).setShift(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));
 								modifiersOrder[modifiersCount-modifiersAdded]=1;
 								break;
 							case KeyEvent.VK_CONTROL:
-								keyStrokes[nbChar].setCtrl(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),0));modifiersOrder[modifiersCount-modifiersAdded]=2;
+								keyStrokes.get(keyStrokes.size()-1).setCtrl(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));
+								modifiersOrder[modifiersCount-modifiersAdded]=2;
 								break;
 							case KeyEvent.VK_ALT:
-								keyStrokes[nbChar].setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));modifiersOrder[modifiersCount-modifiersAdded]=3;
+								keyStrokes.get(keyStrokes.size()-1).setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));
+								modifiersOrder[modifiersCount-modifiersAdded]=3;
 								break;
 							case KeyEvent.VK_ALT_GRAPH:
-								keyStrokes[nbChar].setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),1));
-								modifiersOrder[modifiersCount-modifiersAdded]=4;
+								keyStrokes.get(keyStrokes.size()-1).setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),1));
+								modifiersOrder[modifiersCount-modifiersAdded]=3;
 								break;
+							case KeyEvent.VK_CAPS_LOCK:
+								keyStrokes.get(keyStrokes.size()-1).setCapsLock(new Modifier(strokes.get(j).getUpTime(), strokes.get(j).getDownTime()));
+								modifiersOrder[modifiersCount-modifiersAdded]=4;								
 							}
 							modifiersAdded++;
 						}							
 					}
-					nbChar++;
-				}
-				psswd.setText("");
-				if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword())){
-					//TODO ajout et traitement
-				}
+					keyStrokes.get(keyStrokes.size()-1).setModifierSequence(ModifierSequence.getSequence(modifiersOrder));
+				};
+				if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword()))
+					Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
 			}	
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
-			if (arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
+			if (arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT)
 				lShift=true;
-			}
-			else{
-				rShift=true;
-			}
+			else rShift=true;
 		}else if(arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			capsLock=!capsLock;
@@ -120,11 +103,9 @@ public class TimingManager implements KeyListener {
 			rAlt=true;
 		}else if (arg0.getKeyCode() == KeyEvent.VK_CONTROL){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
-			if(arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
+			if(arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT)
 				lCtrl=true;
-			}else{
-				rCtrl=true;
-			}
+			else rCtrl=true;
 		}else if(arg0.getKeyCode() == KeyEvent.VK_ALT){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			lAlt=true;
@@ -141,35 +122,10 @@ public class TimingManager implements KeyListener {
 		}
 	}
 	
-	public void keyReleased(KeyEvent arg0) {
-	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {}
 
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-			
-	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 	
-	/*	
-	// convertit la liste en tableau (j'ai appris depuis qu'il existe deja une methode pour le faire, on pourra le changer)
-		public char[] listToCharArray (ArrayList<Character> l ){
-			char[] c = new char[l.size()];
-			
-			
-			
-			for(int i =0; i<l.size(); i++){
-				c[i] = l.get(i);
-			}
-			return c;
-		}
-		
-		// idem
-		public double[] listToDoubleArray (ArrayList <Float> l){
-			double[] d = new double[l.size()];
-			for(int i=0; i<l.size(); i++){
-				d[i] = l.get(i);
-			}
-			return d;
-		}
-	*/
-
 }

@@ -4,19 +4,18 @@ import java.util.ArrayList;
 
 public class PasswordTry {
 	
-	private ArrayList <KeyStrokeListener> keys;
+	private ArrayList <KeyStroke> keys;
 	private boolean success;
 	
-	public PasswordTry(ArrayList <KeyStrokeListener> keys, boolean success){
+	public PasswordTry(ArrayList <KeyStroke> keys){
 		this.keys = keys;
-		this.success = success;
 	}
 	
-	public ArrayList<KeyStrokeListener> getKeys() {
+	public ArrayList<KeyStroke> getKeys() {
 		return keys;
 	}
 
-	public void setKeys(ArrayList<KeyStrokeListener> keys) {
+	public void setKeys(ArrayList<KeyStroke> keys) {
 		this.keys = keys;
 	}
 

@@ -22,11 +22,12 @@ public class Main {
 	public static FileWriter resultats;	//permet d'ecrire les resultats dans un fichier resultats.csv
 	public static PrintWriter out;	//Complement du file writter (pas forcement utile d'ailleur)
 	public static double [][] times; //contient les valeurs de temps separant chaque touche pour les differents essais
+	public static SessionManager sessionManager;
 	
 	public static void main(String[] args) throws InterruptedException{
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		MenuGUI mg = new MenuGUI(); 
-		SessionManager sessionManager =new SessionManager();
+		sessionManager =new SessionManager();
 		try {
 			// initialisation du FileWriter
 			resultats = new FileWriter("resultats.csv");

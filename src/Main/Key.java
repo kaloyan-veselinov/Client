@@ -1,5 +1,6 @@
 package Main;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import Encryption.Encryption;
@@ -16,10 +17,10 @@ public abstract class Key {
 		return timeUp;
 	}
 	
-	public LinkedList<String> getEncryptedValues(Password p){
-		LinkedList<String> encryptedValues = new LinkedList<String>();
-		encryptedValues.add(Encryption.encryptLong(timeUp,p.getPassword().toString()));
-		encryptedValues.add(Encryption.encryptLong(timeDown,p.getPassword().toString()));
+	public ArrayList<String> getEncryptedValues(Password p){
+		ArrayList<String> encryptedValues = new ArrayList<String>();
+		encryptedValues.add(Encryption.encryptLong(timeUp, new String(p.getPassword())));
+		encryptedValues.add(Encryption.encryptLong(timeDown, new String(p.getPassword())));
 		return encryptedValues;
 	}
 

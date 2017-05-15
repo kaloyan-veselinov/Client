@@ -30,5 +30,21 @@ public class SessionManager {
 		}
 		currentSession = new Session(this);
 	}
+	
+	public Session getCurrentSession() {
+		return currentSession;
+	}
+
+	public void setCurrentSession(Session currentSession) {
+		this.currentSession = currentSession;
+	}
+
+	public ArrayList<Session> getPrevSessions() {
+		return prevSessions;
+	}
+
+	public void setPrevSessions(ArrayList<Session> prevSessions) {
+		this.prevSessions = prevSessions;
+	}
 
 }

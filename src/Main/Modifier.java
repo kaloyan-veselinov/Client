@@ -1,6 +1,6 @@
 package Main;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import Encryption.Encryption;
 
@@ -12,10 +12,16 @@ public class Modifier extends Key {
 		this.location=location;
 	}
 	
+	public Modifier(long timeUp, long timeDown){
+		super(timeUp, timeDown);
+		this.location=0;
+	}
+	
 	@Override
-	public LinkedList<String> getEncryptedValues(Password p){
-		LinkedList<String> encryptedValues = super.getEncryptedValues(p);
-		encryptedValues.add(Encryption.encryptInt(location,p.getPassword().toString()));
+	public ArrayList<String> getEncryptedValues(Password p){
+		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
+		if(location!=0)
+			encryptedValues.add(Encryption.encryptInt(location,new String(p.getPassword())));
 		return encryptedValues;
 	}
 	
