@@ -12,55 +12,30 @@ import GUI.MenuGUI;
 
 public class TimingManager implements KeyListener {
 	final Password p; // le mot de passe
-	double[][]timesDD;	// tableau qui contient les valeurs pour les intervalles de temps
-	int lettre= 0; // pas verifie mais je crois que ca sert plus
-	int numPsswd = 0; // id du mot de passe qui s'incremente losqu'un mot de passe valide est entre
-	float t0; // variable pour le temps
 	
-	double[][] pressed;
-	double[][] timesUD;	
+	int numPsswd = 0; // id du mot de passe qui s'incremente losqu'un mot de passe valide est entre
 	
 	String userID;
 	Entry[] entries;
-	float lastT = 0;
-	float curT = 0;
 	String domaine;
 	int passwordLength;
 	JPasswordField psswd;
 	MenuGUI f;
 	String userId;
 	BDGUI guy;
+	
+	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
 	
-	//Donnees d'une touche
-	char[] tempChar; // liste qui contient les caracteres entres
-	int[] keyIndex;
-	long[] timeUp, timeDown, pressure; 
-	int[] modifierSequence;
+	//Tableau des caracteres avec tous leurs parametres associes (temps, pression, modifers)
+	KeyStroke[] keyStrokes;
 	
-	//Params shift
-	long[] shiftUp, shiftDown;
-	int[] shiftLocation;
-	boolean lShift=false;
-	boolean rShift=false;
-	
-	//Params ctrl
-	long[] ctrlUp, ctrlDown;
-	int[] ctrlLocation;
-	boolean lCtrl=false;
-	boolean rCtrl=false;
-	
-	//Params alt
-	long[] altUp, altDown;
-	int[] altLocation;
-	boolean lAlt=false;
-	boolean rAlt=false;
-	
-	//Params caps lock
-	long[] capsUp, capsDown;
-	boolean capsLock=false;
-	
+	//Compteur du nombre de caracteres
 	int nbChar=0;	
+		
+	//Params de mofiers
+	boolean lShift=false, rShift=false, lCtrl=false, rCtrl=false, lAlt=false, rAlt=false, capsLock=false;
+	
 	
 	public TimingManager(JPasswordField psswd, Password p, String userId, String domaine, MenuGUI f, BDGUI guy){
 		this.psswd=psswd;
@@ -69,29 +44,7 @@ public class TimingManager implements KeyListener {
 		this.userId=userId;
 		this.guy=guy;
 		strokes = new ArrayList<KeyStrokeListener>(2*p.getPassword().length);
-		
-		tempChar = new char[p.getPassword().length];
-		
-		timeUp = new long[p.getPassword().length];
-		timeDown = new long[p.getPassword().length];
-		pressure = new long[p.getPassword().length];
-		modifierSequence = new int[p.getPassword().length];
-		
-		shiftUp = new long[p.getPassword().length];
-		shiftDown = new long[p.getPassword().length];
-		shiftLocation = new int[p.getPassword().length];
-		
-		ctrlUp = new long[p.getPassword().length];
-		ctrlDown = new long[p.getPassword().length];
-		ctrlLocation = new int[p.getPassword().length];
-		
-		altUp = new long[p.getPassword().length];
-		altDown = new long[p.getPassword().length];
-		altLocation = new int[p.getPassword().length];
-		
-		capsUp = new long[p.getPassword().length];
-		capsDown = new long[p.getPassword().length];
-		
+		keyStrokes=new KeyStroke[p.getPassword().length];
 	}
 	
 
@@ -107,6 +60,11 @@ public class TimingManager implements KeyListener {
 				if(strokes.get(i) instanceof CharacterListener){
 					modifiersCount = ((CharacterListener)strokes.get(i)).getModifiersCounter();
 					Arrays.fill(modifiersOrder, 0);
+					keyStrokes[nbChar] = new KeyStroke(strokes.get(i).getE().getKeyChar(),strokes.get(i).getUpTime(),strokes.get(i).getDownTime());
+					//TODO add modifier sequence
+					//keyStrokes[nbChar].setModifierSequence(getModifierSequence(modifiersOrder));
+					//TODO add pressure
+					//keyStrokes[nbChar].setPressure(getPressure());
 					if(modifiersCount>0){
 						j=i;
 						while((j>0) && (modifiersAdded<modifiersCount)){
@@ -122,50 +80,30 @@ public class TimingManager implements KeyListener {
 							
 							switch(strokes.get(j).getE().getKeyCode()){
 							case KeyEvent.VK_SHIFT:
-								shiftUp[nbChar]=strokes.get(j).getUpTime();
-								shiftDown[nbChar]=strokes.get(j).getDownTime();
-								shiftLocation[nbChar]=tempLocation;
+								keyStrokes[nbChar].setShift(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));
 								modifiersOrder[modifiersCount-modifiersAdded]=1;
 								break;
 							case KeyEvent.VK_CONTROL:
-								ctrlUp[nbChar]=strokes.get(j).getUpTime();
-								ctrlDown[nbChar]=strokes.get(j).getDownTime();
-								ctrlLocation[nbChar]=tempLocation;
-								modifiersOrder[modifiersCount-modifiersAdded]=2;
+								keyStrokes[nbChar].setCtrl(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),0));modifiersOrder[modifiersCount-modifiersAdded]=2;
 								break;
 							case KeyEvent.VK_ALT:
-								altUp[nbChar]=strokes.get(j).getUpTime();
-								altDown[nbChar]=strokes.get(j).getDownTime();
-								altLocation[nbChar]=-1;
-								modifiersOrder[modifiersCount-modifiersAdded]=3;
+								keyStrokes[nbChar].setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),tempLocation));modifiersOrder[modifiersCount-modifiersAdded]=3;
 								break;
 							case KeyEvent.VK_ALT_GRAPH:
-								altUp[nbChar]=strokes.get(j).getUpTime();
-								altDown[nbChar]=strokes.get(j).getDownTime();
-								altLocation[nbChar]=1;
+								keyStrokes[nbChar].setAlt(new Modifier(strokes.get(j).getUpTime(),strokes.get(j).getDownTime(),1));
 								modifiersOrder[modifiersCount-modifiersAdded]=4;
 								break;
 							}
 							modifiersAdded++;
 						}							
 					}
-					//TODO add modifier sequence
-					//modifierSequence[nbChar]=getModifierSequence(modifiersOrder);
-					timeUp[nbChar]=strokes.get(i).getUpTime();
-					timeDown[nbChar]=strokes.get(i).getDownTime();
-					tempChar[nbChar]=strokes.get(i).getE().getKeyChar();
-					//TODO add pressure
-					//pressure[i]=getPressure();
 					nbChar++;
 				}
-				lettre = 0;
 				psswd.setText("");
-				if(Main.passwordMatch(tempChar ,p.getPassword())){
+				if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword())){
 					//TODO ajout et traitement
 				}
-			}
-			
-			
+			}	
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			if (arg0.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT){
