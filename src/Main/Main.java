@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 
 import GUI.BDGUI;
 import GUI.MenuGUI;
+import Session.SessionManager;
 import Warnings.SimpleWarning;
 
 
@@ -25,6 +26,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException{
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		MenuGUI mg = new MenuGUI(); 
+		SessionManager sessionManager =new SessionManager();
 		try {
 			// initialisation du FileWriter
 			resultats = new FileWriter("resultats.csv");
