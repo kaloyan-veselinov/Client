@@ -1,116 +1,64 @@
+package Main;
+
 public class ModifierSequence{
-	/*
-	maj
-	ctrl
-	alt
-	capslock
-	maj+ctrl
-	maj+alt
-	maj+capslock
-	ctrl+maj
-	ctrl+alt
-	ctrl+capslock
-	alt+maj
-	alt+ctrl
-	alt+capslock
-	capslock+maj
-	capslock+ctrl
-	capslock+alt
-	maj+ctrl+alt
-	maj+ctrl+capslock
-	maj+alt+ctrl
-	maj+alt+capslock
-	maj+capslock+ctrl
-	maj+capslock+alt
-	ctrl+maj+alt
-	ctrl+maj+cpaslock
-	ctrl+alt+maj
-	ctrl+alt+capslock
-	ctrl+capslock+maj
-	ctrl+capslock+alt
-	alt+maj+ctrl
-	alt+maj+cpaslock
-	alt+ctrl+maj
-	alt+ctrl+capslock
-	alt+capslock+maj
-	alt+capslock+ctrl
-	capslock+maj+ctrl
-	capslock+maj+alt
-	capslock+ctrl+maj
-	capslock+ctrl+alt
-	capslock+alt+maj
-	cpaslock+alt+ctrl
-	maj+ctrl+alt+capslock
-	maj+ctrl+capslock+alt
-	maj+alt+ctrl+capslock
-	maj+alt+capslock+ctrl
-	maj+capslock+ctrl+alt
-	maj+capslock+alt+ctrl
-	ctrl+maj+alt+capslock
-	ctrl+maj+capslock+alt
-	ctrl+alt+maj+capslock
-	ctrl+alt+capslock+maj
-	ctrl+capslock+maj+alt
-	ctrl+cpaslock+alt+maj
-	alt+maj+ctrl+capslock
-	alt+maj+capslock+ctrl
-	alt+ctrl+maj+capslock
-	alt+ctrl+capslock+maj
-	alt+capslock+maj+ctrl
-	alt+capslock+ctrl+maj
-	capslock+maj+ctrl+alt
-	capslock+maj+alt+ctrl
-	capslock+ctrl+maj+alt
-	capslock+ctrl+alt+maj
-	capslock+alt+maj+ctrl
-	capslock+alt+ctrl+maj
-	*/
 	
-	private final int MAJ = 1;
-	private final int CTRL = 2;
-	private final int ALT = 3;
-	private final int CAPSLOCK = 4;
-	private final int NULL = 0;
+	/* Contient juste la méthode getSequence(int[]) qui permet de retourner la séquence 
+	 * de modifieurs codée sous la forme d'un entier compris entre 0 et 64 (-1 en cas d'erreur) à partir 
+	 * d'un tableau d'entiers de taille 4 où chaque case carrespond à l'utilisation d'un modifieur 
+	 * - 1 pour majuscule
+	 * - 2 pour control
+	 * - 3 pour alt;
+	 * - 4 pour capslock
+	 * - 0 pour les emplacements non utilisées
+	 * La fin d'une séquence est détectée par la présence d'un 0.
+	 * L'entier qui est retourné correspond au numéro de ligne associé à la séquence dans le fichier 'liste_combinaisons.txt'.
+	 */
 	
-	public static int getSequence(int[]modifiers){
+	private final static int MAJ = 1;
+	private final static int CTRL = 2;
+	private final static int ALT = 3;
+	private final static int CAPSLOCK = 4;
+	private final static int NULL = 0;
+	
+	public static int getSequence(int[]modifieurs){
 		
 		switch (modifieurs[0]){
 		case NULL:
 			return 0;
-			break;
+			
 			
 		case MAJ :
 			switch (modifieurs[1]){
 			case NULL:
 				return 1;
-				break;
+				
 				
 			case CTRL:
 				switch (modifieurs[2]){
 				case NULL:
 					return 5;
-					break;
+					
 					
 				case ALT :
 					switch (modifieurs[3]){
 					case NULL :
 						return 17;
-						break;
+						
 					
 					case CAPSLOCK :
 						return 41;
-						break;
+					
 					}
 					
 				case CAPSLOCK :
-					switch modifieur[3]{
+					switch (modifieurs[3]){
 					case NULL:
 						return 18;
-						break;
+					
 					
 					case ALT :
 						return 42;
-						break;
+						
 					}
 					
 				}
@@ -118,13 +66,13 @@ public class ModifierSequence{
 				switch (modifieurs[2]){
 				case NULL:
 					return 6;
-					break;
+					
 					
 				case CTRL :
 					switch (modifieurs[3]){
 					case NULL:
 						return 19;
-						break;
+					
 						
 					case CAPSLOCK :
 						return 43;
@@ -135,11 +83,11 @@ public class ModifierSequence{
 					switch (modifieurs[3]){
 					case NULL :
 						return 20;
-						break;
+						
 						
 					case CTRL :
 						return 44;
-						break;
+					
 					}
 					
 				}
@@ -147,23 +95,253 @@ public class ModifierSequence{
 				switch (modifieurs[2]){
 				case NULL:
 					return 7;
-					break;
+			
 					
 				case CTRL :
 					switch (modifieurs[3]){
 					case NULL :
 						return 21;
-						break;
+					
 						
 					case ALT :
 						return 45;
-						break;
+						
 					}
 					
-					
+				case ALT :
+					switch(modifieurs[3]){
+					case NULL:
+						return 22;
+						
+					case CTRL :
+						return 46;
+					}
 					
 				}
 			}
+			
+		case CTRL :
+			switch (modifieurs[1]){
+			case NULL:
+				return 2;
+				
+			case MAJ:
+				switch(modifieurs[2]){
+				case NULL :
+					return 8;
+					
+				case ALT:
+					switch(modifieurs[3]){
+					case NULL:
+						return 23;
+						
+					case CAPSLOCK:
+						return 47;
+					}
+					
+				case CAPSLOCK :
+					switch (modifieurs[3]){
+					case NULL:
+						return 24;
+						
+					case ALT:
+						return 48;
+					}
+				}
+			case ALT:
+				switch (modifieurs[2]){
+				case NULL:
+					return 9;
+				
+				case MAJ:
+					switch (modifieurs[3]){
+					case NULL:
+						return 25;
+						
+					case CAPSLOCK:
+						return 49;
+					}
+				case CAPSLOCK:
+					switch (modifieurs[3]){
+					case NULL:
+						return 26;
+						
+					case MAJ:
+						return 50;
+					}
+					
+					
+				}
+			case CAPSLOCK:
+				switch (modifieurs[2]){
+				case NULL:
+					return 10;
+					
+				case MAJ:
+					switch (modifieurs[3]){
+					case NULL:
+						return 27;
+						
+					case ALT:
+						return 51; 
+					}
+					
+				case ALT:
+					switch (modifieurs[3]){
+					case NULL:
+						return 28;
+						
+					case MAJ:
+						return 52;
+					}
+				}
+			}
+		case ALT:
+			switch (modifieurs[1]){
+			case NULL:
+				return 3;
+				
+			case MAJ:
+				switch(modifieurs[2]){
+				case NULL:
+					return 11;
+					
+				case CTRL:
+					switch (modifieurs[3]){
+					case NULL:
+						return 29;
+						
+					case CAPSLOCK :
+						return 53;
+					}
+				case CAPSLOCK :
+					switch (modifieurs[3]){
+					case NULL:
+						return 30;
+						
+					case CTRL :
+						return 54;
+					}
+				}
+			case CTRL :
+				switch (modifieurs[2]){
+				case NULL:
+					return 12;
+					
+				case MAJ :
+					switch (modifieurs[3]){
+					case NULL:
+						return 31;
+						
+					case CAPSLOCK :
+						return 55;
+					}
+				case CAPSLOCK :
+					switch (modifieurs[3]){
+					case NULL:
+						return 32;
+						
+					case MAJ :
+						return 56;
+					}
+				}
+			case CAPSLOCK :
+				switch (modifieurs[2]){
+				case NULL:
+					return 13;
+					
+				case MAJ:
+					switch (modifieurs[3]){
+					case NULL:
+						return 33;
+						
+					case CTRL :
+						return 57;
+					}
+				case CTRL :
+					switch (modifieurs[3]){
+					case NULL:
+						return 34;
+						
+					case MAJ:
+						return 58;
+					}
+				}
+			}
+		case CAPSLOCK :
+			switch (modifieurs[1]){
+			case NULL :
+				return 4;
+				
+			case MAJ:
+				switch (modifieurs[2]){
+				case NULL:
+					return 14;
+					
+				case CTRL:
+					switch (modifieurs[3]){
+					case NULL:
+						return 35;
+						
+					case ALT:
+						return 59;
+					}
+				case ALT:
+					switch(modifieurs[3]){
+					case NULL:
+						return 36;
+						
+					case CTRL :
+						return 60;
+					}
+				}
+			case CTRL :
+				switch (modifieurs[2]){
+				case NULL:
+					return 15;
+					
+				case MAJ:
+					switch (modifieurs[3]){
+					case NULL:
+						return 37;
+						
+					case ALT:
+						return 61;
+					}
+				case ALT:
+					switch (modifieurs[3]){
+					case NULL:
+						return 38;
+						
+					case MAJ:
+						return 62;
+					}
+				}
+			case ALT :
+				switch (modifieurs[2]){
+				case NULL:
+					return 16;
+					
+				case MAJ:
+					switch (modifieurs[3]){
+					case NULL:
+						return 39;
+						
+					case CTRL :
+						return 63;
+					}
+				case CTRL :
+					switch (modifieurs[3]){
+					case NULL:
+						return 40;
+					
+					case MAJ :
+						return 64;
+					}
+				}
+			}
+		default :
+			return -1;
 		}
 	}
 	
