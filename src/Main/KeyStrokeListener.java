@@ -34,6 +34,8 @@ public abstract class KeyStrokeListener implements KeyListener {
 		
 	}
 	
+
+	
 	public KeyEvent getE(){
 		return e;
 	}
