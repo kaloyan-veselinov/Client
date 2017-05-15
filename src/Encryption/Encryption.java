@@ -1,7 +1,5 @@
 package Encryption;
 
-import java.math.BigDecimal;
-
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;

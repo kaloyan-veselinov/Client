@@ -5,8 +5,6 @@ import java.awt.event.KeyEvent;
 public class ModifierListener extends KeyStrokeListener {
 	private int location;
 	
-	
-	
 	public ModifierListener(long downTime, KeyEvent e){
 		super(downTime,e);
 		switch(e.getKeyLocation()){

@@ -3,91 +3,61 @@ package Main;
 import java.awt.event.KeyEvent;
 
 public class CharacterListener extends KeyStrokeListener{
-	private boolean lShift, rShift;
-	private boolean lCtrl, rCtrl;
-	private boolean lAlt, rAlt;
+	private boolean shift;
+	private boolean ctrl;
+	private boolean alt;
+	private boolean altGraph;
 	private boolean capsLock;
 	private int modifiersCounter;
-	
-	public CharacterListener(long downTime, KeyEvent e, boolean lShift, boolean rShift, boolean lCtrl, boolean rCtrl, boolean lAlt, boolean rAlt, boolean capsLock){
+
+	public CharacterListener(long downTime, KeyEvent e, boolean capsLock){
 		super(downTime, e);
-		this.setlShift(lShift);
-		this.setrShift(rShift);
-		this.setlCtrl(lCtrl);
-		this.setrCtrl(rCtrl);
-		this.setlAlt(lAlt);
-		this.setrAlt(rAlt);
+		this.setShift(e.isShiftDown());
+		this.setCtrl(e.isControlDown());
+		this.setAlt(e.isAltDown());
+		this.setAltGraph(e.isAltGraphDown());
+		this.setCapsLock(capsLock);
 		this.setModifiersCounter(0);
 	}
-
-	public boolean getlShift() {
-		return lShift;
-	}
-
-	public void setlShift(boolean lShift) {
-		this.lShift = lShift;
-		if(this.lShift)
-			setModifiersCounter(getModifiersCounter() + 1);
-	}
 	
-	public boolean getrShift() {
-		return rShift;
+	public boolean isShift() {
+		return shift;
 	}
 
-	public void setrShift(boolean rShift) {
-		this.rShift = rShift;
-		if(this.rShift)
-			setModifiersCounter(getModifiersCounter() + 1);
+	public void setShift(boolean shift) {
+		this.shift = shift;
+		if(shift)
+			modifiersCounter++;
 	}
 
-	public boolean getrCtrl() {
-		return rCtrl;
+	public boolean isCtrl() {
+		return ctrl;
 	}
 
-	public void setrCtrl(boolean rCtrl) {
-		this.rCtrl = rCtrl;
-		if(this.rCtrl)
-			setModifiersCounter(getModifiersCounter() + 1);
-	}
-	
-	public boolean getlCtrl() {
-		return lCtrl;
+	public void setCtrl(boolean ctrl) {
+		this.ctrl = ctrl;
+		if(ctrl)
+			modifiersCounter++;
 	}
 
-	public void setlCtrl(boolean lCtrl) {
-		this.lCtrl = lCtrl;
-		if(this.lCtrl)
-			setModifiersCounter(getModifiersCounter() + 1);
+	public boolean isAlt() {
+		return alt;
 	}
 
-	public boolean getrAlt() {
-		return rAlt;
+	public void setAlt(boolean alt) {
+		this.alt = alt;
+		if(alt)
+			modifiersCounter++;
 	}
 
-	public void setrAlt(boolean rAlt) {
-		this.rAlt = rAlt;
-		if(this.rAlt)
-			setModifiersCounter(getModifiersCounter() + 1);
-	}
-	
-	public boolean getlAlt() {
-		return lAlt;
-	}
-
-	public void setlAlt(boolean lAlt) {
-		this.lAlt = lAlt;
-		if(this.lAlt)
-			setModifiersCounter(getModifiersCounter() + 1);
-	}
-
-	public boolean getCapsLock() {
+	public boolean isCapsLock() {
 		return capsLock;
 	}
 
 	public void setCapsLock(boolean capsLock) {
 		this.capsLock = capsLock;
-		if(this.capsLock)
-			setModifiersCounter(getModifiersCounter() + 1);
+		if(capsLock)
+			modifiersCounter++;
 	}
 
 	public int getModifiersCounter() {
@@ -98,5 +68,14 @@ public class CharacterListener extends KeyStrokeListener{
 		this.modifiersCounter = modifiersCounter;
 	}
 
-	
+	public boolean isAltGraph() {
+		return altGraph;
+	}
+
+	public void setAltGraph(boolean altGraph) {
+		this.altGraph = altGraph;
+		if(altGraph)
+			modifiersCounter++;
+	}
+
 }
