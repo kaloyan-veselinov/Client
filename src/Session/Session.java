@@ -13,7 +13,13 @@ public class Session {
 	private Thread timeUpdater; //Thread qui met à jour le temps de la session toutes les 5 secondes.
 	private boolean running; //true si la session est en cours
 	private SessionManager manager; // référence au manager
+	private String userId;
+	private String domain;
+	private String password;
+	private boolean success;
+	private String local = "NULL";
 	
+
 	private ArrayList <PasswordTry> passwordTries; // liste des essais de mot de passe ayant eu lieu durant le tamps de la session
 	
 	
@@ -118,5 +124,53 @@ public class Session {
 	public void setPasswordTries(ArrayList <PasswordTry> passwordTries) {
 		this.passwordTries = passwordTries;
 	}
+	
 
+	public SessionManager getManager() {
+		return manager;
+	}
+
+	public void setManager(SessionManager manager) {
+		this.manager = manager;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public String getLocal() {
+		return local;
+	}
+
+	public void setLocal(String local) {
+		this.local = local;
+	}
 }
