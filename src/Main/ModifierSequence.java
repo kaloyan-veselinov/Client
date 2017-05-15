@@ -343,10 +343,7 @@ public class ModifierSequence{
 		default :
 			return -1;
 		}
-	}
-	
-	
-	
+	}	
 }
 
 

@@ -31,6 +31,32 @@ public class Encryption {
 		return decrypted;
 	}
 	
+	public static String encryptLong (Long value, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(value.toString());
+	}
+	
+	public static long decryptLong (String encryptedValue, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		Long decrypted = Long.valueOf(encryptor.decrypt(encryptedValue));
+		return decrypted;
+	}
+	
+	public static String encryptInt (Integer value, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(value.toString());
+	}
+	
+	public static int decryptInt (String encryptedValue, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		int decrypted = Integer.valueOf(encryptor.decrypt(encryptedValue));
+		return decrypted;
+	}
+	
 	public static  String encryptText (String plainText, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
 		encryptor.setPassword(password);
