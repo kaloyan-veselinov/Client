@@ -2,6 +2,8 @@ package Session;
 
 import java.util.ArrayList;
 
+import Database.Insert;
+
 /*
  * Objet permettant la gestion des sessions durant l'l'execution du programme  
  */
@@ -13,12 +15,15 @@ public class SessionManager {
 	
 	public SessionManager(){
 		prevSessions = new ArrayList<Session>();
-		newSession();
+		currentSession = new Session(this);
 	}
 	
 	// termine une session et l'ajoute à la liste des sessions terminées
 	public void endCurrentSession(){
 		currentSession.setRunning(false);
+		//le succès de la session est défini à partir du succès de la dernière tentative
+		currentSession.setSuccess(currentSession.getPasswordTries().get(currentSession.getPasswordTries().size()-1).isSuccess());
+		Insert.addSession(currentSession);
 		prevSessions.add(new Session(currentSession,this));
 		
 	}

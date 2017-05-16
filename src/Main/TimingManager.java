@@ -21,9 +21,9 @@ public class TimingManager implements KeyListener {
 	boolean lShift=false, rShift=false, lCtrl=false, rCtrl=false, lAlt=false, rAlt=false, capsLock=false;
 	Toolkit t;
 	
-	public TimingManager(Password p, String userId, String domaine){
+	public TimingManager(Password p, String domaine){
 		this.p=p;
-		this.userId=userId;
+		this.userId=p.getUserID();
 		this.domaine=domaine;
 		strokes = new ArrayList<KeyStrokeListener>(2*p.getPassword().length);
 		keyStrokes = new ArrayList<KeyStroke>(p.getPassword().length);
@@ -94,9 +94,16 @@ public class TimingManager implements KeyListener {
 					}
 					keyStrokes.get(keyStrokes.size()-1).setModifierSequence(ModifierSequence.getSequence(modifiersOrder));
 				}
-				if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword()))
-					Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
+				
 			}	
+			if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword()))
+				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
+				Main.sessionManager.getCurrentSession().setPassword(p.toString());
+				Main.sessionManager.getCurrentSession().setUserId(userId);
+				System.out.println("PasswordTry ajouté");
+			strokes.clear();
+			keyStrokes.clear();
+			
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 		}

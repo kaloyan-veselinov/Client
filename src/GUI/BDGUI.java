@@ -1,6 +1,8 @@
 package GUI;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,10 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.SpringLayout;
 
+import Database.Insert;
 import Main.Entry;
 import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
+import Main.PasswordGetter;
 import Main.TimingManager;
 
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
@@ -21,43 +25,52 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	JPanel mainPanel; // le panel principal
 	JPasswordField psswd; // le champ de mot de passe
 	final Password p; // le mot de passe
-	double[][]timesDD;	// tableau qui contient les valeurs pour les intervalles de temps
-	int lettre= 0; // pas verifie mais je crois que ca sert plus
-	int numPsswd = 0; // id du mot de passe qui s'incremente losqu'un mot de passe valide est entre
-	float t0; // variable pour le temps
-	ArrayList<Character>  tempChar; // liste qui contient les caracteres entres
-	ArrayList<Float> tempTimeDD; // liste qui contient les intervalles de temps avant qu'ils ne soient entres dans times
-	ArrayList<Float> tempPressed; // liste qui contient les valeurs de temps pendant lesquels une touche est enfoncée
-	ArrayList<Float> tempTimeUD; 
-	double[][] pressed;
-	double[][] timesUD;
-	int lShift=0;
-	int rShift=0;
-	int capsLock=0;
-	int lCtrl=0;
-	boolean lCtrlStatus = false;
-	int rCtrl=0;
-	boolean rCtrlStatus = false;
-	int altGr =0;
 	String userID;
 	Entry[] entries;
-	float lastT = 0;
-	float curT = 0;
 	String domaine;
 	int passwordLength;
 	public JPanel progressBar;
 	
+	TimingManager timingManager;
 	
-	public BDGUI(final Password p, String userId,String domaine,int passwordLength, MenuGUI f){
+	MenuGUI f;
+	
+	
+	public BDGUI(final Password p,String domaine,int passwordLength, MenuGUI f){
 		//On initialise tout
-		
-		t0 = -1;
+		this.f=f;
 		this.p = p;
-		this.userID = userId;
 		this.domaine = domaine;
+		this.passwordLength = passwordLength;
 		System.out.println(userID);
-		initTimes();
-		entries = new Entry[15];		
+		entries = new Entry[15];	
+		timingManager = new TimingManager(p,domaine);
+		this.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					progressBar.repaint();
+					if(checkSession()){
+						flushSession();
+					}
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		this.setBackground(Color.DARK_GRAY);
 		
@@ -70,7 +83,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 				g.setColor(Color.white);
 				g.fillRect((int)(0), 0,350-20, 50);
 				
-				for(int i=0; i<numPsswd; i++){
+				for(int i=0; i<Main.sessionManager.getCurrentSession().getPasswordTries().size(); i++){
 
 					g.setColor(Color.blue);
 					g.fillRect((int)(5 + i*((350-10)/15.0)), 5,(int)( (350-10)/15.0-5), 50-10);
@@ -85,7 +98,33 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		label1.setForeground(Color.white);
 		
 		psswd = new JPasswordField ("",15);
-		psswd.addKeyListener(new TimingManager(psswd,p,userId,domaine,f,this));
+		psswd.addKeyListener(new TimingManager(p,domaine));
+		psswd.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					psswd.setText("");
+					progressBar.repaint();
+					if(checkSession()){
+						flushSession();
+					}
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		this.add(label1);
 		this.add(psswd);
@@ -116,41 +155,24 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		setVisible(false);
 	}
 	
-	// initialise le tableau (je sais plus pourquoi j'ai cree une methode pour ca)
-	public void initTimes (){
-		timesDD = new double[15][p.getPassword().length];
-		pressed = new double[15][p.getPassword().length];
-		timesUD = new double[15][p.getPassword().length];
-	}
-	
-	
-	
-	// ecrit le fichier csv
-	public void ecrire(double[][] times){
-		for(int i=0 ;i<times.length;i++){
-			Main.writeCSV(i, times[i],p);
-			char[] testPsswd = {'p','a','s','s','w','o','r','d'};
-			if(Arrays.equals(p.getPassword(), testPsswd)){
-				Main.compileMesures(times[i],p.getUserID());
-			}else{
-				System.out.println("'"+new String (p.getPassword())+"'");
-			}
+	private void flushSession(){
+		for(int i=0; i<Main.sessionManager.getCurrentSession().getPasswordTries().size();i++){
+			Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
 		}
-		Main.out.flush();
-		Main.out.close();
+		Insert.addCompte(p, domaine,passwordLength);
+		String generatedPassword = PasswordGetter.generatePassword(p.getUserID(),p.toString(),domaine,passwordLength);
+		Main.sessionManager.endCurrentSession();
+		f.showPasswordPane(generatedPassword);
 	}
 	
-	public void modToZero(){
-		lShift = 0;
-		rShift = 0;
-		capsLock = 0;
-		lCtrl = 0;
-		rCtrl = 0;
-		altGr = 0;
+	private boolean checkSession(){
+		if(Main.sessionManager.getCurrentSession().getPasswordTries().size()>=15){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
-	public void removeKeyStrokeListener(KeyStrokeListener listener){
-		
-	}
+
 
 }

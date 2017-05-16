@@ -44,10 +44,14 @@ public class KeyStroke extends Key {
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
 		encryptedValues.add(Encryption.encryptValue(pressure,new String(p.getPassword())));
 		encryptedValues.add(Encryption.encryptInt(modifierSequence,new String(p.getPassword())));
-		encryptedValues.addAll(shift.getEncryptedValues(p));
-		encryptedValues.addAll(ctrl.getEncryptedValues(p));
-		encryptedValues.addAll(alt.getEncryptedValues(p));
-		encryptedValues.addAll(capsLock.getEncryptedValues(p));
+		if(shift!=null)
+			encryptedValues.addAll(shift.getEncryptedValues(p));
+		if(ctrl!=null)
+			encryptedValues.addAll(ctrl.getEncryptedValues(p));
+		if(alt!=null)
+			encryptedValues.addAll(alt.getEncryptedValues(p));
+		if(capsLock!=null)
+			encryptedValues.addAll(capsLock.getEncryptedValues(p));
 		return encryptedValues;
 	}
 	

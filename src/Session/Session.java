@@ -10,7 +10,7 @@ public class Session {
 	private Date debutTime; // date de début de la session
 	private Date currentTime; // temps actuel de la session
 	private Date shceduledEnd; // date de la fin prévue de la session
-	private Thread timeUpdater; //Thread qui met à jour le temps de la session toutes les 5 secondes.
+	private TimeUpdater timeUpdater; //Thread qui met à jour le temps de la session toutes les 5 secondes.
 	private boolean running; //true si la session est en cours
 	private SessionManager manager; // référence au manager
 	private String userId;
@@ -29,23 +29,10 @@ public class Session {
 		currentTime = new Date(System.currentTimeMillis());
 		shceduledEnd = new Date (debutTime.getTime()+(long)(10*60*1000)); // fin de la session prévue 10 min après le début
 		running = true;
-		timeUpdater = new Thread(){
-			
-			public void run(){
-				while(running){
-					currentTime.setTime(System.currentTimeMillis());
-					checkEnd();
-					try {
-						sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		timeUpdater.run();
+		timeUpdater = new TimeUpdater(this);
+		passwordTries = new ArrayList<PasswordTry>();
 	}
+		
 	
 	// constructeur générant une copie d'une session existante
 	public Session (Session s, SessionManager manager){
@@ -97,11 +84,11 @@ public class Session {
 		this.shceduledEnd = shceduledEnd;
 	}
 
-	public Thread getTimeUpdater() {
+	public TimeUpdater getTimeUpdater() {
 		return timeUpdater;
 	}
 
-	public void setTimeUpdater(Thread timeUpdater) {
+	public void setTimeUpdater(TimeUpdater timeUpdater) {
 		this.timeUpdater = timeUpdater;
 	}
 

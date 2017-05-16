@@ -20,57 +20,62 @@ import Encryption.Encryption;
 public class Insert {
 
 	
-	public static int addCompte(Entry e,Connection conn){
+	public static void addCompte(Password p,String domain,int passwordLength){
 		
-		PreparedStatement insertAccount = null;
-		Statement getId = null;
-		ResultSet res = null;
-		int id = 0;
+		System.out.println("Ajout d'un compte");
+		String ePassword = Encryption.encryptPassword(p.toString());
+		int  eLogin = p.getUserID().hashCode();
+		int hDomain = domain.hashCode();
+		String ePasswordLength = Encryption.encryptInt(passwordLength, p.toString());
 		
-        
-        String getID = "SELECT max(internId) FROM Compte;";
-        
-        try {
-			getId = conn.createStatement();
-			res =getId.executeQuery(getID);
-			res.next();
-			id = res.getInt("max(internId)") + 1;
-		} catch (SQLException e2) {
+		Connection conn = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (ClassNotFoundException e1) {
+			System.err.println("Could not find driver");
+			e1.printStackTrace();
+			System.exit(0);
+
+		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+			e1.printStackTrace();
+			System.exit(0);
 
-        String insertCompte = "INSERT INTO Compte (userId,SystemUserId,masterPsswd,internId,domainHash,passwordLength) VALUES (\""+e.geteUserId()+
-        		"\",\"thisisatest\",\""+e.getePassword()+"\","+id+","+e.getDomainHashCode()+",\""+e.getePasswordLength()+"\");";
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			System.exit(0);
+
+		}
+        System.out.println("Driver Found...");
+        try {
+			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
+		} catch (SQLException e1) {
+			System.err.println("Could not connect to the database");
+			e1.printStackTrace();
+			System.exit(0);
+		}
+        System.out.println("Connected...");
         
-        try {
-			insertAccount = conn.prepareStatement(insertCompte);
-		} catch (SQLException e1) {
-			System.err.println("Could not create prepared statements");
-
-			e1.printStackTrace();
-			System.exit(0);
-
+       String compte = "INSERT INTO Compte (Login,masterPassword,domainHash,passwordLength,CompteSystem_Login) values (\""+eLogin+"\",\""+
+    		   ePassword+"\",+"+hDomain+",\""+ePasswordLength+"\",\"thisisatest\");";
+       
+       try {
+			Statement compteStatement = conn.createStatement();
+			compteStatement.executeUpdate(compte);
+			System.out.println("Compte ajouté");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Erreur lors de l'ajout du compte");
 		}
-        System.out.println("Statements ready...");
-
-        try {
-        	insertAccount.executeUpdate();
-			
-		} catch (SQLException e1) {
-			System.err.println("Could not execute updates");
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Done...");
-        return id;
-
+       
+       
+       
 	}
 		
 	
 	
-	public static  void addSession(Session s,int userID){
+	public static  void addSession(Session s){
 		PreparedStatement insertEntry=null;
 		Statement getId = null;
 		ResultSet res = null;
@@ -78,23 +83,23 @@ public class Insert {
 		
 		// on recupere le compte associe a la session
 		
-		String userId = Encryption.encryptText(s.getUserId(),s.getPassword());
+		int userId = s.getUserId().hashCode();
 		
 		int domain = s.getDomain().hashCode();
 		
-		String account = "SELECT index FROM Compte WHERE Login = \""+userID+
-				"\" and domainHash =" + domain+";"; 
+		String account = "SELECT Compte.Index FROM Compte WHERE Login = \""+userId+
+				"\" and domainHash = " + domain+";"; 
+				
 		
+		String session = "INSERT INTO Session (Compte_Index,sucess) values(?,?); ";
 		
-		String session = "INSERT INTO Session (Compte_index,sucess) values(?,?); ";
-		
-		String sessionIndex = "SELECT max(index) FROM Session;";
+		String sessionIndex = "SELECT max(Session.index) FROM Session;";
 		
 		String entree = "INSERT INTO Entree (Session_index,Local,try) values (?,?,?)";
 		
-		String entreeIndex = "SELECT max(Index) From Entree where Session_index = ?;";
+		String entreeIndex = "SELECT max(Entree.Index) From Entree where Session_index = ?;";
 		
-		String touche = "INSERT INTO TOUCHE (Entree_Index,timeUp,timeDown,pressure,modifierSequence,"
+		String touche = "INSERT INTO Touche (Entree_Index,timeUp,timeDown,pressure,modifierSequence,"
 				+ "shiftUp,shiftDown,shiftLocation,ctrlUp,ctrlDown,ctrlLocation,altUp,altDown,"
 				+ "altLocation,capslockUp,capsLockDown) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 		
@@ -135,59 +140,53 @@ public class Insert {
 		        
 		        int accountId = 0;
 		        while (res.next()){
-		        	accountId = res.getInt("Index");
+		        	accountId = res.getInt(1);
 		        }
 		        
 		        PreparedStatement sessionStatement = conn.prepareStatement(session);
 		        sessionStatement.setInt(1,accountId);
 		        sessionStatement.setString(2,Encryption.encryptBoolean(s.isSuccess(), s.getPassword()));
-				sessionStatement.executeQuery();
+				sessionStatement.executeUpdate();
 				
 				Statement sessionIndexStatement = conn.createStatement();
 				res = sessionIndexStatement.executeQuery(sessionIndex);
 				int sessionId = 0;
 				while(res.next()){
-					sessionId = res.getInt("max(index)");
+					sessionId = res.getInt("max(Session.index)");
 				}
 				
 				for (int i=0; i<s.getPasswordTries().size();i++){
-					String eSuccess = Encryption.encryptBoolean(s.getPasswordTries().get(i).isSuccess(), s.getPassword());
 					PreparedStatement entreeStatement = conn.prepareStatement(entree);
 					entreeStatement.setInt(1,sessionId);
 					entreeStatement.setString(2,s.getLocal());
-					entreeStatement.setString(3,eSuccess);
-					entreeStatement.executeQuery();
+					entreeStatement.setInt(3,i);
+					entreeStatement.executeUpdate();
 					
 					PreparedStatement entreeIndexStatement = conn.prepareStatement(entreeIndex);
 					entreeIndexStatement.setInt(1, sessionId);
 					res = entreeIndexStatement.executeQuery();
 					int entreeId=0;
 					while(res.next()){
-						entreeId = res.getInt("max(Index)");
+						entreeId = res.getInt("max(Entree.Index)");
 					}
 					for(int j=0; j<s.getPasswordTries().get(i).getKeys().size();j++){
 						PreparedStatement toucheStatement = conn.prepareStatement(touche);
-						LinkedList<String>encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(new Password(
+						ArrayList<String>encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(new Password(
 								s.getPassword().toCharArray(),s.getUserId()));
 						toucheStatement.setInt(1,entreeId);
 						
 						//TODO moddifier avec un iterator 
-						toucheStatement.setString(2, encryptedValues.get(0));
-						toucheStatement.setString(3, encryptedValues.get(1));
-						toucheStatement.setString(4, encryptedValues.get(2));
-						toucheStatement.setString(5, encryptedValues.get(3));
-						toucheStatement.setString(6, encryptedValues.get(4));
-						toucheStatement.setString(7, encryptedValues.get(5));
-						toucheStatement.setString(8, encryptedValues.get(6));
-						toucheStatement.setString(9, encryptedValues.get(7));
-						toucheStatement.setString(10, encryptedValues.get(8));
-						toucheStatement.setString(11, encryptedValues.get(9));
-						toucheStatement.setString(12, encryptedValues.get(10));
-						toucheStatement.setString(13, encryptedValues.get(11));
-						toucheStatement.setString(14, encryptedValues.get(12));
-						toucheStatement.setString(15, encryptedValues.get(13));
-						toucheStatement.setString(16, encryptedValues.get(14));
-						toucheStatement.executeQuery();
+						int k=0;
+						for (k=0; k<encryptedValues.size();k++){
+							toucheStatement.setString(k+2,encryptedValues.get(k));
+						}
+						
+						while(k+2<17){
+							toucheStatement.setString(k+2, Encryption.encryptText("NULL", s.getPassword()));
+							k++;
+						}
+
+						toucheStatement.executeUpdate();
 					}
 				}
 		} catch (SQLException e) {
@@ -195,7 +194,7 @@ public class Insert {
 			e.printStackTrace();
 		}
        
-        
+        System.out.println("Session ajoutée");
        
 	}
 }

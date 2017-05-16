@@ -3,20 +3,14 @@ import java.util.Scanner;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
+import Encryption.Encryption;
+
 public class Test {
 	
 	public static void main (String[] args){
-		String s1 = "";
-		String s2 = "";
-		String s3 = "";
-		Scanner sc = new Scanner (System.in);
-		while (!(s1.equals("exit"))){
-			s1 = sc.nextLine();
-			s2 = sc.nextLine();
-			s3 = sc.nextLine();
-			String password = generatePassword(s1,s2,s3);
-			System.out.println(password);
-		}
+		System.out.println(Encryption.encryptText("test","password"));
+		System.out.println(Encryption.decryptText(Encryption.encryptText("test","password"),"password"));
+		
 	}
 	
 	public static  String generatePassword(String login, String masterPassword, String domaine){

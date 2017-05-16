@@ -25,9 +25,10 @@ public class Main {
 	public static SessionManager sessionManager;
 	
 	public static void main(String[] args) throws InterruptedException{
+		sessionManager =new SessionManager();
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		MenuGUI mg = new MenuGUI(); 
-		sessionManager =new SessionManager();
+		
 		try {
 			// initialisation du FileWriter
 			resultats = new FileWriter("resultats.csv");

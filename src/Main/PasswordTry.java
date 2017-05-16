@@ -10,11 +10,14 @@ public class PasswordTry {
 	private String domain;
 	private String password;
 	
-<<<<<<< HEAD
+
+	@SuppressWarnings("unchecked")
 	public PasswordTry(ArrayList <KeyStroke> keys){
-=======
+		this.keys=(ArrayList<KeyStroke>) keys.clone();
+	}
+
 	public PasswordTry(ArrayList <KeyStroke> keys, boolean success){
->>>>>>> origin/Analyse
+
 		this.keys = keys;
 	}
 	
