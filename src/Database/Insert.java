@@ -68,7 +68,12 @@ public class Insert {
 			e.printStackTrace();
 			System.out.println("Erreur lors de l'ajout du compte");
 		}
-       
+       try {
+		conn.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
        
        
 	}
@@ -196,5 +201,11 @@ public class Insert {
        
         System.out.println("Session ajoutée");
        
+        try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -13,8 +13,8 @@ public class PasswordGetter {
 		boolean correctAccount = false;
 		try {
 			while (rs.next()){
-				if(Encryption.Encryption.checkPassword(rs.getString("masterPsswd"), password)){
-					if(login.equals(Encryption.Encryption.decryptText(rs.getString("userId"), password))){
+				if(Encryption.Encryption.checkPassword(rs.getString("masterPassword"), password)){
+					if(login.hashCode() == Integer.parseInt(rs.getString("Login"))){
 						correctAccount = true;
 						passwordLength =(int)(Encryption.Encryption.decryptValue(rs.getString("passwordLength"), password));
 					}

@@ -1,5 +1,7 @@
 package Session;
 
+import java.awt.Toolkit;
+import java.awt.im.InputContext;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,7 +19,7 @@ public class Session {
 	private String domain;
 	private String password;
 	private boolean success;
-	private String local = "NULL";
+	private String local;
 	
 
 	private ArrayList <PasswordTry> passwordTries; // liste des essais de mot de passe ayant eu lieu durant le tamps de la session
@@ -31,6 +33,8 @@ public class Session {
 		running = true;
 		timeUpdater = new TimeUpdater(this);
 		passwordTries = new ArrayList<PasswordTry>();
+		InputContext ic = InputContext.getInstance();
+		local = ic.getLocale().getLanguage()+","+ic.getLocale().getCountry();
 	}
 		
 	

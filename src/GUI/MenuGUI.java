@@ -23,7 +23,7 @@ public class MenuGUI extends JFrame {
 	JButton request;
 	BDGUI bdGui;
 	PasswordPane passwordPane;
-	LoadingPane loadingPane;
+
 	
 	GetPasswordGUI getPsswdPane;
 	
@@ -46,8 +46,6 @@ public class MenuGUI extends JFrame {
 
 		mainPane.add(menuPane);
 		
-		loadingPane = new LoadingPane(this);
-		mainPane.add(loadingPane);
 		
 		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, menuPane, 0, SpringLayout.EAST, mainPane);
@@ -78,10 +76,6 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.SOUTH, createAccountPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, createAccountPane, 0, SpringLayout.NORTH, mainPane);
 		
-		layout.putConstraint(SpringLayout.WEST, loadingPane, 0, SpringLayout.WEST, mainPane);
-		layout.putConstraint(SpringLayout.EAST, loadingPane, 0, SpringLayout.EAST, mainPane);
-		layout.putConstraint(SpringLayout.SOUTH, loadingPane, 0, SpringLayout.SOUTH, mainPane);
-		layout.putConstraint(SpringLayout.NORTH, loadingPane, 0, SpringLayout.NORTH, mainPane);
 		
 		
 		setContentPane(mainPane);
@@ -122,15 +116,11 @@ public class MenuGUI extends JFrame {
 	}
 	
 	public void showMenuPane(){
+		if(bdGui.isVisible()){
+			bdGui.setVisible(false);
+		}
 		menuPane.setVisible(true);
 	}
-	
-	public void showLoadingPane(){
-		loadingPane.setVisible(true);
-	}
-	
-	public void hideLoadingPane(){
-		loadingPane.setVisible(false);
-	}
+
 	
 }
