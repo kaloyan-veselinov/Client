@@ -1,9 +1,10 @@
-package Main;
+package KeystrokeMeasuring;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import Encryption.Encryption;
+import Main.Password;
 
 public abstract class Key {
 	private long timeUp, timeDown;

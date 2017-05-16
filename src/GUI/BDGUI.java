@@ -12,12 +12,12 @@ import javax.swing.JPasswordField;
 import javax.swing.SpringLayout;
 
 import Database.Insert;
+import KeystrokeMeasuring.KeyStrokeListener;
+import KeystrokeMeasuring.TimingManager;
 import Main.Entry;
-import Main.KeyStrokeListener;
 import Main.Main;
 import Main.Password;
 import Main.PasswordGetter;
-import Main.TimingManager;
 
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
 									//(qui pour le moment est juste un fichier csv)

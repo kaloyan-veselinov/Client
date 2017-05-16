@@ -1,8 +1,9 @@
-package Main;
+package KeystrokeMeasuring;
 
 import java.util.ArrayList;
 
 import Encryption.Encryption;
+import Main.Password;
 
 public class Modifier extends Key {
 	private int location;

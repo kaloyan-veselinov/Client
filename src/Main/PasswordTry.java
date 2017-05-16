@@ -2,6 +2,8 @@ package Main;
 
 import java.util.ArrayList;
 
+import KeystrokeMeasuring.KeyStroke;
+
 public class PasswordTry {
 	
 	private ArrayList <KeyStroke> keys;

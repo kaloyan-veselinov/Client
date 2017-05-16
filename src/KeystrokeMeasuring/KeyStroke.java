@@ -1,8 +1,9 @@
-package Main;
+package KeystrokeMeasuring;
 
 import java.util.ArrayList;
 
 import Encryption.Encryption;
+import Main.Password;
 
 public class KeyStroke extends Key {
 	

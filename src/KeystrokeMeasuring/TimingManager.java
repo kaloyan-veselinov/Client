@@ -1,10 +1,14 @@
-package Main;
+package KeystrokeMeasuring;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import Main.Main;
+import Main.Password;
+import Main.PasswordTry;
 
 public class TimingManager implements KeyListener {
 	//Params de compte
