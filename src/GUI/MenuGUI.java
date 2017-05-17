@@ -15,6 +15,8 @@ public class MenuGUI extends JFrame {
 	public JPanel mainPane;
 	public MenuPane menuPane;
 	public AddAccountGUI createAccountPane; // panel permattant la creation d'un nouveau compte
+	public CreateAccountSystem createAccountSystem; //panel qui permet de creer un compte systeme
+	public FirstPanel firstPanel;
 	JPanel requestPsswdPane; // panel permettant la recuperation d'un mot de passe associe a un compte
 	public SpringLayout layout; // le layout
 	// deux boutons pour choisir entre creer un compte et recuperer un mot de passe
@@ -132,4 +134,11 @@ public class MenuGUI extends JFrame {
 		loadingPane.setVisible(false);
 	}
 	
+	public void showCreateAccountSystem(){
+		createAccountSystem.setVisible(true);
+	}
+	
+	public void hideFirstPanel(){
+		firstPanel.setVisible(false);
+	}
 }

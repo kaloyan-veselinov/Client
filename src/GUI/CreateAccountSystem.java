@@ -3,18 +3,24 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import com.mysql.jdbc.Connection;
+
+import Database.Insert;
 import Main.Main;
 import Main.Password;
 
-public class CreateAccount extends JPanel{
+public class CreateAccountSystem extends JPanel{
 	
 	private JLabel idLabel;
 	private JLabel passwordLabel1;
@@ -29,7 +35,7 @@ public class CreateAccount extends JPanel{
 	// variable verifiant la correspondance des mots de passe
 		boolean psswdMatch;
 	
-	public CreateAccount (final MenuGUI f){
+	public CreateAccountSystem (final MenuGUI f){
 		setBackground(Color.DARK_GRAY);
 		SpringLayout layout = f.layout;
 		setLayout(layout);
@@ -56,13 +62,21 @@ public class CreateAccount extends JPanel{
 				psswdMatch = Main.passwordMatch(passwordField1.getPassword(), passwordField2.getPassword())	;
 				String pswd = new String(passwordField1.getPassword());   
 				if (psswdMatch == true && (pswd.equals("")==false)){   //on verifie que les mdp sont les memes et qu'ils sont non nuls
-					Main.p = new Password (passwordField2.getPassword(),idField.getText());
-					Main.userId = idField.getText();
+					java.sql.Connection conn = null;
+					try {
+						conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					Insert.addCompteSystem(idField.getText(), pswd, conn);
 					
 					setVisible(false);
 				}else{
+					JOptionPane.showMessageDialog(null, "Your passwords are diferent, try again");
 					passwordField1.setText("");
 					passwordField2.setText("");
+					
 				}
 			}
 		});
@@ -100,15 +114,9 @@ public class CreateAccount extends JPanel{
 		
 		
 		
-		setVisible(false);
+		setVisible(true);
 		
 	}
 	
-	public void error (){
-		
-	}
-	public void sendInfos (){
-		
-	}
 
 }

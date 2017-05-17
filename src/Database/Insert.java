@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
+import javax.swing.JOptionPane;
+
 import Main.Entry;
 
 
@@ -99,8 +101,64 @@ public class Insert {
 	}
 		
 	
+	public static String addCompteSystem(String identifiant, String password,Connection conn){ 
+		
+		PreparedStatement insertAccountSystem = null;
+		Statement ps = null;
+		ResultSet res = null;
+		boolean existsYet = false;
+
+		String getLogin = "SELECT Login FROM CompteSystem";
+        
+        try { //on verifie que la cle (login) n existe pas deja
+			ps = conn.createStatement();
+			res =ps.executeQuery(getLogin);
+			while(res.next()){
+				existsYet  = res.getString("Login").equals(identifiant);   //true si identifant existe deja dans la BD
+				if(existsYet==true){
+					break;
+				}
+			}
+			
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+        String insertCompteSystem = "INSERT INTO CompteSystem VALUES (\""+identifiant+
+            	"\","+password+"\");";
+        
+        try {
+        	if (existsYet==false){					//cree le compte si l identifiant n existe pas deja
+        		insertAccountSystem = conn.prepareStatement(insertCompteSystem);  
+        	}
+        	else{
+        		JOptionPane.showMessageDialog(null, "This id is already used, try again");  //sinon affiche un message d erreur
+        	}
+		} catch (SQLException e1) {
+			System.err.println("Could not create prepared statements");
+
+			e1.printStackTrace();
+			System.exit(0);
+
+		}
+        System.out.println("Statements ready...");
+
+        try {
+        	insertAccountSystem.executeUpdate();
+			
+		} catch (SQLException e1) {
+			System.err.println("Could not execute updates");
+			e1.printStackTrace();
+			System.exit(0);
+
+		}
+        System.out.println("Done...");
+        return "Compte ajouté";
+
+	}
 	
-	public static  int  addMesure(Entry e,int ID,Connection conn){
+	public static  int  addMesure(Entry e,int ID,Connection conn){ 
 		PreparedStatement insertEntry=null;
 		Statement getId = null;
 		ResultSet res = null;

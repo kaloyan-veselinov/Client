@@ -8,7 +8,7 @@ import org.jasypt.util.text.StrongTextEncryptor;
 
 public class Encryption {
 	
-	public static String encryptPassword(String plain){
+	public static String encryptPassword(String plain){ //chiffre mdp
 		StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
 		return encryptor.encryptPassword(plain);
 	}
@@ -31,7 +31,7 @@ public class Encryption {
 		return decrypted;
 	}
 	
-	public static  String encryptText (String plainText, String password){
+	public static  String encryptText (String plainText, String password){ //chiffre du texte, parametres texte non chifrre et mdp
 		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
 		encryptor.setPassword(password);
 		return encryptor.encrypt(plainText);
