@@ -23,7 +23,7 @@ public class PasswordPane extends JPanel {
 	SpringLayout layout;
 	int passwordLength;
 	
-	public PasswordPane(String generatedPassword,MenuGUI f){
+	public PasswordPane(String generatedPassword,final MenuGUI f){
 		super();
 		this.passwordLength = passwordLength;
 		layout = (SpringLayout) f.mainPane.getLayout();
@@ -31,7 +31,7 @@ public class PasswordPane extends JPanel {
 		
 		setBackground(Color.DARK_GRAY);
 		
-		JTextField psswd = new JTextField(generatedPassword);
+		final JTextField psswd = new JTextField(generatedPassword);
 		psswd.setBackground(Color.white);
 		psswd.setForeground(Color.BLACK);
 		psswd.setEditable(false);
@@ -40,7 +40,6 @@ public class PasswordPane extends JPanel {
 		JButton addToClipboard = new JButton ("Ajouter au presse papier");
 		addToClipboard.addActionListener(new ActionListener(){
 
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(psswd.getText()), null);
@@ -52,7 +51,6 @@ public class PasswordPane extends JPanel {
 		JButton ok = new JButton ("Ok");
 		ok.addActionListener(new ActionListener(){
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 				f.showMenuPane();

@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import Main.Main;
+import Main.Password;
 
 public class MenuGUI extends JFrame {
 	
@@ -22,7 +23,7 @@ public class MenuGUI extends JFrame {
 	JButton request;
 	BDGUI bdGui;
 	PasswordPane passwordPane;
-	LoadingPane loadingPane;
+
 	
 	GetPasswordGUI getPsswdPane;
 	
@@ -45,8 +46,6 @@ public class MenuGUI extends JFrame {
 
 		mainPane.add(menuPane);
 		
-		loadingPane = new LoadingPane(this);
-		mainPane.add(loadingPane);
 		
 		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, menuPane, 0, SpringLayout.EAST, mainPane);
@@ -77,10 +76,6 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.SOUTH, createAccountPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, createAccountPane, 0, SpringLayout.NORTH, mainPane);
 		
-		layout.putConstraint(SpringLayout.WEST, loadingPane, 0, SpringLayout.WEST, mainPane);
-		layout.putConstraint(SpringLayout.EAST, loadingPane, 0, SpringLayout.EAST, mainPane);
-		layout.putConstraint(SpringLayout.SOUTH, loadingPane, 0, SpringLayout.SOUTH, mainPane);
-		layout.putConstraint(SpringLayout.NORTH, loadingPane, 0, SpringLayout.NORTH, mainPane);
 		
 		
 		setContentPane(mainPane);
@@ -88,8 +83,8 @@ public class MenuGUI extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	public void initBdGui(String domaine,int passwordLength){
-		bdGui = new BDGUI(Main.p,Main.userId,domaine,passwordLength,this);
+	public void initBdGui(Password p,String domaine,int passwordLength){
+		bdGui = new BDGUI(p,domaine,passwordLength,this);
 		mainPane.add(bdGui);
 		layout.putConstraint(SpringLayout.WEST, bdGui, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, bdGui, 0, SpringLayout.EAST, mainPane);
@@ -121,15 +116,11 @@ public class MenuGUI extends JFrame {
 	}
 	
 	public void showMenuPane(){
+		if(bdGui.isVisible()){
+			bdGui.setVisible(false);
+		}
 		menuPane.setVisible(true);
 	}
-	
-	public void showLoadingPane(){
-		loadingPane.setVisible(true);
-	}
-	
-	public void hideLoadingPane(){
-		loadingPane.setVisible(false);
-	}
+
 	
 }

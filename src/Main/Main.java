@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 
 import GUI.BDGUI;
 import GUI.MenuGUI;
+import Session.SessionManager;
 import Warnings.SimpleWarning;
 
 
@@ -21,10 +22,13 @@ public class Main {
 	public static FileWriter resultats;	//permet d'ecrire les resultats dans un fichier resultats.csv
 	public static PrintWriter out;	//Complement du file writter (pas forcement utile d'ailleur)
 	public static double [][] times; //contient les valeurs de temps separant chaque touche pour les differents essais
+	public static SessionManager sessionManager;
 	
 	public static void main(String[] args) throws InterruptedException{
+		sessionManager =new SessionManager();
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		MenuGUI mg = new MenuGUI(); 
+		
 		try {
 			// initialisation du FileWriter
 			resultats = new FileWriter("resultats.csv");

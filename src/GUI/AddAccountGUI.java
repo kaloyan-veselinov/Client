@@ -86,6 +86,10 @@ public class AddAccountGUI extends JPanel {
 						initPsswd.setVisible(false);
 						Main.p = new Password (txt2.getPassword(),userIdField.getText());
 						Main.userId = userIdField.getText();
+						f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
+						Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
+						Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
+						Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
 						setVisible(false);
 					}else{ // sinon on recommence
 						SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORDS_MISMATCH);
@@ -108,6 +112,9 @@ public class AddAccountGUI extends JPanel {
 				
 			}
 		});
+		txt1.addKeyListener(userIdField.getKeyListeners()[0]);
+		txt2.addKeyListener(userIdField.getKeyListeners()[0]);
+		domainField.addKeyListener(userIdField.getKeyListeners()[0]);
 		// ici meme chose qu'avec la touche entre mais avec un bouton 
 		final JButton button1 = new JButton("Create Account");
 		button1.setSize(15,10);
@@ -117,7 +124,10 @@ public class AddAccountGUI extends JPanel {
 				if (psswdMatch == true){
 					Main.p = new Password (txt2.getPassword(),userIdField.getText());
 					Main.userId = userIdField.getText();
-					 f.initBdGui(domainField.getText(),passwordLengthSlider.getValue());
+					f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
+					Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
+					Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
+					Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
 
 					setVisible(false);
 				}else{
@@ -133,7 +143,6 @@ public class AddAccountGUI extends JPanel {
 		passwordLengthField = new JTextField("20");
 		passwordLengthField.addActionListener(new ActionListener(){
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
 			}
@@ -142,13 +151,11 @@ public class AddAccountGUI extends JPanel {
 		
 		passwordLengthField.addFocusListener(new FocusListener(){
 
-			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void focusLost(FocusEvent e) {
 				passwordLengthSlider.setValue(Integer.parseInt(passwordLengthField.getText()));				
 
@@ -159,7 +166,6 @@ public class AddAccountGUI extends JPanel {
 		passwordLengthSlider = new JSlider(8,50,20);
 		passwordLengthSlider.addChangeListener(new ChangeListener(){
 
-			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				passwordLengthField.setText(String.valueOf(passwordLengthSlider.getValue()));
 			}

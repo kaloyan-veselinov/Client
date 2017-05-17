@@ -16,12 +16,7 @@ public class Password {
 	}
 	
 	public String toString(){
-		String s = "";
-		for (int i=0; i<psswd.length; i++){
-			s+=psswd[i];
-		}
-		
-		return s;
+		return new String(getPassword());
 	}
 
 	public String getUserID() {

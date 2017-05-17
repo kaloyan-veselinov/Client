@@ -1,7 +1,5 @@
 package Encryption;
 
-import java.math.BigDecimal;
-
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
@@ -31,6 +29,32 @@ public class Encryption {
 		return decrypted;
 	}
 	
+	public static String encryptLong (Long value, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(value.toString());
+	}
+	
+	public static long decryptLong (String encryptedValue, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		Long decrypted = Long.valueOf(encryptor.decrypt(encryptedValue));
+		return decrypted;
+	}
+	
+	public static String encryptInt (Integer value, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(value.toString());
+	}
+	
+	public static int decryptInt (String encryptedValue, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor();
+		encryptor.setPassword(password);
+		int decrypted = Integer.valueOf(encryptor.decrypt(encryptedValue));
+		return decrypted;
+	}
+	
 	public static  String encryptText (String plainText, String password){
 		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
 		encryptor.setPassword(password);
@@ -48,5 +72,22 @@ public class Encryption {
 		encryptor.setPassword(masterPassword);
 		return encryptor.encrypt(password);
 
+	}
+	
+	public static String encryptBoolean(boolean b,String password){
+		String s = "";
+		s= s+b;
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		return encryptor.encrypt(s);
+	
+	}
+	
+	public static boolean decryptBoolean(String s, String password){
+		BasicTextEncryptor encryptor = new BasicTextEncryptor ();
+		encryptor.setPassword(password);
+		String decrypted = encryptor.decrypt(s);
+		boolean b = Boolean.parseBoolean(decrypted);
+		return b;
 	}
 }
