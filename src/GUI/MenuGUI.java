@@ -14,7 +14,7 @@ public class MenuGUI extends JFrame {
 	
 	public JPanel mainPane;
 	public MenuPane menuPane;
-	public AddAccountGUI createAccountPane; // panel permattant la creation d'un nouveau compte
+	public AddAccountGUI createAccountPane; // panel permettant la creation d'un nouveau compte
 	public CreateAccountSystem createAccountSystem; //panel qui permet de creer un compte systeme
 	public FirstPanel firstPanel;
 	JPanel requestPsswdPane; // panel permettant la recuperation d'un mot de passe associe a un compte
@@ -50,11 +50,6 @@ public class MenuGUI extends JFrame {
 		loadingPane = new LoadingPane(this);
 		mainPane.add(loadingPane);
 		
-		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
-		layout.putConstraint(SpringLayout.EAST, menuPane, 0, SpringLayout.EAST, mainPane);
-		layout.putConstraint(SpringLayout.SOUTH, menuPane, 0, SpringLayout.SOUTH, mainPane);
-		layout.putConstraint(SpringLayout.NORTH, menuPane, 0, SpringLayout.NORTH, mainPane);
-		
 		createAccountPane = new AddAccountGUI(menuPane,this);
 		
 		mainPane.add(createAccountPane);
@@ -62,6 +57,11 @@ public class MenuGUI extends JFrame {
 		getPsswdPane = new GetPasswordGUI(menuPane,this);
 		mainPane.add(getPsswdPane);
 
+		createAccountSystem = new CreateAccountSystem(this);
+		mainPane.add(createAccountSystem);
+		
+		firstPanel = new FirstPanel(this);
+		mainPane.add(firstPanel);
 		
 		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, menuPane, 0, SpringLayout.EAST, mainPane);
@@ -83,6 +83,16 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.EAST, loadingPane, 0, SpringLayout.EAST, mainPane);
 		layout.putConstraint(SpringLayout.SOUTH, loadingPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, loadingPane, 0, SpringLayout.NORTH, mainPane);
+		
+		layout.putConstraint(SpringLayout.WEST, createAccountSystem, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, createAccountSystem, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, createAccountSystem, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, createAccountSystem, 0, SpringLayout.NORTH, mainPane);
+		
+		layout.putConstraint(SpringLayout.WEST, firstPanel, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, firstPanel, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, firstPanel, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, firstPanel, 0, SpringLayout.NORTH, mainPane);
 		
 		
 		setContentPane(mainPane);
@@ -140,5 +150,9 @@ public class MenuGUI extends JFrame {
 	
 	public void hideFirstPanel(){
 		firstPanel.setVisible(false);
+	}
+	
+	public void showAccountPane(){
+		createAccountPane.setVisible(true);
 	}
 }

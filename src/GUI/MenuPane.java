@@ -57,7 +57,7 @@ public class MenuPane extends JPanel{
 		layout.putConstraint(SpringLayout.WEST, request, 10, SpringLayout.HORIZONTAL_CENTER, this);
 
 		
-		
+		this.setVisible(false);
 	}
 	
 }

@@ -17,34 +17,8 @@ import Main.Entry;
 public class Insert {
 	
 	public static void addEntry(Entry e){
-		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
+		Connection conn = ConnectionBD.connect();
+		
 		int accountId = addCompte( e,conn);
 		int mesureId = addMesure(e,accountId,conn);
 		addChar(e,mesureId,conn);
@@ -101,7 +75,7 @@ public class Insert {
 	}
 		
 	
-	public static String addCompteSystem(String identifiant, String password,Connection conn){ 
+	public static String addCompteSystem(String identifiant, String password){ 
 		
 		PreparedStatement insertAccountSystem = null;
 		Statement ps = null;
@@ -109,6 +83,8 @@ public class Insert {
 		boolean existsYet = false;
 
 		String getLogin = "SELECT Login FROM CompteSystem";
+		
+		Connection conn = ConnectionBD.connect();
         
         try { //on verifie que la cle (login) n existe pas deja
 			ps = conn.createStatement();
@@ -126,7 +102,7 @@ public class Insert {
 		}
 
         String insertCompteSystem = "INSERT INTO CompteSystem VALUES (\""+identifiant+
-            	"\","+password+"\");";
+            	"\",\""+password+"\");";
         
         try {
         	if (existsYet==false){					//cree le compte si l identifiant n existe pas deja
