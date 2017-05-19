@@ -1,12 +1,10 @@
-/Main/
-<<<<<<< HEAD
-/GUI/
-=======
+/Analyse/
 /Database/
->>>>>>> origin/Analyse
-/Session/
 /Encryption/
-/Warnings/
+/GUI/
 /GUIElements/
 /KeystrokeMeasuring/
-/Analyse/
+/Main/
+/Session/
+/Test.class
+/Warnings/
