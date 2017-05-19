@@ -13,6 +13,7 @@ import javax.swing.SpringLayout;
 public class SimpleWarning extends JFrame implements ActionListener{
 	
 	public static final int PASSWORDS_MISMATCH = 0;
+	public static final int PASSWORD_TOO_SHORT = 1;
 	private SpringLayout layout;
 	
 	public SimpleWarning (int type){
@@ -42,6 +43,11 @@ public class SimpleWarning extends JFrame implements ActionListener{
 		switch (type) {
 		case PASSWORDS_MISMATCH :
 			txt.setText("Passwords don't match, try again.");
+			break;
+			
+		case PASSWORD_TOO_SHORT:
+			txt.setText("<html>Le mot de passe est trop court,<br> longueur minimale : 8<html>");
+			break;
 		}
 		
 		

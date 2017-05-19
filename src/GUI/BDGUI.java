@@ -169,7 +169,9 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		Insert.addCompte(p, domaine,passwordLength);
 		String generatedPassword = PasswordGetter.generatePassword(p.getUserID(),p.toString(),domaine,passwordLength);
 		Main.sessionManager.endCurrentSession();
-;
+		f.showPasswordPane(generatedPassword);
+		f.hideBdGui();
+
 	}
 	
 	private boolean checkSession(){

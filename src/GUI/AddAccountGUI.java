@@ -83,14 +83,18 @@ public class AddAccountGUI extends JPanel {
 					// on verifie que les deux mots de passe correspondent
 					psswdMatch = Main.passwordMatch(txt1.getPassword(),txt2.getPassword());
 					if(psswdMatch == true){ //si oui on passe a la suite
-						initPsswd.setVisible(false);
-						Main.p = new Password (txt2.getPassword(),userIdField.getText());
-						Main.userId = userIdField.getText();
-						f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
-						Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
-						Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
-						Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
-						setVisible(false);
+						if(txt1.getPassword().length>=8){
+							initPsswd.setVisible(false);
+							Main.p = new Password (txt2.getPassword(),userIdField.getText());
+							Main.userId = userIdField.getText();
+							f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
+							Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
+							Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
+							Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
+							setVisible(false);
+						}else {
+							SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORD_TOO_SHORT);
+						}
 					}else{ // sinon on recommence
 						SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORDS_MISMATCH);
 
