@@ -17,6 +17,7 @@ public class MenuGUI extends JFrame {
 	public AddAccountGUI createAccountPane; // panel permettant la creation d'un nouveau compte
 	public CreateAccountSystem createAccountSystem; //panel qui permet de creer un compte systeme
 	public FirstPanel firstPanel;
+	public ConnectionAccountSystem connectionAccountSystem; 
 	JPanel requestPsswdPane; // panel permettant la recuperation d'un mot de passe associe a un compte
 	public SpringLayout layout; // le layout
 	// deux boutons pour choisir entre creer un compte et recuperer un mot de passe
@@ -63,6 +64,9 @@ public class MenuGUI extends JFrame {
 		firstPanel = new FirstPanel(this);
 		mainPane.add(firstPanel);
 		
+		connectionAccountSystem = new ConnectionAccountSystem(this);
+		mainPane.add(connectionAccountSystem);
+		
 		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, menuPane, 0, SpringLayout.EAST, mainPane);
 		layout.putConstraint(SpringLayout.SOUTH, menuPane, 0, SpringLayout.SOUTH, mainPane);
@@ -93,6 +97,11 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.EAST, firstPanel, 0, SpringLayout.EAST, mainPane);
 		layout.putConstraint(SpringLayout.SOUTH, firstPanel, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, firstPanel, 0, SpringLayout.NORTH, mainPane);
+		
+		layout.putConstraint(SpringLayout.WEST, connectionAccountSystem, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, connectionAccountSystem, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, connectionAccountSystem, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, connectionAccountSystem, 0, SpringLayout.NORTH, mainPane);
 		
 		
 		setContentPane(mainPane);
@@ -154,5 +163,13 @@ public class MenuGUI extends JFrame {
 	
 	public void showAccountPane(){
 		createAccountPane.setVisible(true);
+	}
+	
+	public void showConnectionAccountSystem (){
+		connectionAccountSystem.setVisible(true);
+	}
+	
+	public void hideConnectionAccountSystem(){
+		connectionAccountSystem.setVisible(false);
 	}
 }

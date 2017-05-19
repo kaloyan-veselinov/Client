@@ -41,8 +41,11 @@ public class CreateAccountSystem extends JPanel{
 		setLayout(layout);
 		
 		idLabel = new JLabel ("Id :");
-		passwordLabel1 = new JLabel ("Password");
-		passwordLabel2 = new JLabel ("Password");
+		idLabel.setForeground(Color.white);
+		passwordLabel1 = new JLabel ("Password :");
+		passwordLabel1.setForeground(Color.white);
+		passwordLabel2 = new JLabel ("Password :");
+		passwordLabel2.setForeground(Color.white);
 		
 		this.add(idLabel);
 		this.add(passwordLabel1);
@@ -62,6 +65,7 @@ public class CreateAccountSystem extends JPanel{
 				psswdMatch = Main.passwordMatch(passwordField1.getPassword(), passwordField2.getPassword())	;
 				String pswd = new String(passwordField1.getPassword());   
 				if (psswdMatch == true && (pswd.equals("")==false)){   //on verifie que les mdp sont les memes et qu'ils sont non nuls
+					//VERIFIER QUE L ID N EXISTE PAS : CF REQUEST
 					Insert.addCompteSystem(idField.getText(), pswd);
 					setVisible(false);
 					f.showAccountPane();
@@ -80,10 +84,10 @@ public class CreateAccountSystem extends JPanel{
 		layout.putConstraint(SpringLayout.NORTH, idLabel, 10, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, idLabel, 10, SpringLayout.WEST, this);
 		
-		//layout.putConstraint(SpringLayout.NORTH, passwordLabel1, 10, SpringLayout.SOUTH, idLabel);
+
 		layout.putConstraint(SpringLayout.WEST, passwordLabel1, 10, SpringLayout.WEST, this);
 		
-		//layout.putConstraint(SpringLayout.NORTH, passwordLabel2, 10, SpringLayout.SOUTH, passwordLabel1);
+
 		layout.putConstraint(SpringLayout.WEST, passwordLabel2, 10, SpringLayout.WEST, this);
 
 		
@@ -106,9 +110,6 @@ public class CreateAccountSystem extends JPanel{
 		layout.putConstraint(SpringLayout.WEST, connexion, 150, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.EAST, connexion, -150, SpringLayout.EAST, this);
 		
-		
-		//layout.putConstraint(SpringLayout.VERTICAL_CENTER, passwordLabel1, 10, SpringLayout.VERTICAL_CENTER, passwordField1);
-		//layout.putConstraint(SpringLayout.VERTICAL_CENTER, passwordLabel2, 10, SpringLayout.VERTICAL_CENTER, passwordField2);
 		
 		layout.putConstraint(SpringLayout.SOUTH, passwordLabel1, 0, SpringLayout.SOUTH, passwordField1);
 		layout.putConstraint(SpringLayout.SOUTH, passwordLabel2, 0, SpringLayout.SOUTH, passwordField2);

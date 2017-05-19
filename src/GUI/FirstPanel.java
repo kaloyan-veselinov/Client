@@ -30,10 +30,11 @@ public class FirstPanel extends JPanel{
 		
 		this.add(createAccount);
 		
-		connection = new JButton ("Connection");
+		connection = new JButton ("Connexion");
 		connection.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				frame.hideFirstPanel();
+				frame.showConnectionAccountSystem();
 			}
 		});
 		
