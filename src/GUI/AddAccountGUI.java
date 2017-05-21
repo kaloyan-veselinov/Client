@@ -93,10 +93,10 @@ public class AddAccountGUI extends JPanel {
 							Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
 							setVisible(false);
 						}else {
-							SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORD_TOO_SHORT);
+							SimpleWarning error = new SimpleWarning("Mot de passe trop court \n min: 8");
 						}
 					}else{ // sinon on recommence
-						SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORDS_MISMATCH);
+						SimpleWarning error = new SimpleWarning("Les mots de passe ne correspondent pas");
 
 						txt1.setText("");
 						txt2.setText("");

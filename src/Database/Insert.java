@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import Main.Entry;
+import Main.Main;
+import javax.swing.JOptionPane;
 import Main.Password;
 import Session.Session;
 import Encryption.Encryption;
@@ -58,7 +60,7 @@ public class Insert {
         System.out.println("Connected...");
         
        String compte = "INSERT INTO Compte (Login,masterPassword,domainHash,passwordLength,CompteSystem_Login) values (\""+eLogin+"\",\""+
-    		   ePassword+"\",+"+hDomain+",\""+ePasswordLength+"\",\"thisisatest\");";
+    		   ePassword+"\",+"+hDomain+",\""+ePasswordLength+"\",\""+Main.currentSystemAccount.getLogin().hashCode()+"\");";
        
        try {
 			Statement compteStatement = conn.createStatement();
@@ -106,7 +108,8 @@ public class Insert {
 		
 		String touche = "INSERT INTO Touche (Entree_Index,timeUp,timeDown,pressure,modifierSequence,"
 				+ "shiftUp,shiftDown,shiftLocation,ctrlUp,ctrlDown,ctrlLocation,altUp,altDown,"
-				+ "altLocation,capslockUp,capsLockDown) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+				+ "altLocation,capslockUp,capsLockDown) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); ";
+		
 		
 		
 		Connection conn = null;
@@ -208,4 +211,68 @@ public class Insert {
 			e.printStackTrace();
 		}
 	}
+public static String addCompteSystem(String identifiant, String password,Connection conn){ 
+		
+		PreparedStatement insertAccountSystem = null;
+		Statement ps = null;
+		ResultSet res = null;
+		boolean existsYet = false;
+		identifiant = String.valueOf(identifiant.hashCode());
+		password = Encryption.encryptPassword(password);
+
+		String getLogin = "SELECT Login FROM CompteSystem";
+        
+        try { //on verifie que la cle (login) n existe pas deja
+			ps = conn.createStatement();
+			res =ps.executeQuery(getLogin);
+			while(res.next()){
+				existsYet  = res.getString("Login").equals(identifiant);   //true si identifant existe deja dans la BD
+				if(existsYet==true){
+					break;
+				}
+			}
+			
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+        
+        if(!(existsYet)){
+
+	        String insertCompteSystem = "INSERT INTO CompteSystem VALUES (\""+identifiant+
+	            	"\",\""+password+"\");";
+	        
+	        try {
+	        	if (existsYet==false){					//cree le compte si l identifiant n existe pas deja
+	        		insertAccountSystem = conn.prepareStatement(insertCompteSystem);  
+	        	}
+	        	else{
+	        		JOptionPane.showMessageDialog(null, "This id is already used, try again");  //sinon affiche un message d erreur
+	        	}
+			} catch (SQLException e1) {
+				System.err.println("Could not create prepared statements");
+	
+				e1.printStackTrace();
+				System.exit(0);
+	
+			}
+	        System.out.println("Statements ready...");
+	
+	        try {
+	        	insertAccountSystem.executeUpdate();
+				
+			} catch (SQLException e1) {
+				System.err.println("Could not execute updates");
+				e1.printStackTrace();
+				System.exit(0);
+	
+			}
+	        System.out.println("Done...");
+	        return "Compte ajouté";
+        }
+        return "Une erreur s'est produite";
+
+	}
+
+	
 }

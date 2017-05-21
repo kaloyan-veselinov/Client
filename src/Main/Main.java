@@ -23,6 +23,7 @@ public class Main {
 	public static PrintWriter out;	//Complement du file writter (pas forcement utile d'ailleur)
 	public static double [][] times; //contient les valeurs de temps separant chaque touche pour les differents essais
 	public static SessionManager sessionManager;
+	public static SystemAccount currentSystemAccount;
 	
 	public static void main(String[] args) throws InterruptedException{
 		sessionManager =new SessionManager();

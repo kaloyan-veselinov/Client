@@ -19,6 +19,7 @@ public class MenuPane extends JPanel{
 		setLayout(layout);
 		create = new JButton ("Create a new account");
 		request = new JButton ("get an existing password");
+		setVisible(false);
 		
 		this.add(create);
 		this.add(request);

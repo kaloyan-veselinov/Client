@@ -19,10 +19,13 @@ public class MenuGUI extends JFrame {
 	JPanel requestPsswdPane; // panel permettant la recuperation d'un mot de passe associe a un compte
 	public SpringLayout layout; // le layout
 	// deux boutons pour choisir entre creer un compte et recuperer un mot de passe
+	public CreateAccountSystem createAccountSystem; //panel qui permet de creer un compte systeme
+	public FirstPanel firstPanel;
 	JButton create;
 	JButton request;
 	BDGUI bdGui;
 	PasswordPane passwordPane;
+	SystemConnectionPane systemConnectionPane;
 
 	
 	GetPasswordGUI getPsswdPane;
@@ -39,7 +42,7 @@ public class MenuGUI extends JFrame {
 		mainPane = new JPanel();
 		mainPane.setBackground(Color.blue);
 		mainPane.setLayout(layout);
-		setResizable(false);
+		//setResizable(false);
 		
 		menuPane = new MenuPane(this);
 		
@@ -76,11 +79,41 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.SOUTH, createAccountPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, createAccountPane, 0, SpringLayout.NORTH, mainPane);
 		
+		firstPanel = new FirstPanel(this); 
+		mainPane.add(firstPanel);
 		
+		layout.putConstraint(SpringLayout.WEST, firstPanel, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, firstPanel, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, firstPanel, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, firstPanel, 0, SpringLayout.NORTH, mainPane);
+		
+		createAccountSystem = new CreateAccountSystem(this);
+		mainPane.add(createAccountSystem);
+		
+		layout.putConstraint(SpringLayout.WEST, createAccountSystem, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, createAccountSystem, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, createAccountSystem, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, createAccountSystem, 0, SpringLayout.NORTH, mainPane);
+		
+		systemConnectionPane = new SystemConnectionPane(this);
+		mainPane.add(systemConnectionPane);
+		
+		layout.putConstraint(SpringLayout.WEST, systemConnectionPane, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, systemConnectionPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, systemConnectionPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, systemConnectionPane, 0, SpringLayout.NORTH, mainPane);
 		
 		setContentPane(mainPane);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public void showSystemConnectionPane (){
+		systemConnectionPane.setVisible(true);
+	}
+	
+	public void hideSystemConnectionPane (){
+		systemConnectionPane.setVisible(false);
 	}
 	
 	public void initBdGui(Password p,String domaine,int passwordLength){
@@ -116,11 +149,119 @@ public class MenuGUI extends JFrame {
 	}
 	
 	public void showMenuPane(){
-		if(bdGui.isVisible()){
-			bdGui.setVisible(false);
-		}
+
 		menuPane.setVisible(true);
 	}
+	
+	public void showCreateAccountSystem(){
+		createAccountSystem.setVisible(true);
+	}
+	
+	public void hideCreateAccountSystem(){
+		createAccountSystem.setVisible(false);
+
+	}
+	
+	public void hideFirstPanel(){
+		firstPanel.setVisible(false);
+	}
+
+	public JPanel getMainPane() {
+		return mainPane;
+	}
+
+	public void setMainPane(JPanel mainPane) {
+		this.mainPane = mainPane;
+	}
+
+	public MenuPane getMenuPane() {
+		return menuPane;
+	}
+
+	public void setMenuPane(MenuPane menuPane) {
+		this.menuPane = menuPane;
+	}
+
+	public AddAccountGUI getCreateAccountPane() {
+		return createAccountPane;
+	}
+
+	public void setCreateAccountPane(AddAccountGUI createAccountPane) {
+		this.createAccountPane = createAccountPane;
+	}
+
+	public JPanel getRequestPsswdPane() {
+		return requestPsswdPane;
+	}
+
+	public void setRequestPsswdPane(JPanel requestPsswdPane) {
+		this.requestPsswdPane = requestPsswdPane;
+	}
+
+	public SpringLayout getLayout() {
+		return layout;
+	}
+
+	public void setLayout(SpringLayout layout) {
+		this.layout = layout;
+	}
+
+	public CreateAccountSystem getCreateAccountSystem() {
+		return createAccountSystem;
+	}
+
+	public void setCreateAccountSystem(CreateAccountSystem createAccountSystem) {
+		this.createAccountSystem = createAccountSystem;
+	}
+
+	public FirstPanel getFirstPanel() {
+		return firstPanel;
+	}
+
+	public void setFirstPanel(FirstPanel firstPanel) {
+		this.firstPanel = firstPanel;
+	}
+
+	public JButton getCreate() {
+		return create;
+	}
+
+	public void setCreate(JButton create) {
+		this.create = create;
+	}
+
+	public JButton getRequest() {
+		return request;
+	}
+
+	public void setRequest(JButton request) {
+		this.request = request;
+	}
+
+	public BDGUI getBdGui() {
+		return bdGui;
+	}
+
+	public void setBdGui(BDGUI bdGui) {
+		this.bdGui = bdGui;
+	}
+
+	public PasswordPane getPasswordPane() {
+		return passwordPane;
+	}
+
+	public void setPasswordPane(PasswordPane passwordPane) {
+		this.passwordPane = passwordPane;
+	}
+
+	public GetPasswordGUI getGetPsswdPane() {
+		return getPsswdPane;
+	}
+
+	public void setGetPsswdPane(GetPasswordGUI getPsswdPane) {
+		this.getPsswdPane = getPsswdPane;
+	}
+	
 
 	
 }

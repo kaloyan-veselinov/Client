@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import com.mysql.jdbc.MySQLConnection;
-import com.mysql.jdbc.PreparedStatement;
 
 public class Request {
 	
@@ -149,6 +149,36 @@ public class Request {
 		}
         return res;
         
+	}
+	
+	public static String getPasswordForSystemAccount(String login){
+		
+		login = String.valueOf(login.hashCode());
+		System.out.println(login);
+		
+		String password = "";
+		
+		String request = "SELECT Password FROM CompteSystem WHERE Login = ? LIMIT 1;";
+		
+		Connection conn = ConnectionBD.connect();
+	
+		PreparedStatement statement = null;
+		
+		ResultSet rs = null;
+		
+		try {
+			statement = conn.prepareStatement(request);
+			statement.setString(1, login);
+			rs = statement.executeQuery();
+			rs.next();
+			password = rs.getString(1);
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		return password;
 	}
 
 }
