@@ -1,15 +1,12 @@
 package Database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import Main.Entry;
 import Main.Main;
 import javax.swing.JOptionPane;
 import Main.Password;
@@ -31,40 +28,22 @@ public class Insert {
 		String ePasswordLength = Encryption.encryptInt(passwordLength, p.toString());
 		
 		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
+		
+		conn = ConnectionBD.connect();
         
-       String compte = "INSERT INTO Compte (Login,masterPassword,domainHash,passwordLength,CompteSystem_Login) values (\""+eLogin+"\",\""+
-    		   ePassword+"\",+"+hDomain+",\""+ePasswordLength+"\",\""+Main.currentSystemAccount.getLogin().hashCode()+"\");";
+       
+       String compte = "INSERT INTO Compte (Login,masterPassword,domainHash,passwordLength,CompteSystem_Login) "
+       		+ "values (?,?,?,?,?);";
+       
        
        try {
-			Statement compteStatement = conn.createStatement();
-			compteStatement.executeUpdate(compte);
+			PreparedStatement compteStatement = conn.prepareStatement(compte);
+			compteStatement.setString(1, String.valueOf(eLogin));
+			compteStatement.setString(2, ePassword);
+			compteStatement.setString(3, String.valueOf(hDomain));
+			compteStatement.setString(4, ePasswordLength);
+			compteStatement.setString(5, String.valueOf(Main.currentSystemAccount.getLogin().hashCode()));
+			compteStatement.executeUpdate();
 			System.out.println("Compte ajouté");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -83,10 +62,7 @@ public class Insert {
 	
 	
 	public static  void addSession(Session s){
-		PreparedStatement insertEntry=null;
-		Statement getId = null;
 		ResultSet res = null;
-		int nextId = 0;
 		
 		// on recupere le compte associe a la session
 		
@@ -113,33 +89,7 @@ public class Insert {
 		
 		
 		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
+		conn = ConnectionBD.connect();
                 
         Statement accountStatement;
 		try {
@@ -239,12 +189,14 @@ public static String addCompteSystem(String identifiant, String password,Connect
         
         if(!(existsYet)){
 
-	        String insertCompteSystem = "INSERT INTO CompteSystem VALUES (\""+identifiant+
-	            	"\",\""+password+"\");";
+	        
+	        String insertCompteSystem = "INSERT INTO CompteSystem VALUES (?,?);";
 	        
 	        try {
 	        	if (existsYet==false){					//cree le compte si l identifiant n existe pas deja
 	        		insertAccountSystem = conn.prepareStatement(insertCompteSystem);  
+	        		insertAccountSystem.setString(1, identifiant);
+	        		insertAccountSystem.setString(2, password);
 	        	}
 	        	else{
 	        		JOptionPane.showMessageDialog(null, "This id is already used, try again");  //sinon affiche un message d erreur

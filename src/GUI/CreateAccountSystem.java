@@ -14,14 +14,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import com.mysql.jdbc.Connection;
 
 import Database.Insert;
 import GUIElements.CancelButton;
 import Main.Main;
-import Main.Password;
 import Main.SystemAccount;
 
+@SuppressWarnings("serial")
 public class CreateAccountSystem extends JPanel{
 	
 	private JLabel idLabel;

@@ -6,26 +6,20 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import Encryption.Encryption;
 
+@SuppressWarnings("serial")
 public class PasswordPane extends JPanel {
 	
 	SpringLayout layout;
-	int passwordLength;
 	
 	public PasswordPane(String generatedPassword,final MenuGUI f){
 		super();
-		this.passwordLength = passwordLength;
 		layout = (SpringLayout) f.mainPane.getLayout();
 		setLayout(layout);
 		

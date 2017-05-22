@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+@SuppressWarnings("serial")
 public class MenuPane extends JPanel{
 	
 	JButton create;

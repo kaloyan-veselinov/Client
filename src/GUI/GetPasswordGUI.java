@@ -14,6 +14,7 @@ import javax.swing.SpringLayout;
 import GUIElements.CancelButton;
 import Main.PasswordGetter;
 
+@SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel{
 	
 	private JLabel domainLabel;
@@ -27,6 +28,7 @@ public class GetPasswordGUI extends JPanel{
 	private JButton getPsswd;
 	private JButton cancel;
 	
+	@SuppressWarnings("unused")
 	private MenuGUI f;
 	
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f){

@@ -1,52 +1,28 @@
 package Database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 
-import com.mysql.jdbc.MySQLConnection;
+
+import Main.Main;
 
 public class Request {
 	
 	public static ResultSet getLogin (int i){
 		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
+		conn = ConnectionBD.connect();      
+      
+        String request = "SELECT Login,masterPassword,passwordLength FROM Compte "
+        		+ "WHERE CompteSystem_Login = ? and domainHash = ?;";
 
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
-        
-        String request = "SELECT Login,masterPassword,passwordLength FROM Compte WHERE CompteSystem_Login = \"thisisatest\" and domainHash = "+i+  ";";
-        
-        Statement st;
+        PreparedStatement st;
         ResultSet rs = null;
 		try {
-			st = conn.createStatement();
+			st = conn.prepareStatement(request);
+			st.setString(1, String.valueOf(Main.currentSystemAccount.getLogin().hashCode()));
+			st.setString(2, String.valueOf(i));
 			rs = st.executeQuery(request);
 			conn.close();
 		} catch (SQLException e) {
@@ -62,41 +38,24 @@ public class Request {
 		int loginHash = login.hashCode();
 		int domainHash = domain.hashCode();
 		
-		String request = "Select Entree.Index,Local From Entree Order by Entree.Index DESC Limit 50;";
+		//TODO corriger la requête, elle ne gère pas le succès
+		String request = "Select Entree.Index,Local From Entree,Session,Compte"
+				+ "WHERE Entree.Session_index=Session.index and Session.Compte_Index = Compte.Index"
+				+ "and Compte.Login = ? and Compte.domainHash = ?"
+				+ "and Session.sucess = ?"
+				+ " Order by Entree.Index DESC Limit 50;";
 		
 		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
+		
+		conn=ConnectionBD.connect();
         
         ResultSet res= null;
         
         try {
-			Statement entriesStatement = conn.createStatement();
+			PreparedStatement entriesStatement = conn.prepareStatement(request);
+			entriesStatement.setInt(1, loginHash);
+			entriesStatement.setInt(2, domainHash);
+			entriesStatement.setBoolean(3,true);
 			res = entriesStatement.executeQuery(request);
 			conn.close();
 		} catch (SQLException e) {
@@ -107,41 +66,18 @@ public class Request {
 	}
 	
 	public static ResultSet getTouchesForEntry(int entryIndex){
-		String request = "Select * From Touche Where Touche.Entree_Index = "+entryIndex+";";
+		String request = "Select * From Touche Where Touche.Entree_Index = ?;";
+
 		
 		Connection conn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			System.err.println("Could not find driver");
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			System.exit(0);
-
-		}
-        System.out.println("Driver Found...");
-        try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
-		} catch (SQLException e1) {
-			System.err.println("Could not connect to the database");
-			e1.printStackTrace();
-			System.exit(0);
-		}
-        System.out.println("Connected...");
-        
+		
+		conn=ConnectionBD.connect();
+		
         ResultSet res= null;
         try {
-			Statement entriesStatement = conn.createStatement();
-			res = entriesStatement.executeQuery(request);
+			PreparedStatement entriesStatement = conn.prepareStatement(request);
+			entriesStatement.setInt(1,entryIndex);
+			res = entriesStatement.executeQuery();
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

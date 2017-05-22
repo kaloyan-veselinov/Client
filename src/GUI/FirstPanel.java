@@ -8,8 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+@SuppressWarnings("serial")
 public class FirstPanel extends JPanel{
 	
+	@SuppressWarnings("unused")
 	private final MenuGUI frame;
 	private JButton connection;
 	private JButton createAccount;

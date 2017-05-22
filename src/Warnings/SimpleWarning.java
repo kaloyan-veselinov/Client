@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 
+@SuppressWarnings("serial")
 public class SimpleWarning extends JFrame implements ActionListener{
 	
 

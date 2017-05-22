@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class CancelButton extends JButton implements ActionListener{
 	
 	private JPanel prevPane;

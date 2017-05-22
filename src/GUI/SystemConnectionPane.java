@@ -18,6 +18,7 @@ import Main.Main;
 import Main.SystemAccount;
 import Warnings.SimpleWarning;
 
+@SuppressWarnings("serial")
 public class SystemConnectionPane extends JPanel{
 	
 	MenuGUI frame;
@@ -56,7 +57,7 @@ public class SystemConnectionPane extends JPanel{
 					frame.showMenuPane();
 					frame.hideSystemConnectionPane();
 				}else{
-					SimpleWarning warning = new SimpleWarning("Echec de la connection");
+					new SimpleWarning("Echec de la connection");
 					passwordField.setText("");
 				}
 			}
