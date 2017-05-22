@@ -2,11 +2,11 @@ package Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
 
 public class PasswordGetter {
 	
 	
+	@SuppressWarnings("unused")
 	public static String getPassword (String password, String login, String domain){
 		ResultSet rs = Database.Request.getLogin(domain.hashCode());
 		int passwordLength=0;

@@ -14,10 +14,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.FocusListener;
 
-import Main.Main;
-import Main.Password;
 import Warnings.SimpleWarning;
 
+@SuppressWarnings("serial")
 public class AddAccountGUI extends JPanel {
 	
 	//les panels
@@ -83,16 +82,20 @@ public class AddAccountGUI extends JPanel {
 					// on verifie que les deux mots de passe correspondent
 					psswdMatch = Main.passwordMatch(txt1.getPassword(),txt2.getPassword());
 					if(psswdMatch == true){ //si oui on passe a la suite
-						initPsswd.setVisible(false);
-						Main.p = new Password (txt2.getPassword(),userIdField.getText());
-						Main.userId = userIdField.getText();
-						f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
-						Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
-						Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
-						Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
-						setVisible(false);
+						if(txt1.getPassword().length>=8){
+							initPsswd.setVisible(false);
+							Main.p = new Password (txt2.getPassword(),userIdField.getText());
+							Main.userId = userIdField.getText();
+							f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
+							Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
+							Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
+							Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
+							setVisible(false);
+						}else {
+							new SimpleWarning("Mot de passe trop court \n min: 8");
+						}
 					}else{ // sinon on recommence
-						SimpleWarning error = new SimpleWarning(SimpleWarning.PASSWORDS_MISMATCH);
+						new SimpleWarning("Les mots de passe ne correspondent pas");
 
 						txt1.setText("");
 						txt2.setText("");

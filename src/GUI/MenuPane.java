@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+@SuppressWarnings("serial")
 public class MenuPane extends JPanel{
 	
 	JButton create;
@@ -19,6 +20,7 @@ public class MenuPane extends JPanel{
 		setLayout(layout);
 		create = new JButton ("Create a new account");
 		request = new JButton ("get an existing password");
+		setVisible(false);
 		
 		this.add(create);
 		this.add(request);

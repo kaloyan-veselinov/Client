@@ -40,6 +40,67 @@ public class KeyStroke extends Key {
 		
 	}
 	
+	public double getNorme2 (){
+		double[] values = getValuesArray();
+		double n = 0;
+		for(int i=0; i<values.length; i++){
+			n += Math.pow(values[i], 2);
+		}
+		return Math.sqrt(n);
+	}
+	
+	public double getNorme1(){
+		double[] values = getValuesArray();
+		double n = 0;
+		for(int i=0; i<values.length; i++){
+			n += Math.pow(values[i], 2);
+		}
+		return n;
+	}
+	
+	public double[] getValuesArray(){
+		double [] values = new double[15];
+		values[0] = super.getTimeUp();
+		values[1] = super.getTimeDown();
+		values[2] = getPressure();
+		values[3] = getModifierSequence();
+		if(shift != null){
+			values[4] = shift.getTimeUp();
+			values[5] = shift.getTimeDown();
+			values[6] = shift.getLocation();
+		}else{
+			values[4] = 0;
+			values[5] = 0;
+			values[6] = 0;
+		}
+		if(ctrl!=null){
+			values[7] = ctrl.getTimeUp();
+			values[8] = ctrl.getTimeDown();
+			values[9] = ctrl.getLocation();
+		}else{
+			values[7] = 0;
+			values[8] = 0;
+			values[9] = 0;
+		}
+		if(alt!=null){
+			values[10] = alt.getTimeUp();
+			values[11] = alt.getTimeDown();
+			values[12] = alt.getLocation();
+		}else{
+			values[10] = 0;
+			values[11] = 0;
+			values[12] = 0;
+		}
+		if(capsLock!=null){
+			values[13] = capsLock.getTimeUp();
+			values[14] = capsLock.getTimeDown();
+		}else{
+			values[13] = 0;
+			values[14] = 0;
+		}
+		return values;
+	}
+	
 	@Override
 	public ArrayList<String> getEncryptedValues(Password p){
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
@@ -55,6 +116,49 @@ public class KeyStroke extends Key {
 			encryptedValues.addAll(capsLock.getEncryptedValues(p));
 		return encryptedValues;
 	}
+	
+	
+	public double euclidianDistance (KeyStroke k){
+		double dTimeUp = Math.pow(k.getTimeUp()-this.getTimeUp(), 2);
+		double dTimeDown = Math.pow(k.getTimeDown()-this.getTimeDown(), 2);
+		double dPressure = Math.pow(k.getPressure()-this.getPressure(), 2);
+		double dShiftUp = Math.pow(k.getShift().getTimeUp()-this.getShift().getTimeUp(), 2);
+		double dShiftDown = Math.pow(k.getShift().getTimeDown()-this.getShift().getTimeDown(), 2);
+		double dShiftLocation = Math.pow(k.getShift().getLocation()-this.getShift().getLocation(), 2); //pas sûr qu'une distance euclidienne soit adaptée
+		double dCtrlUp = Math.pow(k.getCtrl().getTimeUp()-this.getCtrl().getTimeUp(), 2);
+		double dCtrlDown = Math.pow(k.getCtrl().getTimeDown()-this.getCtrl().getTimeDown(), 2);
+		double dCtrlLocation = Math.pow(k.getCtrl().getLocation() - this.getCtrl().getLocation(), 2); //idem
+		double dAltUp = Math.pow(k.getAlt().getTimeUp()-this.getAlt().getTimeUp(), 2);
+		double dAltDown = Math.pow(k.getAlt().getTimeDown()-this.getAlt().getTimeDown(), 2);
+		double dAltLocation = Math.pow(k.getAlt().getLocation()-this.getAlt().getLocation(), 2); //idem
+		double dCapslockUp = Math.pow(k.getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp(), 2);
+		double dCapslockDown = Math.pow(k.getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown(), 2);
+
+		return Math.sqrt(dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
+				+dAltUp+dAltDown+dAltLocation+dCapslockUp+ dCapslockDown);
+
+	}
+	
+	public double manhattanDistance(KeyStroke k){
+		double dTimeUp = Math.abs(k.getTimeUp()-this.getTimeUp());
+		double dTimeDown = Math.abs(k.getTimeDown()-this.getTimeDown());
+		double dPressure = Math.abs(k.getPressure()-this.getPressure());
+		double dShiftUp = Math.abs(k.getShift().getTimeUp()-this.getShift().getTimeUp());
+		double dShiftDown = Math.abs(k.getShift().getTimeDown()-this.getShift().getTimeDown());
+		double dShiftLocation = Math.abs(k.getShift().getLocation()-this.getShift().getLocation());
+		double dCtrlUp = Math.abs(k.getCtrl().getTimeUp()-this.getCtrl().getTimeUp());
+		double dCtrlDown = Math.abs(k.getCtrl().getTimeDown()-this.getCtrl().getTimeDown());
+		double dCtrlLocation = Math.abs(k.getCtrl().getLocation() - this.getCtrl().getLocation());
+		double dAltUp = Math.abs(k.getAlt().getTimeUp()-this.getAlt().getTimeUp());
+		double dAltDown = Math.abs(k.getAlt().getTimeDown()-this.getAlt().getTimeDown());
+		double dAltLocation = Math.abs(k.getAlt().getLocation()-this.getAlt().getLocation());
+		double dCapslockUp = Math.abs(k.getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp());
+		double dCapslockDown = Math.abs(k.getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown());
+
+		return (dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
+				+dAltUp+dAltDown+dAltLocation+dCapslockUp+dCapslockDown);
+	}
+	
 	
 	public static char[] getChars(ArrayList<KeyStroke> keyStrokes){
 		char[] chars = new char[keyStrokes.size()];

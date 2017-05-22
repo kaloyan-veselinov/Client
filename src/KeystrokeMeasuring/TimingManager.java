@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JPasswordField;
 
 import Main.Main;
 import Main.Password;
@@ -12,8 +13,9 @@ import Main.PasswordTry;
 
 public class TimingManager implements KeyListener {
 	//Params de compte
-	final Password p; 
-	final String userId, domaine;
+	private final Password p; 
+	private final String userId;
+	private final JPasswordField pf;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -25,10 +27,10 @@ public class TimingManager implements KeyListener {
 	boolean lShift=false, rShift=false, lCtrl=false, rCtrl=false, lAlt=false, rAlt=false, capsLock=false;
 	Toolkit t;
 	
-	public TimingManager(Password p, String domaine){
+	public TimingManager(Password p, String domaine, JPasswordField pf){	
 		this.p=p;
 		this.userId=p.getUserID();
-		this.domaine=domaine;
+		this.pf=pf;
 		strokes = new ArrayList<KeyStrokeListener>(2*p.getPassword().length);
 		keyStrokes = new ArrayList<KeyStroke>(p.getPassword().length);
 		t=Toolkit.getDefaultToolkit();
@@ -110,9 +112,11 @@ public class TimingManager implements KeyListener {
 			
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
+			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}
 		else{ // si ce n'est pas la touche entre, on prend en comte le caractere
 			strokes.add(new CharacterListener(System.nanoTime(),arg0,t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)));
+			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}
 	}
 	
