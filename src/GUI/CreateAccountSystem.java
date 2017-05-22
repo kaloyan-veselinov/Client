@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -88,6 +90,52 @@ public class CreateAccountSystem extends JPanel{
 				}
 			}
 		});
+		
+		KeyListener fieldListener = new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					psswdMatch = Main.passwordMatch(passwordField1.getPassword(), passwordField2.getPassword())	;
+					String pswd = new String(passwordField1.getPassword());   
+					if (psswdMatch == true && (pswd.equals("")==false)){   //on verifie que les mdp sont les memes et qu'ils sont non nuls
+						java.sql.Connection conn = null;
+						try {
+							conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/" + "P2I", "G222_B", "G222_B");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						Insert.addCompteSystem(idField.getText(), pswd, conn);
+						Main.currentSystemAccount = new SystemAccount(idField.getText());
+						frame.hideCreateAccountSystem();
+						frame.showMenuPane();
+					}else{
+						JOptionPane.showMessageDialog(null, "Your passwords are diferent, try again");
+						passwordField1.setText("");
+						passwordField2.setText("");
+						
+					}
+				}
+			}
+		
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		idField.addKeyListener(fieldListener);
+		passwordField1.addKeyListener(fieldListener);
+		passwordField2.addKeyListener(fieldListener);
 		
 		this.add(connexion);
 		

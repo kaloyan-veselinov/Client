@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -43,6 +45,37 @@ public class SystemConnectionPane extends JPanel{
 		
 		JPasswordField passwordField = new JPasswordField();
 		this.add( passwordField);
+		passwordField.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
+					String dbPassword = Request.getPasswordForSystemAccount(loginField.getText());
+					if(Encryption.checkPassword(dbPassword,new String (passwordField.getPassword()))){
+						Main.currentSystemAccount = new SystemAccount (loginField.getText());
+						System.out.println("Vous êtes connecté en tant que " + loginField.getText());
+						frame.showMenuPane();
+						frame.hideSystemConnectionPane();
+					}else{
+						new SimpleWarning("Echec de la connection");
+						passwordField.setText("");
+					}
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		JButton connect = new JButton("Connection");
 		this.add(connect);

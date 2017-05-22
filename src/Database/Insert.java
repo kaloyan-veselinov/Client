@@ -190,7 +190,7 @@ public static String addCompteSystem(String identifiant, String password,Connect
         if(!(existsYet)){
 
 	        
-	        String insertCompteSystem = "INSERT INTO CompteSystem VALUES (?,?);";
+	        String insertCompteSystem = "INSERT INTO CompteSystem(Login,Password) VALUES (?,?);";
 	        
 	        try {
 	        	if (existsYet==false){					//cree le compte si l identifiant n existe pas deja
