@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JPasswordField;
 
+import Database.Request;
+import Encryption.Encryption;
 import Main.Main;
 import Main.Password;
 import Main.PasswordTry;
@@ -16,6 +18,7 @@ public class TimingManager implements KeyListener {
 	private final Password p; 
 	private final String userId;
 	private final JPasswordField pf;
+	private final String domain;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -28,6 +31,7 @@ public class TimingManager implements KeyListener {
 	Toolkit t;
 	
 	public TimingManager(Password p, String domaine, JPasswordField pf){	
+		this.domain = domaine;
 		this.p=p;
 		this.userId=p.getUserID();
 		this.pf=pf;
@@ -102,7 +106,7 @@ public class TimingManager implements KeyListener {
 				}
 				
 			}	
-			if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword()))
+			if(checkPassword()){
 				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
 				Main.sessionManager.getCurrentSession().setPassword(p.toString());
 				Main.sessionManager.getCurrentSession().setUserId(userId);
@@ -129,4 +133,8 @@ public class TimingManager implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 	
+	private boolean checkPassword(){
+		String encryptedPassword = Request.getEncryptedPassword(userId,domain);
+		return Encryption.checkPassword(encryptedPassword, p.toString());
+	}
 }
