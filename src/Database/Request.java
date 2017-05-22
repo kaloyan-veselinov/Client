@@ -116,5 +116,39 @@ public class Request {
 		}
 		return password;
 	}
+	
+	public static String getEncryptedPassword (String login, String domain){
+		
+		int loginHash = login.hashCode();
+		int domainHash = domain.hashCode();
+		
+		Connection conn = ConnectionBD.connect();
+		
+		String request = "SELECT masterPassword FROM Compte WHERE Login = ? AND domainHash = ?;";
+		
+		PreparedStatement statement = null;
+		
+		ResultSet rs = null;
+		
+		try {
+			statement = conn.prepareStatement(request);
+			statement.setInt(1, loginHash);
+			statement.setInt(2, domainHash);
+			rs = statement.executeQuery();
+			rs.first();
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			return rs.getString("masterPassword");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+	}
+		
 
 }
