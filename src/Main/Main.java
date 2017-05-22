@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 
 import GUI.MenuGUI;
 import Session.SessionManager;
+import Sync.SyncUtil;
 
 
 public class Main {
@@ -25,6 +26,8 @@ public class Main {
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		@SuppressWarnings("unused")
 		MenuGUI mg = new MenuGUI(); 
+		SyncUtil sync =new SyncUtil();
+		sync.start();
 	}
 	//permet de tester si deux mots de passe correspondent
 	public static boolean passwordMatch(char[] p1, char[] p2){

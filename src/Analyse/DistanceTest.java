@@ -11,6 +11,7 @@ import Main.Password;
 
 public class DistanceTest {
 	
+	//TODO régler les valeurs des seuils
 	private static final double euclidianRationThreshold = 0.2;
 	private static final double manhattanRationThreshold = 0.2;
 	
