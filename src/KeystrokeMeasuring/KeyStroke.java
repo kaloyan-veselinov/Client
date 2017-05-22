@@ -40,6 +40,67 @@ public class KeyStroke extends Key {
 		
 	}
 	
+	public double getNorme2 (){
+		double[] values = getValuesArray();
+		double n = 0;
+		for(int i=0; i<values.length; i++){
+			n += Math.pow(values[i], 2);
+		}
+		return Math.sqrt(n);
+	}
+	
+	public double getNorme1(){
+		double[] values = getValuesArray();
+		double n = 0;
+		for(int i=0; i<values.length; i++){
+			n += Math.pow(values[i], 2);
+		}
+		return n;
+	}
+	
+	public double[] getValuesArray(){
+		double [] values = new double[15];
+		values[0] = super.getTimeUp();
+		values[1] = super.getTimeDown();
+		values[2] = getPressure();
+		values[3] = getModifierSequence();
+		if(shift != null){
+			values[4] = shift.getTimeUp();
+			values[5] = shift.getTimeDown();
+			values[6] = shift.getLocation();
+		}else{
+			values[4] = 0;
+			values[5] = 0;
+			values[6] = 0;
+		}
+		if(ctrl!=null){
+			values[7] = ctrl.getTimeUp();
+			values[8] = ctrl.getTimeDown();
+			values[9] = ctrl.getLocation();
+		}else{
+			values[7] = 0;
+			values[8] = 0;
+			values[9] = 0;
+		}
+		if(alt!=null){
+			values[10] = alt.getTimeUp();
+			values[11] = alt.getTimeDown();
+			values[12] = alt.getLocation();
+		}else{
+			values[10] = 0;
+			values[11] = 0;
+			values[12] = 0;
+		}
+		if(capsLock!=null){
+			values[13] = capsLock.getTimeUp();
+			values[14] = capsLock.getTimeDown();
+		}else{
+			values[13] = 0;
+			values[14] = 0;
+		}
+		return values;
+	}
+	
 	@Override
 	public ArrayList<String> getEncryptedValues(Password p){
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
