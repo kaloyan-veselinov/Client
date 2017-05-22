@@ -27,7 +27,7 @@ public class Main {
 		@SuppressWarnings("unused")
 		MenuGUI mg = new MenuGUI(); 
 		SyncUtil sync =new SyncUtil();
-		sync.start();
+		//sync.start();
 	}
 	//permet de tester si deux mots de passe correspondent
 	public static boolean passwordMatch(char[] p1, char[] p2){

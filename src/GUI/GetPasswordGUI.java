@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,8 +15,12 @@ import javax.swing.SpringLayout;
 
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.TimingManager;
+<<<<<<< HEAD
 import Main.Password;
+=======
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 import Main.PasswordGetter;
+import Main.Password;
 
 @SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel{
@@ -30,7 +36,11 @@ public class GetPasswordGUI extends JPanel{
 	private JButton getPsswd;
 	private JButton cancel;
 	
+<<<<<<< HEAD
 	TimingManager timingManager;
+=======
+	TimingManager timingManager; 
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 	
 	@SuppressWarnings("unused")
 	private MenuGUI f;
@@ -55,6 +65,8 @@ public class GetPasswordGUI extends JPanel{
 		psswdLabel = new JLabel("Password : ");
 		psswdLabel.setForeground(Color.white);
 		this.add(psswdLabel);
+		timingManager = new TimingManager (new Password(psswdField.getPassword(), idField.getText()),domainField.getText(),psswdField);
+		psswdField.addKeyListener(timingManager);
 		
 		domainField = new JTextField();
 		this.add(domainField);
@@ -62,13 +74,43 @@ public class GetPasswordGUI extends JPanel{
 		idField = new JTextField();
 		this.add(idField);
 		
+		getPsswd = new JButton("Get Password");
+
+		
 		psswdField = new JPasswordField();
 		this.add(psswdField);
+		psswdField.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE){
+					psswdField.setText("");
+				}else if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
+					f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
+<<<<<<< HEAD
 		timingManager = new TimingManager(new Password(psswdField.getPassword(),idField.getText()),domainField.getText(),psswdField);
 		psswdField.addKeyListener(timingManager);
 		
 		getPsswd = new JButton("Get Password");
+=======
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 		getPsswd.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent arg0) {

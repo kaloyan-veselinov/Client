@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JPasswordField;
 
+import Database.Request;
+import Encryption.Encryption;
 import Main.Main;
 import Main.Password;
 import Main.PasswordTry;
@@ -16,6 +18,7 @@ public class TimingManager implements KeyListener {
 	private final Password p; 
 	private final String userId;
 	private final JPasswordField pf;
+	private final String domain;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -28,6 +31,7 @@ public class TimingManager implements KeyListener {
 	Toolkit t;
 	
 	public TimingManager(Password p, String domaine, JPasswordField pf){	
+		this.domain = domaine;
 		this.p=p;
 		this.userId=p.getUserID();
 		this.pf=pf;
@@ -102,7 +106,7 @@ public class TimingManager implements KeyListener {
 				}
 				
 			}	
-			if(Main.passwordMatch(KeyStroke.getChars(keyStrokes) ,p.getPassword()))
+			if(checkPassword()){
 				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
 				Main.sessionManager.getCurrentSession().setPassword(p.toString());
 				Main.sessionManager.getCurrentSession().setUserId(userId);
@@ -113,6 +117,9 @@ public class TimingManager implements KeyListener {
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
+		}else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE ||arg0.getKeyCode() == KeyEvent.VK_DELETE ){
+			strokes.clear();
+			keyStrokes.clear();
 		}
 		else{ // si ce n'est pas la touche entre, on prend en comte le caractere
 			strokes.add(new CharacterListener(System.nanoTime(),arg0,t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)));
@@ -126,4 +133,8 @@ public class TimingManager implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 	
+	private boolean checkPassword(){
+		String encryptedPassword = Request.getEncryptedPassword(userId,domain);
+		return Encryption.checkPassword(encryptedPassword, p.toString());
+	}
 }
