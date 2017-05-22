@@ -113,6 +113,9 @@ public class TimingManager implements KeyListener {
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
+		}else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE ||arg0.getKeyCode() == KeyEvent.VK_DELETE ){
+			strokes.clear();
+			keyStrokes.clear();
 		}
 		else{ // si ce n'est pas la touche entre, on prend en comte le caractere
 			strokes.add(new CharacterListener(System.nanoTime(),arg0,t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)));

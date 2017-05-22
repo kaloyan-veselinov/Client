@@ -58,7 +58,6 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						flushSession();
 					}
 				}
-				
 			}
 
 			@Override
@@ -110,7 +109,10 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 					progressBar.repaint();
 					if(checkSession()){
 						flushSession();
+					}else if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE){
+						psswd.setText("");
 					}
+
 				}
 			}
 
