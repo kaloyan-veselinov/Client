@@ -15,6 +15,10 @@ import javax.swing.SpringLayout;
 
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.TimingManager;
+<<<<<<< HEAD
+import Main.Password;
+=======
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 import Main.PasswordGetter;
 import Main.Password;
 
@@ -32,7 +36,11 @@ public class GetPasswordGUI extends JPanel{
 	private JButton getPsswd;
 	private JButton cancel;
 	
+<<<<<<< HEAD
+	TimingManager timingManager;
+=======
 	TimingManager timingManager; 
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 	
 	@SuppressWarnings("unused")
 	private MenuGUI f;
@@ -96,6 +104,13 @@ public class GetPasswordGUI extends JPanel{
 			
 		});
 		
+<<<<<<< HEAD
+		timingManager = new TimingManager(new Password(psswdField.getPassword(),idField.getText()),domainField.getText(),psswdField);
+		psswdField.addKeyListener(timingManager);
+		
+		getPsswd = new JButton("Get Password");
+=======
+>>>>>>> a5153b0c41c7e1ef6b9772fcc30f7b0fb029f82f
 		getPsswd.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent arg0) {
