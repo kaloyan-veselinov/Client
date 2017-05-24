@@ -8,7 +8,7 @@ public class PasswordGetter {
 	
 	@SuppressWarnings("unused")
 	public static String getPassword (String password, String login, String domain){
-		ResultSet rs = Database.Request.getLogin(domain.hashCode());
+		ResultSet rs = Database.Request.getLogin(domain.hashCode(),Main.conn);
 		int passwordLength=0;
 		boolean correctAccount = false;
 		try {

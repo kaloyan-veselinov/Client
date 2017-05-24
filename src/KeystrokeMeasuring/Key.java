@@ -23,7 +23,33 @@ public abstract class Key {
 		encryptedValues.add(Encryption.encryptLong(timeDown, new String(p.getPassword())));
 		return encryptedValues;
 	}
-
+	
+	/**
+	 * Methode permettant de calculer le temps d'appui d'une touche
+	 * @return La difference de temps entre timeUp et timeDown
+	 */
+	public long getPressReleaseTimes(){
+		return this.getTimeUp() - this.getTimeDown();
+	}
+	
+	/**
+	 * Methode permettant de calculer le temps entre le relachement d'une touche et l'appui de la seconde
+	 * @return la difference de temps Release-Press
+	 */
+	public abstract long getReleasePressTimes();
+	
+	/**
+	 * Methode permettant de calculer le temps moyen entre le relachement d'une touche et 
+	 * @return le temps entre le relachement de la touche et le relachement de la suivante
+	 */
+	public abstract long getReleaseReleaseTimes();
+	
+	/**
+	 * Retourne la norme au carre du vecteur
+	 * @param la norme
+	 */
+	public abstract double getNormSquared();
+	
 	public void setTimeUp(long timeUp) {
 		this.timeUp = timeUp;
 	}

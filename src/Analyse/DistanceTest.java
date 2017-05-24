@@ -51,7 +51,7 @@ public class DistanceTest {
 	}
 	
 	private static LinkedList<KeyStrokeSet> builReferenceSet(String login, String domain, String password){
-		Connection conn = ConnectionBD.connect();
+		Connection conn = Main.Main.conn;
 		LinkedList <KeyStrokeSet> sets = new LinkedList<KeyStrokeSet>();
 		int[] refIndexes = Request.getLastSuccessfulEntries(login, domain,conn);
 		

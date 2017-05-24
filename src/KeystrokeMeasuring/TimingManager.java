@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JPasswordField;
 
+import Arduino.PressionManager;
 import Database.Request;
 import Encryption.Encryption;
 import GUI.GetPasswordGUI;
@@ -20,6 +21,9 @@ public class TimingManager implements KeyListener {
 	private  String userId;
 	private final JPasswordField pf;
 	private  String domain;
+	
+	private PressionManager pm;
+	private Thread pressureThread;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -39,6 +43,9 @@ public class TimingManager implements KeyListener {
 		strokes = new ArrayList<KeyStrokeListener>(2*p.getPassword().length);
 		keyStrokes = new ArrayList<KeyStroke>(p.getPassword().length);
 		t=Toolkit.getDefaultToolkit();
+		pm=new PressionManager(this);
+		pressureThread = new Thread(pm);
+		pressureThread.start();
 	}
 	
 	public TimingManager(JPasswordField pf){	
@@ -116,11 +123,19 @@ public class TimingManager implements KeyListener {
 					}
 					keyStrokes.get(keyStrokes.size()-1).setModifierSequence(ModifierSequence.getSequence(modifiersOrder));
 				}
+			} 
+			for(int i=0; i<p.getPassword().length; i++){
+				keyStrokes.get(i).setPressure(pm.getTabTriee().get(i));
+			} 
 				
-			}	
-
+				
+			
 			
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
+			synchronized(this){
+				this.notifyAll();
+			}
+			pressureThread.notify();
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE ||arg0.getKeyCode() == KeyEvent.VK_DELETE ){
@@ -139,10 +154,6 @@ public class TimingManager implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 	
-	private boolean checkPassword(){
-		String encryptedPassword = Request.getEncryptedPassword(userId,domain);
-		return Encryption.checkPassword(encryptedPassword, p.toString());
-	}
 
 	public Password getP() {
 		return p;

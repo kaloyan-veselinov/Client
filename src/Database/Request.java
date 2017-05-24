@@ -11,9 +11,8 @@ import Main.Main;
 
 public class Request {
 	
-	public static ResultSet getLogin (int i){
-		Connection conn = null;
-		conn = ConnectionBD.connect();      
+	public static ResultSet getLogin (int i,Connection conn){
+   
       
         String request = "SELECT Login,masterPassword,passwordLength FROM Compte "
         		+ "WHERE CompteSystem_Login = ? and domainHash = ?;";
@@ -25,7 +24,6 @@ public class Request {
 			st.setString(1, String.valueOf(Main.currentSystemAccount.getLogin().hashCode()));
 			st.setString(2, String.valueOf(i));
 			rs = st.executeQuery();
-			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,7 +94,7 @@ public class Request {
         
 	}
 	
-	public static String getPasswordForSystemAccount(String login){
+	public static String getPasswordForSystemAccount(String login,Connection conn){
 		
 		login = String.valueOf(login.hashCode());
 		System.out.println(login);
@@ -105,7 +103,6 @@ public class Request {
 		
 		String request = "SELECT Password FROM CompteSystem WHERE Login = ? LIMIT 1;";
 		
-		Connection conn = ConnectionBD.connect();
 	
 		PreparedStatement statement = null;
 		
@@ -125,12 +122,11 @@ public class Request {
 		return password;
 	}
 	
-	public static String getEncryptedPassword (String login, String domain){
+	public static String getEncryptedPassword (String login, String domain,Connection conn){
 		
 		int loginHash = login.hashCode();
 		int domainHash = domain.hashCode();
 		
-		Connection conn = ConnectionBD.connect();
 		
 		String request = "SELECT masterPassword FROM Compte WHERE Login = ? AND domainHash = ?;";
 		
@@ -144,7 +140,6 @@ public class Request {
 			statement.setInt(2, domainHash);
 			rs = statement.executeQuery();
 			rs.first();
-			conn.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
