@@ -39,8 +39,9 @@ public class MenuPane extends JPanel{
 
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				setVisible(false);
-				f.getPsswdPane.setVisible(true);
+				f.initGetPasswordPane();
+				f.getMenuPane().setVisible(false);
+
 			}
 			
 		});

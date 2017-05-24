@@ -3,6 +3,7 @@ package Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ConnectionBD {
 
@@ -38,6 +39,16 @@ public class ConnectionBD {
 			System.exit(0);
 		}
         System.out.println("Connected...");
+        
+        Statement st = null;
+        try {
+            st = conn.createStatement();
+
+			st.executeUpdate("SET autocommit=0;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         return conn;
 	}

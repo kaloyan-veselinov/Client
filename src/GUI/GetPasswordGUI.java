@@ -45,7 +45,7 @@ public class GetPasswordGUI extends JPanel{
 	private MenuGUI f;
 	
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f){
-		SpringLayout layout = new SpringLayout();
+		SpringLayout layout = f.getLayout();
 		setLayout(layout);
 		
 		setBackground(Color.DARK_GRAY);
@@ -129,8 +129,23 @@ public class GetPasswordGUI extends JPanel{
 
 			public void actionPerformed(ActionEvent arg0) {
 				
-				f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
+				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(timingManager.getKeyStrokes()));
+				Main.sessionManager.getCurrentSession().setPassword(new String (psswdField.getPassword()));
+				Main.sessionManager.getCurrentSession().setUserId(idField.getText());
+				System.out.println("PasswordTry ajouté");
+				timingManager.getStrokes().clear();
+				timingManager.getKeyStrokes().clear();
 				
+
+				
+				int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
+				if(DistanceTest.test(Main.sessionManager.getCurrentSession().getPasswordTries().get(i).toKeyStrokeSet()
+						, idField.getText(),domainField.getText(), new String ( psswdField.getPassword()))){
+				
+					f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
+				}else{
+					new SimpleWarning("Maniere d'ecrire non reconnue");
+				}				
 			}
 			
 			
@@ -168,7 +183,7 @@ public class GetPasswordGUI extends JPanel{
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
-		setVisible(false);
+		//setVisible(false);
 	}
 
 }

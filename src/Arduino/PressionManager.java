@@ -13,8 +13,9 @@ public class PressionManager implements Runnable {
 	private ArrayList<Double> tabTriee;
 	private ArduinoUsbChannel vcpChannel;
 	private final Console console;
-	private boolean stop;
 	private final TimingManager tm;
+	private boolean stop; 
+	private boolean end = false;
     
     public PressionManager(TimingManager tm){
     	
@@ -52,6 +53,12 @@ public class PressionManager implements Runnable {
         try {
 
             vcpChannel = new ArduinoUsbChannel(port);
+            if(!(vcpChannel.serialPort.isOpened())){
+            	System.out.println("Impossible de se connecter au module de mesure de pressions, poursuite du programme "
+            			+ "sans mesure de pressions");
+            	tm.setArduinoConnected(false);
+            	this.setEnd(false);
+            }
         
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
@@ -63,37 +70,42 @@ public class PressionManager implements Runnable {
     @Override
     public void run(){
     	
-    	while(!stop){
+    	while(!stop && tm.isArduinoConnected()){
     		
     		//Attend le debut de la lecture des donnees par le clavier
 	    	synchronized(tm){
 	    		try{
 	    			System.out.println("Waiting!");
 	    			tm.wait();
+	    			setEnd(false);
 	    			System.out.print("Done waiting!");
 	    		} catch(InterruptedException ie){}
 	    	}
 	    	
 	    	try {
 	    		
-				vcpChannel.open();
-				
-				ArrayList<Mesure> tabMesures= new ArrayList<Mesure>(); //mesures brutes de pression
-	            
-	            BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
-	            String line;
-	                      	
-	            while ((line = vcpInput.readLine()) != null) {
-	            	insertionTab (line, tabMesures);
-	            	console.println("Data from Arduino: " + line);  
-	            }
-	            
-	            triTab(tabMesures); 
-	            //afficherTabTriee();
-	            
-	            vcpInput.close();
-	            vcpChannel.close();
-	                               			
+	    		if(tm.isArduinoConnected()){
+	    		
+					vcpChannel.open();
+					
+					ArrayList<Mesure> tabMesures= new ArrayList<Mesure>(); //mesures brutes de pression
+		            
+		            BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
+		            String line;
+		                      	
+		            while (((line = vcpInput.readLine()) != null) || end == false) {
+		        
+		            	insertionTab (line, tabMesures);
+		            	console.println("Data from Arduino: " + line);  
+		            }
+		            System.out.println("Sortie boucle");
+		            
+		            triTab(tabMesures); 
+		            //afficherTabTriee();
+		            
+		            vcpInput.close();
+		            vcpChannel.close();
+	    		}          			
 			} catch (SerialPortException | IOException e) {
 				e.printStackTrace(System.err);
 			}
@@ -106,6 +118,7 @@ public class PressionManager implements Runnable {
     public void insertionTab(String s, ArrayList<Mesure> tab){
         
     	String[] temp = s.split("_");
+    	System.out.println(s);
         
         char ident=temp[0].charAt(0);
         double p=Double.parseDouble(temp[1]);
@@ -139,7 +152,7 @@ public class PressionManager implements Runnable {
         
         m.add(pres);
         
-        tabTriee=m;
+        tabTriee=(ArrayList<Double>) m.clone();
     
     }
     
@@ -161,6 +174,16 @@ public class PressionManager implements Runnable {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+
+	public boolean isEnd() {
+		return end;
+	}
+
+
+	public void setEnd(boolean end) {
+		this.end = end;
 	}
 
 }

@@ -1,6 +1,8 @@
 package Main;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import Analyse.KeyStrokeSet;
@@ -18,6 +20,7 @@ public class PasswordTry {
 	@SuppressWarnings("unchecked")
 	public PasswordTry(ArrayList <KeyStroke> keys){
 		this.keys=(ArrayList<KeyStroke>) keys.clone();
+		Collections.copy(this.keys,keys);
 	}
 	
 	
