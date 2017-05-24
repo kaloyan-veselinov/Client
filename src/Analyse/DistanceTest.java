@@ -1,10 +1,12 @@
 package Analyse;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import Database.ConnectionBD;
 import Database.Request;
 import KeystrokeMeasuring.KeyStroke;
 import Main.Password;
@@ -12,8 +14,8 @@ import Main.Password;
 public class DistanceTest {
 	
 	//TODO régler les valeurs des seuils
-	private static final double euclidianRationThreshold = 0.2;
-	private static final double manhattanRationThreshold = 0.2;
+	private static final double euclidianRationThreshold = 1;
+	private static final double manhattanRationThreshold = 1;
 	
 	//TODO fusionner login,domain et password dans une instace ce compte
 	public static boolean test(KeyStrokeSet testSet, String login, String domain, String password){
@@ -36,10 +38,12 @@ public class DistanceTest {
 			}
 			avgEuclidianDistance[i]/=euclidianDistances[i].length;
 			avgManhattanDistance[i]/=manhattanDistances[i].length;
-			avgEuclidianDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme2();
-			avgManhattanDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme1();
-			avgEuclidianRatio+=avgEuclidianDistanceRatio[i];
-			avgManhatanRatio+=avgManhattanDistanceRatio[i];
+			if(i<testSet.getSet().size()){
+				avgEuclidianDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme2();
+				avgManhattanDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme1();
+				avgEuclidianRatio+=avgEuclidianDistanceRatio[i];
+				avgManhatanRatio+=avgManhattanDistanceRatio[i];
+			}
 		}
 		avgEuclidianRatio /=(i+1);
 		avgManhatanRatio/=(i+1);
@@ -47,26 +51,21 @@ public class DistanceTest {
 	}
 	
 	private static LinkedList<KeyStrokeSet> builReferenceSet(String login, String domain, String password){
+		Connection conn = ConnectionBD.connect();
 		LinkedList <KeyStrokeSet> sets = new LinkedList<KeyStrokeSet>();
-		ResultSet refEntries = Request.getLastSuccessfulEntries(login, domain); 
-		try {
-			while(refEntries.next()){
+		int[] refIndexes = Request.getLastSuccessfulEntries(login, domain,conn);
+		
+			for (int k =0; k<refIndexes.length;k++){
 				LinkedList <KeyStroke> keys = new LinkedList <KeyStroke>();
-				ResultSet keysForEntry = Request.getTouchesForEntry(refEntries.getInt("Entree.Index"));
-				while (keysForEntry.next()){
+				ArrayList <ArrayList>keysForEntry = Request.getTouchesForEntry(k,conn);
+				for(int j=0;j<keysForEntry.size();j++){
 					ArrayList<String>encryptedValues = new ArrayList<String>(15);
-					for(int i=2;i<=15;i++){
-						String s = keysForEntry.getString(i);
-						encryptedValues.add(s);
-					}
-					keys.add(new KeyStroke(encryptedValues,new Password(password.toCharArray(),login)));
+					
+					keys.add(new KeyStroke(keysForEntry.get(j),new Password(password.toCharArray(),login)));
 				}
 				sets.add(new KeyStrokeSet (keys));
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return sets;
 	}
 	

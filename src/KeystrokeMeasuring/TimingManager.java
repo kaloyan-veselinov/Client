@@ -9,16 +9,17 @@ import javax.swing.JPasswordField;
 
 import Database.Request;
 import Encryption.Encryption;
+import GUI.GetPasswordGUI;
 import Main.Main;
 import Main.Password;
 import Main.PasswordTry;
 
 public class TimingManager implements KeyListener {
 	//Params de compte
-	private final Password p; 
-	private final String userId;
+	private Password p; 
+	private  String userId;
 	private final JPasswordField pf;
-	private final String domain;
+	private  String domain;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -40,10 +41,21 @@ public class TimingManager implements KeyListener {
 		t=Toolkit.getDefaultToolkit();
 	}
 	
+	public TimingManager(JPasswordField pf){	
+		System.out.println(Thread.currentThread());
+
+		this.pf=pf;
+		strokes = new ArrayList<KeyStrokeListener>(16);
+		keyStrokes = new ArrayList<KeyStroke>(16);
+		t=Toolkit.getDefaultToolkit();
+	}
+	
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
+			
 			int j;
 			int modifiersCount;
 			int modifiersAdded=0;
@@ -106,13 +118,7 @@ public class TimingManager implements KeyListener {
 				}
 				
 			}	
-			if(checkPassword()){
-				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
-				Main.sessionManager.getCurrentSession().setPassword(p.toString());
-				Main.sessionManager.getCurrentSession().setUserId(userId);
-				System.out.println("PasswordTry ajouté");
-			strokes.clear();
-			keyStrokes.clear();
+
 			
 		}else if(arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK || arg0.getKeyCode() ==  KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH || arg0.getKeyCode() == KeyEvent.VK_CONTROL ){
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
@@ -136,5 +142,44 @@ public class TimingManager implements KeyListener {
 	private boolean checkPassword(){
 		String encryptedPassword = Request.getEncryptedPassword(userId,domain);
 		return Encryption.checkPassword(encryptedPassword, p.toString());
+	}
+
+	public Password getP() {
+		return p;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+	public void setP(Password p){
+		this.p=p;
+	}
+	
+	public void setUserId(String userId){
+		this.userId = userId;
+	}
+	
+	public void setDomain(String domain){
+		this.domain = domain;
+	}
+
+	public ArrayList<KeyStrokeListener> getStrokes() {
+		return strokes;
+	}
+
+	public void setStrokes(ArrayList<KeyStrokeListener> strokes) {
+		this.strokes = strokes;
+	}
+
+	public ArrayList<KeyStroke> getKeyStrokes() {
+		return keyStrokes;
+	}
+
+	public void setKeyStrokes(ArrayList<KeyStroke> keyStrokes) {
+		this.keyStrokes = keyStrokes;
 	}
 }

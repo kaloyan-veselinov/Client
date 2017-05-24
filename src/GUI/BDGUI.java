@@ -32,6 +32,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	TimingManager timingManager;
 	
 	MenuGUI f;
+	int validTries = 0;
 	
 	
 	public BDGUI(final Password p,String domaine,int passwordLength, MenuGUI f){
@@ -46,34 +47,6 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		JLabel label1 = new JLabel ("Saisir le mot de passe 15 fois sans erreur");
 		psswd = new JPasswordField ("",15);
 
-		this.addKeyListener(new KeyListener(){
-			
-			
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					progressBar.repaint();
-					if(checkSession()){
-						flushSession();
-					}
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
-;
 		
 		this.setBackground(Color.DARK_GRAY);
 		
@@ -86,7 +59,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 				g.setColor(Color.white);
 				g.fillRect((int)(0), 0,350-20, 50);
 				
-				for(int i=0; i<Main.sessionManager.getCurrentSession().getPasswordTries().size(); i++){
+				for(int i=0; i<validTries; i++){
 
 					g.setColor(Color.blue);
 					g.fillRect((int)(5 + i*((350-10)/15.0)), 5,(int)( (350-10)/15.0-5), 50-10);
@@ -105,15 +78,21 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					psswd.setText("");
-					progressBar.repaint();
-					if(checkSession()){
-						flushSession();
+					if (Main.passwordMatch(psswd.getPassword(), p.getPassword())){
+						validTries++;
+						if(validTries>=15){
+							flushSession();
+						}
+					}
+						psswd.setText("");
+						progressBar.repaint();
 					}else if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE){
 						psswd.setText("");
 					}
+					
 
-				}
+
+				
 			}
 
 			@Override
@@ -168,19 +147,14 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		}
 		Insert.addCompte(p, domaine,passwordLength);
 		String generatedPassword = PasswordGetter.generatePassword(p.getUserID(),p.toString(),domaine,passwordLength);
+		Main.sessionManager.getCurrentSession().setSuccess(true);
 		Main.sessionManager.endCurrentSession();
 		f.showPasswordPane(generatedPassword);
 		f.hideBdGui();
 
 	}
 	
-	private boolean checkSession(){
-		if(Main.sessionManager.getCurrentSession().getPasswordTries().size()>=15){
-			return true;
-		}else{
-			return false;
-		}
-	}
+
 	
 
 

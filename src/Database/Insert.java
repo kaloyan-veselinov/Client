@@ -103,7 +103,7 @@ public class Insert {
 		        
 		        PreparedStatement sessionStatement = conn.prepareStatement(session);
 		        sessionStatement.setInt(1,accountId);
-		        sessionStatement.setString(2,Encryption.encryptBoolean(s.isSuccess(), s.getPassword()));
+		        sessionStatement.setBoolean(2,s.isSuccess());
 				sessionStatement.executeUpdate();
 				
 				Statement sessionIndexStatement = conn.createStatement();

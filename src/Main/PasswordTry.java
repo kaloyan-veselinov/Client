@@ -1,7 +1,9 @@
 package Main;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import Analyse.KeyStrokeSet;
 import KeystrokeMeasuring.KeyStroke;
 
 public class PasswordTry {
@@ -17,7 +19,13 @@ public class PasswordTry {
 	public PasswordTry(ArrayList <KeyStroke> keys){
 		this.keys=(ArrayList<KeyStroke>) keys.clone();
 	}
-
+	
+	
+	public KeyStrokeSet toKeyStrokeSet(){
+		LinkedList l = new LinkedList();
+		l.addAll(keys);
+		return new KeyStrokeSet( l);
+	}
 	public PasswordTry(ArrayList <KeyStroke> keys, boolean success){
 
 		this.keys = keys;

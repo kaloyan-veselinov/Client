@@ -3,6 +3,7 @@ package Database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.sql.PreparedStatement;
 
 
@@ -23,7 +24,7 @@ public class Request {
 			st = conn.prepareStatement(request);
 			st.setString(1, String.valueOf(Main.currentSystemAccount.getLogin().hashCode()));
 			st.setString(2, String.valueOf(i));
-			rs = st.executeQuery(request);
+			rs = st.executeQuery();
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -33,57 +34,65 @@ public class Request {
         return rs;
 	}
 	
-	public static ResultSet getLastSuccessfulEntries (String login, String domain){
+	public static int[] getLastSuccessfulEntries (String login, String domain,Connection conn){
 		
 		int loginHash = login.hashCode();
 		int domainHash = domain.hashCode();
 		
 		//TODO corriger la requête, elle ne gère pas le succès
-		String request = "Select Entree.Index,Local From Entree,Session,Compte"
-				+ "WHERE Entree.Session_index=Session.index and Session.Compte_Index = Compte.Index"
-				+ "and Compte.Login = ? and Compte.domainHash = ?"
-				+ "and Session.sucess = ?"
-				+ " Order by Entree.Index DESC Limit 50;";
+		String request = "SELECT Entree.Index from Entree "
+						+"	Where Entree.Session_index in (Select Session.index From Session "
+						+"	Where Session.sucess = 1 and Session.Compte_Index in (Select Compte.Index From Compte"
+						+"	Where Compte.Login = ? and Compte.domainHash = ?))"
+						+"	Order by Entree.Index DESC Limit 50;";
 		
-		Connection conn = null;
-		
-		conn=ConnectionBD.connect();
+
         
         ResultSet res= null;
+        int[] indexes = new int[50];
         
         try {
 			PreparedStatement entriesStatement = conn.prepareStatement(request);
 			entriesStatement.setInt(1, loginHash);
 			entriesStatement.setInt(2, domainHash);
-			entriesStatement.setBoolean(3,true);
-			res = entriesStatement.executeQuery(request);
-			conn.close();
+			res = entriesStatement.executeQuery();
+			int i =0;
+			while (res.next() && i<50){
+				indexes[i] = res.getInt(1);
+				i++;
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return res;
+        return indexes;
 	}
 	
-	public static ResultSet getTouchesForEntry(int entryIndex){
+	public static ArrayList getTouchesForEntry(int entryIndex,Connection conn){
 		String request = "Select * From Touche Where Touche.Entree_Index = ?;";
 
 		
-		Connection conn = null;
 		
-		conn=ConnectionBD.connect();
 		
         ResultSet res= null;
+        
+        ArrayList<ArrayList> keys = new ArrayList<ArrayList>(16);
         try {
 			PreparedStatement entriesStatement = conn.prepareStatement(request);
 			entriesStatement.setInt(1,entryIndex);
 			res = entriesStatement.executeQuery();
-			conn.close();
+			while(res.next()){
+		        ArrayList<String> values = new ArrayList<String>(16);
+		        for(int i = 2;i<17;i++){
+		        	values.add(res.getString(i));
+		        }
+		        keys.add(values);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return res;
+        return keys;
         
 	}
 	
@@ -108,7 +117,6 @@ public class Request {
 			rs = statement.executeQuery();
 			rs.next();
 			password = rs.getString(1);
-			conn.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
