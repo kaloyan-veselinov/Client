@@ -14,8 +14,8 @@ import Main.Password;
 public class DistanceTest {
 	
 	//TODO régler les valeurs des seuils
-	private static final double euclidianRationThreshold = 1;
-	private static final double manhattanRationThreshold = 1;
+	private static final double euclidianRationThreshold = 0.1;
+	private static final double manhattanRationThreshold = 0.1;
 	
 	//TODO fusionner login,domain et password dans une instace ce compte
 	public static boolean test(KeyStrokeSet testSet, String login, String domain, String password){
@@ -38,6 +38,7 @@ public class DistanceTest {
 			}
 			avgEuclidianDistance[i]/=euclidianDistances[i].length;
 			avgManhattanDistance[i]/=manhattanDistances[i].length;
+			System.out.println("avgE : " + avgEuclidianDistance[i] + " avgM : " + avgManhattanDistance[i]);
 			if(i<testSet.getSet().size()){
 				avgEuclidianDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme2();
 				avgManhattanDistanceRatio[i] = avgEuclidianDistance[i]/testSet.getSet().get(i).getNorme1();
@@ -47,6 +48,8 @@ public class DistanceTest {
 		}
 		avgEuclidianRatio /=(i+1);
 		avgManhatanRatio/=(i+1);
+		System.out.println("avgRE : " + avgEuclidianRatio + " avgRM : " + avgManhatanRatio);
+
 		return(avgEuclidianRatio<euclidianRationThreshold && avgManhatanRatio<manhattanRationThreshold);
 	}
 	

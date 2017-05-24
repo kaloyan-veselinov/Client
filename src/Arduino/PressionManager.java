@@ -53,6 +53,12 @@ public class PressionManager implements Runnable {
         try {
 
             vcpChannel = new ArduinoUsbChannel(port);
+            if(!(vcpChannel.serialPort.isOpened())){
+            	System.out.println("Impossible de se connecter au module de mesure de pressions, poursuite du programme "
+            			+ "sans mesure de pressions");
+            	tm.setArduinoConnected(false);
+            	this.setEnd(false);
+            }
         
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
@@ -64,7 +70,7 @@ public class PressionManager implements Runnable {
     @Override
     public void run(){
     	
-    	while(!stop){
+    	while(!stop && tm.isArduinoConnected()){
     		
     		//Attend le debut de la lecture des donnees par le clavier
 	    	synchronized(tm){
@@ -78,26 +84,28 @@ public class PressionManager implements Runnable {
 	    	
 	    	try {
 	    		
-				vcpChannel.open();
-				
-				ArrayList<Mesure> tabMesures= new ArrayList<Mesure>(); //mesures brutes de pression
-	            
-	            BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
-	            String line;
-	                      	
-	            while (((line = vcpInput.readLine()) != null) || end == false) {
-	        
-	            	insertionTab (line, tabMesures);
-	            	console.println("Data from Arduino: " + line);  
-	            }
-	            System.out.println("Sortie boucle");
-	            
-	            triTab(tabMesures); 
-	            //afficherTabTriee();
-	            
-	            vcpInput.close();
-	            vcpChannel.close();
-	                               			
+	    		if(tm.isArduinoConnected()){
+	    		
+					vcpChannel.open();
+					
+					ArrayList<Mesure> tabMesures= new ArrayList<Mesure>(); //mesures brutes de pression
+		            
+		            BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
+		            String line;
+		                      	
+		            while (((line = vcpInput.readLine()) != null) || end == false) {
+		        
+		            	insertionTab (line, tabMesures);
+		            	console.println("Data from Arduino: " + line);  
+		            }
+		            System.out.println("Sortie boucle");
+		            
+		            triTab(tabMesures); 
+		            //afficherTabTriee();
+		            
+		            vcpInput.close();
+		            vcpChannel.close();
+	    		}          			
 			} catch (SerialPortException | IOException e) {
 				e.printStackTrace(System.err);
 			}

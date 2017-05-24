@@ -25,7 +25,7 @@ public class TimingManager implements KeyListener {
 	private PressionManager pm;
 	private Thread pressureThread;
 	
-	private boolean arduinoConnected = false;
+	private boolean arduinoConnected = true;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -129,7 +129,11 @@ public class TimingManager implements KeyListener {
 					keyStrokes.get(keyStrokes.size()-1).setModifierSequence(ModifierSequence.getSequence(modifiersOrder));
 				}
 			} 
-			if(pm!=null){
+				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
+				keyStrokes.clear();
+				strokes.clear();
+			
+			if(pm!=null && arduinoConnected){
 				pm.setEnd(true);
 				ArrayList<Double> d = pm.getTabTriee();
 				System.out.println(d.size());
@@ -206,5 +210,13 @@ public class TimingManager implements KeyListener {
 
 	public void setKeyStrokes(ArrayList<KeyStroke> keyStrokes) {
 		this.keyStrokes = keyStrokes;
+	}
+
+	public boolean isArduinoConnected() {
+		return arduinoConnected;
+	}
+
+	public void setArduinoConnected(boolean arduinoConnected) {
+		this.arduinoConnected = arduinoConnected;
 	}
 }
