@@ -15,6 +15,7 @@ import Main.Entry;
 import Main.Main;
 import Main.Password;
 import Main.PasswordGetter;
+import Main.PasswordTry;
 
 @SuppressWarnings("serial")
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
@@ -80,12 +81,14 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
 					if (Main.passwordMatch(psswd.getPassword(), p.getPassword())){
 						validTries++;
+						
 						if(validTries>=15){
 							flushSession();
 						}
 					}
 						psswd.setText("");
 						progressBar.repaint();
+
 					}else if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE){
 						psswd.setText("");
 					}

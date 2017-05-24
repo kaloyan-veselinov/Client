@@ -61,6 +61,7 @@ public class Session {
 		if(passwordTry.isSuccess()){
 			manager.newSession();
 		}
+		System.out.println("Essai ajouté");
 	}
 
 	public Date getDebutTime() {

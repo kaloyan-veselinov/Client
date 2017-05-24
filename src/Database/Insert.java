@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import Main.Main;
 import javax.swing.JOptionPane;
@@ -55,6 +56,8 @@ public class Insert {
 	
 	
 	public static  void addSession(Session s,Connection conn){
+		
+		System.out.println("Ajout d'un nouvelle session");
 		ResultSet res = null;
 		
 		// on recupere le compte associe a la session
@@ -77,7 +80,8 @@ public class Insert {
 		
 		String touche = "INSERT INTO Touche (Entree_Index,timeUp,timeDown,pressure,modifierSequence,"
 				+ "shiftUp,shiftDown,shiftLocation,ctrlUp,ctrlDown,ctrlLocation,altUp,altDown,"
-				+ "altLocation,capslockUp,capsLockDown) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); ";
+				+ "altLocation,capslockUp,capsLockDown) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),";
+		String toucheValues = "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 		
 		
@@ -104,7 +108,7 @@ public class Insert {
 				while(res.next()){
 					sessionId = res.getInt("max(Session.index)");
 				}
-				
+				System.out.println("Ajout des donnéees");
 				for (int i=0; i<s.getPasswordTries().size();i++){
 					PreparedStatement entreeStatement = conn.prepareStatement(entree);
 					entreeStatement.setInt(1,sessionId);
@@ -119,25 +123,30 @@ public class Insert {
 					while(res.next()){
 						entreeId = res.getInt("max(Entree.Index)");
 					}
+					
+					String allTouche = touche + String.join(",", Collections.nCopies(s.getPasswordTries().get(i).getKeys().size()-1, toucheValues))+";";
+					PreparedStatement toucheStatement = conn.prepareStatement(allTouche);
+
 					for(int j=0; j<s.getPasswordTries().get(i).getKeys().size();j++){
-						PreparedStatement toucheStatement = conn.prepareStatement(touche);
 						ArrayList<String>encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(new Password(
 								s.getPassword().toCharArray(),s.getUserId()));
-						toucheStatement.setInt(1,entreeId);
+						toucheStatement.setInt(j*16+1,entreeId);
 						
 						//TODO moddifier avec un iterator 
 						int k=0;
 						for (k=0; k<encryptedValues.size();k++){
-							toucheStatement.setString(k+2,encryptedValues.get(k));
+							
+							toucheStatement.setString(j*16 +k+2,encryptedValues.get(k));
 						}
 						
 						while(k+2<17){
-							toucheStatement.setString(k+2, Encryption.encryptText("NULL", s.getPassword()));
+							toucheStatement.setString(j*16+k+2, Encryption.encryptText("NULL", s.getPassword()));
 							k++;
 						}
 
-						toucheStatement.executeUpdate();
 					}
+					toucheStatement.executeUpdate();
+
 				}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
