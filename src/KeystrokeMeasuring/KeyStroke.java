@@ -1,6 +1,8 @@
 package KeystrokeMeasuring;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import Encryption.Encryption;
 import Main.Password;
@@ -11,10 +13,12 @@ public class KeyStroke extends Key {
 	private int modifierSequence;
 	private char c;
 	private Modifier shift, ctrl, alt, capsLock;
+	private KeyStroke next;
 	
 	public KeyStroke(char c, long timeUp, long timeDown){
 		super(timeUp, timeDown);
 		this.setC(c);
+		this.setNext(null);
 	}
 	
 	public KeyStroke(ArrayList<String> encryptedValues, Password p){
@@ -99,7 +103,7 @@ public class KeyStroke extends Key {
 			values[14] = 0;
 		}
 		return values;
-	}
+}
 	
 	@Override
 	public ArrayList<String> getEncryptedValues(Password p){
@@ -117,6 +121,13 @@ public class KeyStroke extends Key {
 		return encryptedValues;
 	}
 	
+	public static char[] getChars(ArrayList<KeyStroke> keyStrokes){
+		char[] chars = new char[keyStrokes.size()];
+		for(int i=0; i<chars.length; i++){
+			chars[i]=keyStrokes.get(i).getC();
+		}
+		return chars;	
+	}
 	
 	public double euclidianDistance (KeyStroke k){
 		double dTimeUp = Math.pow(k.getTimeUp()-this.getTimeUp(), 2);
@@ -124,7 +135,7 @@ public class KeyStroke extends Key {
 		double dPressure = Math.pow(k.getPressure()-this.getPressure(), 2);
 		double dShiftUp = Math.pow(k.getShift().getTimeUp()-this.getShift().getTimeUp(), 2);
 		double dShiftDown = Math.pow(k.getShift().getTimeDown()-this.getShift().getTimeDown(), 2);
-		double dShiftLocation = Math.pow(k.getShift().getLocation()-this.getShift().getLocation(), 2); //pas sûr qu'une distance euclidienne soit adaptée
+		double dShiftLocation = Math.pow(k.getShift().getLocation()-this.getShift().getLocation(), 2); //pas s�r qu'une distance euclidienne soit adapt�e
 		double dCtrlUp = Math.pow(k.getCtrl().getTimeUp()-this.getCtrl().getTimeUp(), 2);
 		double dCtrlDown = Math.pow(k.getCtrl().getTimeDown()-this.getCtrl().getTimeDown(), 2);
 		double dCtrlLocation = Math.pow(k.getCtrl().getLocation() - this.getCtrl().getLocation(), 2); //idem
@@ -160,14 +171,62 @@ public class KeyStroke extends Key {
 	}
 	
 	
-	public static char[] getChars(ArrayList<KeyStroke> keyStrokes){
-		char[] chars = new char[keyStrokes.size()];
-		for(int i=0; i<chars.length; i++){
-			chars[i]=keyStrokes.get(i).getC();
-		}
-		return chars;	
+	@Override
+	public long getReleasePressTimes(){
+		if(next!=null)
+			return this.next.getTimeDown() - this.getTimeUp();
+		else return 0;
 	}
-
+	
+	@Override
+	public long getReleaseReleaseTimes(){
+		if(next!=null)
+			return this.next.getTimeUp() - this.getTimeUp();
+		else return 0;
+	}
+	
+	/**
+	 * Retourne le produit scalaire entre ce vecteur et le vecteur de reference
+	 * @param ref Le vecteur de reference
+	 * @return le produit scalaire
+	 */
+	public double getScalarProduct(KeyStroke ref){
+		double scalarProduct = ref.getPressure()*this.getPressure() + ref.getPressReleaseTimes()*this.getPressReleaseTimes() + ref.getReleasePressTimes()*this.getReleasePressTimes() + ref.getReleaseReleaseTimes()*this.getReleaseReleaseTimes();
+		if(ref.getShift()!=null && this.getShift()!=null)
+			scalarProduct += this.getShift().getScalarProduct(ref.getShift());
+		if(ref.getCtrl()!=null && this.getCtrl()!=null)
+			scalarProduct += this.getCtrl().getScalarProduct(ref.getCtrl());
+		if(ref.getAlt()!=null && this.getAlt()!=null)
+			scalarProduct += this.getAlt().getScalarProduct(ref.getAlt());
+		if(ref.getCapsLock()!=null && this.getCapsLock()!=null)
+			scalarProduct += this.getCapsLock().getScalarProduct(ref.getCapsLock());
+		return scalarProduct;
+	}
+	
+	
+	public double getNormSquared(){
+		double normSquared = Math.pow(pressure, 2) + Math.pow(getPressReleaseTimes(), 2) + Math.pow(getReleasePressTimes(), 2) + Math.pow(getReleaseReleaseTimes(), 2);
+		if(shift!=null)
+			normSquared += shift.getNormSquared();
+		if(ctrl!=null)
+			normSquared += ctrl.getNormSquared();
+		if(alt!=null)
+			normSquared += alt.getNormSquared();
+		if(capsLock!=null)
+			normSquared += capsLock.getNormSquared();
+		return normSquared;
+	}
+	
+	/**
+	 * Retourne la similarite cosinus entre cette touche et une touche de reference
+	 * @param ref La touche de reference
+	 * @return La similarite cosinus
+	 */
+	public double getCosineSimilarity(KeyStroke ref){
+		return this.getScalarProduct(ref) / Math.sqrt(this.getNormSquared() * ref.getNormSquared());
+	}
+	
+	
 	public double getPressure() {
 		return pressure;
 	}
@@ -197,6 +256,7 @@ public class KeyStroke extends Key {
 
 	public void setShift(Modifier shift) {
 		this.shift = shift;
+		this.shift.setAssociatedKeyStroke(this);
 	}
 
 	public Modifier getCtrl() {
@@ -205,6 +265,7 @@ public class KeyStroke extends Key {
 
 	public void setCtrl(Modifier ctrl) {
 		this.ctrl = ctrl;
+		this.ctrl.setAssociatedKeyStroke(this);
 	}
 
 	public Modifier getAlt() {
@@ -213,6 +274,7 @@ public class KeyStroke extends Key {
 
 	public void setAlt(Modifier alt) {
 		this.alt = alt;
+		this.alt.setAssociatedKeyStroke(this);
 	}
 
 	public Modifier getCapsLock() {
@@ -221,5 +283,14 @@ public class KeyStroke extends Key {
 
 	public void setCapsLock(Modifier capsLock) {
 		this.capsLock = capsLock;
+		this.capsLock.setAssociatedKeyStroke(this);
+	}
+
+	public KeyStroke getNext() {
+		return next;
+	}
+
+	public void setNext(KeyStroke next) {
+		this.next = next;
 	}	
 }

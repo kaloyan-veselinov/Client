@@ -4,7 +4,9 @@ package Main;
 import java.io.FileWriter;
 
 import java.io.PrintWriter;
+import java.sql.Connection;
 
+import Database.ConnectionBD;
 import GUI.MenuGUI;
 import Session.SessionManager;
 import Sync.SyncUtil;
@@ -20,8 +22,10 @@ public class Main {
 	public static double [][] times; //contient les valeurs de temps separant chaque touche pour les differents essais
 	public static SessionManager sessionManager;
 	public static SystemAccount currentSystemAccount;
+	public static Connection conn;
 	
 	public static void main(String[] args) throws InterruptedException{
+		conn = ConnectionBD.connect();
 		sessionManager =new SessionManager();
 	//	GUI initGui = new GUI(); //initialisation de l'interface
 		@SuppressWarnings("unused")

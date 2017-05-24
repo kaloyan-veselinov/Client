@@ -23,7 +23,7 @@ public class SessionManager {
 		currentSession.setRunning(false);
 		//le succès de la session est défini à partir du succès de la dernière tentative
 		currentSession.setSuccess(currentSession.getPasswordTries().get(currentSession.getPasswordTries().size()-1).isSuccess());
-		Insert.addSession(currentSession);
+		Insert.addSession(currentSession,Main.Main.conn);
 		prevSessions.add(new Session(currentSession,this));
 		
 	}

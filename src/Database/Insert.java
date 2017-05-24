@@ -19,7 +19,7 @@ import Encryption.Encryption;
 public class Insert {
 
 	
-	public static void addCompte(Password p,String domain,int passwordLength){
+	public static void addCompte(Password p,String domain,int passwordLength,Connection conn){
 		
 		System.out.println("Ajout d'un compte");
 		String ePassword = Encryption.encryptPassword(p.toString());
@@ -27,9 +27,7 @@ public class Insert {
 		int hDomain = domain.hashCode();
 		String ePasswordLength = Encryption.encryptInt(passwordLength, p.toString());
 		
-		Connection conn = null;
 		
-		conn = ConnectionBD.connect();
         
        
        String compte = "INSERT INTO Compte (Login,masterPassword,domainHash,passwordLength,CompteSystem_Login) "
@@ -49,19 +47,14 @@ public class Insert {
 			e.printStackTrace();
 			System.out.println("Erreur lors de l'ajout du compte");
 		}
-       try {
-		conn.close();
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+ 
        
        
 	}
 		
 	
 	
-	public static  void addSession(Session s){
+	public static  void addSession(Session s,Connection conn){
 		ResultSet res = null;
 		
 		// on recupere le compte associe a la session
@@ -88,8 +81,7 @@ public class Insert {
 		
 		
 		
-		Connection conn = null;
-		conn = ConnectionBD.connect();
+		
                 
         Statement accountStatement;
 		try {
@@ -103,7 +95,7 @@ public class Insert {
 		        
 		        PreparedStatement sessionStatement = conn.prepareStatement(session);
 		        sessionStatement.setInt(1,accountId);
-		        sessionStatement.setString(2,Encryption.encryptBoolean(s.isSuccess(), s.getPassword()));
+		        sessionStatement.setBoolean(2,s.isSuccess());
 				sessionStatement.executeUpdate();
 				
 				Statement sessionIndexStatement = conn.createStatement();
@@ -154,12 +146,7 @@ public class Insert {
        
         System.out.println("Session ajoutée");
        
-        try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+       
 	}
 public static String addCompteSystem(String identifiant, String password,Connection conn){ 
 		
