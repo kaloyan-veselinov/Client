@@ -13,8 +13,9 @@ public class PressionManager implements Runnable {
 	private ArrayList<Double> tabTriee;
 	private ArduinoUsbChannel vcpChannel;
 	private final Console console;
-	private boolean stop;
 	private final TimingManager tm;
+	private boolean stop; 
+	private boolean end = false;
     
     public PressionManager(TimingManager tm){
     	
@@ -70,6 +71,7 @@ public class PressionManager implements Runnable {
 	    		try{
 	    			System.out.println("Waiting!");
 	    			tm.wait();
+	    			setEnd(false);
 	    			System.out.print("Done waiting!");
 	    		} catch(InterruptedException ie){}
 	    	}
@@ -83,10 +85,12 @@ public class PressionManager implements Runnable {
 	            BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
 	            String line;
 	                      	
-	            while ((line = vcpInput.readLine()) != null) {
+	            while (((line = vcpInput.readLine()) != null) || end == false) {
+	        
 	            	insertionTab (line, tabMesures);
 	            	console.println("Data from Arduino: " + line);  
 	            }
+	            System.out.println("Sortie boucle");
 	            
 	            triTab(tabMesures); 
 	            //afficherTabTriee();
@@ -106,6 +110,7 @@ public class PressionManager implements Runnable {
     public void insertionTab(String s, ArrayList<Mesure> tab){
         
     	String[] temp = s.split("_");
+    	System.out.println(s);
         
         char ident=temp[0].charAt(0);
         double p=Double.parseDouble(temp[1]);
@@ -139,7 +144,7 @@ public class PressionManager implements Runnable {
         
         m.add(pres);
         
-        tabTriee=m;
+        tabTriee=(ArrayList<Double>) m.clone();
     
     }
     
@@ -161,6 +166,16 @@ public class PressionManager implements Runnable {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+
+	public boolean isEnd() {
+		return end;
+	}
+
+
+	public void setEnd(boolean end) {
+		this.end = end;
 	}
 
 }

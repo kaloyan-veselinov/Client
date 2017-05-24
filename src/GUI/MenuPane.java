@@ -40,7 +40,12 @@ public class MenuPane extends JPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				setVisible(false);
-				f.getPsswdPane.setVisible(true);
+				f.getPsswdPane=new GetPasswordGUI(f.getMenuPane(),f);
+				layout.putConstraint(SpringLayout.WEST, f.getMenuPane(), 0, SpringLayout.WEST,f.getMainPane());
+				layout.putConstraint(SpringLayout.EAST, f.getMenuPane(), 0, SpringLayout.EAST, f.getMainPane());
+				layout.putConstraint(SpringLayout.SOUTH, f.getMenuPane(), 0, SpringLayout.SOUTH, f.getMainPane());
+				layout.putConstraint(SpringLayout.NORTH, f.getMenuPane(), 0, SpringLayout.NORTH, f.getMainPane());
+				f.getGetPsswdPane().setVisible(true);
 			}
 			
 		});

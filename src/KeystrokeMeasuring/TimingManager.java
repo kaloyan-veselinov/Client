@@ -24,6 +24,8 @@ public class TimingManager implements KeyListener {
 	
 	private PressionManager pm;
 	private Thread pressureThread;
+	
+	private boolean arduinoConnected = false;
 		
 	//Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -55,6 +57,9 @@ public class TimingManager implements KeyListener {
 		strokes = new ArrayList<KeyStrokeListener>(16);
 		keyStrokes = new ArrayList<KeyStroke>(16);
 		t=Toolkit.getDefaultToolkit();
+		pm=new PressionManager(this);
+		pressureThread = new Thread(pm);
+		pressureThread.start();
 	}
 	
 	
@@ -124,10 +129,15 @@ public class TimingManager implements KeyListener {
 					keyStrokes.get(keyStrokes.size()-1).setModifierSequence(ModifierSequence.getSequence(modifiersOrder));
 				}
 			} 
-			for(int i=0; i<p.getPassword().length; i++){
-				keyStrokes.get(i).setPressure(pm.getTabTriee().get(i));
-			} 
-				
+			if(pm!=null){
+				pm.setEnd(true);
+				ArrayList<Double> d = pm.getTabTriee();
+				System.out.println(d.size());
+				for(int i=0; i<p.getPassword().length; i++){
+					double test =d.get(i);
+					keyStrokes.get(i).setPressure(test);
+				} 
+			}
 				
 			
 			
@@ -143,6 +153,10 @@ public class TimingManager implements KeyListener {
 			keyStrokes.clear();
 		}
 		else{ // si ce n'est pas la touche entre, on prend en comte le caractere
+			pm.setEnd(false);
+			synchronized(this){
+				this.notifyAll();
+			}
 			strokes.add(new CharacterListener(System.nanoTime(),arg0,t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}

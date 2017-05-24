@@ -57,8 +57,8 @@ public class MenuGUI extends JFrame {
 		
 		mainPane.add(createAccountPane);
 		
-		getPsswdPane = new GetPasswordGUI(menuPane,this);
-		mainPane.add(getPsswdPane);
+		//getPsswdPane = new GetPasswordGUI(menuPane,this);
+		//mainPane.add(getPsswdPane);
 
 		
 		layout.putConstraint(SpringLayout.WEST, menuPane, 0, SpringLayout.WEST, mainPane);
@@ -66,10 +66,7 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.SOUTH, menuPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, menuPane, 0, SpringLayout.NORTH, mainPane);
 		
-		layout.putConstraint(SpringLayout.WEST, getPsswdPane, 0, SpringLayout.WEST, mainPane);
-		layout.putConstraint(SpringLayout.EAST, getPsswdPane, 0, SpringLayout.EAST, mainPane);
-		layout.putConstraint(SpringLayout.SOUTH, getPsswdPane, 0, SpringLayout.SOUTH, mainPane);
-		layout.putConstraint(SpringLayout.NORTH, getPsswdPane, 0, SpringLayout.NORTH, mainPane);
+	
 		
 		
 		layout.putConstraint(SpringLayout.WEST, createAccountPane, 0, SpringLayout.WEST, mainPane);
