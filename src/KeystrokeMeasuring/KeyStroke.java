@@ -130,8 +130,8 @@ public class KeyStroke extends Key {
 	}
 	
 	public double euclidianDistance (KeyStroke k){
-		double dTimeUp = Math.pow(k.getTimeUp()-this.getTimeUp(), 2);
-		double dTimeDown = Math.pow(k.getTimeDown()-this.getTimeDown(), 2);
+		double dTimeDownUp = Math.pow(k.getPressReleaseTimes()-this.getPressReleaseTimes(), 2);
+		double dTimeUpDown = Math.pow(k.getReleasePressTimes()-this.getReleasePressTimes(), 2);
 		double dPressure = Math.pow(k.getPressure()-this.getPressure(), 2);
 		double dShiftUp = Math.pow(k.getShift().getTimeUp()-this.getShift().getTimeUp(), 2);
 		double dShiftDown = Math.pow(k.getShift().getTimeDown()-this.getShift().getTimeDown(), 2);
@@ -145,14 +145,14 @@ public class KeyStroke extends Key {
 		double dCapslockUp = Math.pow(k.getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp(), 2);
 		double dCapslockDown = Math.pow(k.getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown(), 2);
 
-		return Math.sqrt(dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
+		return Math.sqrt(dTimeDownUp+dTimeDownUp+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
 				+dAltUp+dAltDown+dAltLocation+dCapslockUp+ dCapslockDown);
 
 	}
 	
 	public double manhattanDistance(KeyStroke k){
-		double dTimeUp = Math.abs(k.getTimeUp()-this.getTimeUp());
-		double dTimeDown = Math.abs(k.getTimeDown()-this.getTimeDown());
+		double dTimeDownUp = Math.abs(k.getPressReleaseTimes()-this.getPressReleaseTimes());
+		double dTimeUpDown = Math.abs(k.getReleasePressTimes()-this.getReleasePressTimes());
 		double dPressure = Math.abs(k.getPressure()-this.getPressure());
 		double dShiftUp = Math.abs(k.getShift().getTimeUp()-this.getShift().getTimeUp());
 		double dShiftDown = Math.abs(k.getShift().getTimeDown()-this.getShift().getTimeDown());
@@ -166,7 +166,7 @@ public class KeyStroke extends Key {
 		double dCapslockUp = Math.abs(k.getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp());
 		double dCapslockDown = Math.abs(k.getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown());
 
-		return (dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
+		return (dTimeUpDown+dTimeDownUp+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
 				+dAltUp+dAltDown+dAltLocation+dCapslockUp+dCapslockDown);
 	}
 	

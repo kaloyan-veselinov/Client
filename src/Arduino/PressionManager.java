@@ -46,7 +46,7 @@ public class PressionManager implements Runnable {
             }
 
         } while (port == null);
-        //port = "COM4";
+        port = "COM4";
         
         
         console.println("Connection au Port " + port);

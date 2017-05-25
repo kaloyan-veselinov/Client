@@ -41,13 +41,13 @@ public class Modifier extends Key {
 	
 	
 	public double getScalarProduct(Modifier ref){
-		return ref.getPressReleaseTimes()*this.getPressReleaseTimes() + ref.getReleasePressTimes()*this.getReleasePressTimes() + ref.getReleaseReleaseTimes()*this.getReleaseReleaseTimes();
+		return ref.getPressReleaseTimes()*this.getPressReleaseTimes() + ref.getReleasePressTimes()*this.getReleasePressTimes() + ref.getReleaseReleaseTimes()*this.getReleaseReleaseTimes() + ref.getLocation()*this.getLocation();
 	}
 	
 	
 	@Override
 	public double getNormSquared(){
-		return Math.pow(getPressReleaseTimes(), 2) + Math.pow(getReleasePressTimes(), 2) + Math.pow(getReleaseReleaseTimes(), 2);
+		return Math.pow(getPressReleaseTimes(), 2) + Math.pow(getReleasePressTimes(), 2) + Math.pow(getReleaseReleaseTimes(), 2) + Math.pow(getLocation(), 2);
 	}
 	
 	public int getLocation() {
