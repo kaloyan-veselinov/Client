@@ -130,8 +130,7 @@ public class TimingManager implements KeyListener {
 				}
 			} 
 				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
-				keyStrokes.clear();
-				strokes.clear();
+
 			
 			if(pm!=null && arduinoConnected){
 				pm.setEnd(true);
