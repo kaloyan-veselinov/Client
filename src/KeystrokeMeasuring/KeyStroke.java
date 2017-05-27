@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+
 import Encryption.Encryption;
-import Main.Password;
+import Main.Account;
 
 public class KeyStroke extends Key {
 	
@@ -21,28 +23,30 @@ public class KeyStroke extends Key {
 		this.setNext(null);
 	}
 	
-	public KeyStroke(ArrayList<String> encryptedValues, Password p){
-		super(Encryption.decryptLong(encryptedValues.get(0), new String(p.getPassword())), Encryption.decryptLong(encryptedValues.get(0), new String(p.getPassword())));
-		setPressure(Encryption.decryptValue(encryptedValues.get(2), new String(p.getPassword())));
-		setModifierSequence(Encryption.decryptInt(encryptedValues.get(3), new String(p.getPassword())));
-		long tempDown=Encryption.decryptLong(encryptedValues.get(5), new String(p.getPassword()));
-		if(tempDown>=0){
-			setShift(new Modifier(Encryption.decryptLong(encryptedValues.get(4), new String(p.getPassword())), tempDown,Encryption.decryptInt(encryptedValues.get(6), new String(p.getPassword()))));
-		} else setShift(null);
-		tempDown=Encryption.decryptLong(encryptedValues.get(8), new String(p.getPassword()));
-		if(tempDown>=0){
-			setCtrl(new Modifier(Encryption.decryptLong(encryptedValues.get(7), new String(p.getPassword())), tempDown,Encryption.decryptInt(encryptedValues.get(9), new String(p.getPassword()))));
-		} else setCtrl(null);
-		tempDown=Encryption.decryptLong(encryptedValues.get(11), new String(p.getPassword()));
-		if(tempDown>=0){
-			setAlt(new Modifier(Encryption.decryptLong(encryptedValues.get(10), new String(p.getPassword())), tempDown,Encryption.decryptInt(encryptedValues.get(12), new String(p.getPassword()))));
-		} else setAlt(null);
-		tempDown=Encryption.decryptLong(encryptedValues.get(14), new String(p.getPassword()));
-		if(tempDown>=0){
-			setCapsLock(new Modifier(Encryption.decryptLong(encryptedValues.get(13), new String(p.getPassword())), tempDown));
-		} else setCapsLock(null);
+	public KeyStroke(ArrayList<String> encryptedValues, Account account) throws EncryptionOperationNotPossibleException {
 		
-	}
+		super(Encryption.decryptLong(encryptedValues.get(0), account.getPasswordAsString()), Encryption.decryptLong(encryptedValues.get(0), account.getPasswordAsString()));
+	
+		setPressure(Encryption.decryptValue(encryptedValues.get(2), account.getPasswordAsString()));
+		setModifierSequence(Encryption.decryptInt(encryptedValues.get(3), account.getPasswordAsString()));
+		long tempDown=Encryption.decryptLong(encryptedValues.get(5), account.getPasswordAsString());
+		if(tempDown>=0){
+			setShift(new Modifier(Encryption.decryptLong(encryptedValues.get(4), account.getPasswordAsString()), tempDown,Encryption.decryptInt(encryptedValues.get(6), account.getPasswordAsString())));
+		} else setShift(null);
+		tempDown=Encryption.decryptLong(encryptedValues.get(8), account.getPasswordAsString());
+		if(tempDown>=0){
+			setCtrl(new Modifier(Encryption.decryptLong(encryptedValues.get(7), account.getPasswordAsString()), tempDown,Encryption.decryptInt(encryptedValues.get(9), account.getPasswordAsString())));
+		} else setCtrl(null);
+		tempDown=Encryption.decryptLong(encryptedValues.get(11), account.getPasswordAsString());
+		if(tempDown>=0){
+			setAlt(new Modifier(Encryption.decryptLong(encryptedValues.get(10), account.getPasswordAsString()), tempDown,Encryption.decryptInt(encryptedValues.get(12), account.getPasswordAsString())));
+		} else setAlt(null);
+		tempDown=Encryption.decryptLong(encryptedValues.get(14), account.getPasswordAsString());
+		if(tempDown>=0){
+			setCapsLock(new Modifier(Encryption.decryptLong(encryptedValues.get(13), account.getPasswordAsString()), tempDown));
+		} else setCapsLock(null);
+
+}
 	
 	public double getNorme2 (){
 		double[] values = getValuesArray();
@@ -111,10 +115,10 @@ public class KeyStroke extends Key {
 	}
 	
 	@Override
-	public ArrayList<String> getEncryptedValues(Password p){
+	public ArrayList<String> getEncryptedValues(String p){
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
-		encryptedValues.add(Encryption.encryptValue(pressure,new String(p.getPassword())));
-		encryptedValues.add(Encryption.encryptInt(modifierSequence,new String(p.getPassword())));
+		encryptedValues.add(Encryption.encryptValue(pressure,p));
+		encryptedValues.add(Encryption.encryptInt(modifierSequence,p));
 		if(shift!=null)
 			encryptedValues.addAll(shift.getEncryptedValues(p));
 		if(ctrl!=null)

@@ -25,8 +25,10 @@ import KeystrokeMeasuring.TimingManager;
 import Main.PasswordGetter;
 import Main.PasswordTry;
 import Warnings.SimpleWarning;
-import Main.Password;
+import Main.Account;
 import Main.Main;
+
+import Exception.BadLoginException;
 
 @SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel{
@@ -182,9 +184,8 @@ public class GetPasswordGUI extends JPanel{
 			domain = domain.substring(0, i+1);
 		} 
 		if(login.length()>2 && domain.length()>2){
-			Main.sessionManager.getCurrentSession().setPassword(new String (psswdField.getPassword()));
-			Main.sessionManager.getCurrentSession().setUserId(idField.getText());
-			Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
+			Account account = new Account(login,domain,psswdField.getPassword());
+			Main.sessionManager.getCurrentSession().setAccount(new Account(idField.getText(),domainField.getText(),psswdField.getPassword()));
 			Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(timingManager.getKeyStrokes()));
 			System.out.println("PasswordTry ajouté");
 			//timingManager.getStrokes().clear();
@@ -193,19 +194,32 @@ public class GetPasswordGUI extends JPanel{
 	
 			
 			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
-			if(DistanceTest.test(new KeyStrokeSet(ksl), idField.getText(),domainField.getText(), new String ( psswdField.getPassword()))){
-				Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
-				f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), login, domain));
-				Main.sessionManager.endCurrentSession();
+			try {
+				if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
+					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
+					f.showPasswordPane(PasswordGetter.getPassword(account));
+					Main.sessionManager.endCurrentSession();
 
-			}else{
-				new SimpleWarning("Maniere d'ecrire non reconnue");
-				Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
+				}else{
+					new SimpleWarning("Maniere d'ecrire non reconnue");
+					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
+				}
+			} catch (BadLoginException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}else{
 			new SimpleWarning("L'un des champs est trop court");
 		}
 	}
+	
+	public JTextField getDomainField() {
+		return domainField;
+	}
+
+	public void setDomainField(JTextField domainField) {
+		this.domainField = domainField;
+}
 
 }

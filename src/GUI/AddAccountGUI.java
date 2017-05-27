@@ -2,7 +2,7 @@ package GUI;
 
 import GUIElements.CancelButton;
 import Main.Main;
-import Main.Password;
+import Main.Account;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +12,11 @@ import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import Database.Request;
+
 import java.awt.event.FocusListener;
+import Exception.AccountAlreadyExistsException;
 
 import Warnings.SimpleWarning;
 
@@ -81,7 +85,12 @@ public class AddAccountGUI extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					tryCreateAccount();
+					try {
+						tryCreateAccount();
+					} catch (AccountAlreadyExistsException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
 				}
 				
@@ -106,7 +115,12 @@ public class AddAccountGUI extends JPanel {
 		button1.setSize(15,10);
 		button1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				tryCreateAccount();
+				try {
+					tryCreateAccount();
+				} catch (AccountAlreadyExistsException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -230,12 +244,15 @@ public class AddAccountGUI extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, passwordLengthField, 30, SpringLayout.EAST, passwordLengthSlider);
 		layout.putConstraint(SpringLayout.SOUTH, passwordLengthField, 0, SpringLayout.SOUTH, passwordLengthSlider);
 		
+		txt1.requestFocus();
 		//setContentPane(mainPanel);
 		setVisible(false);
 	}
 	
-	private void tryCreateAccount(){
+
+	private void tryCreateAccount() throws AccountAlreadyExistsException{
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
+		
 
 		// on verifie que les deux mots de passe correspondent
 		psswdMatch = Main.passwordMatch(txt1.getPassword(),txt2.getPassword());
@@ -259,17 +276,19 @@ public class AddAccountGUI extends JPanel {
 					while(domain.charAt(i)==' ');
 					domain = domain.substring(0, i+1);
 				}
-					if(login.length()>2 && domain.length()>2){
-					initPsswd.setVisible(false);
-					Main.p = new Password (txt2.getPassword(),userIdField.getText());
-					Main.userId = userIdField.getText();
-					f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
-					Main.sessionManager.getCurrentSession().setUserId(login);
-					Main.sessionManager.getCurrentSession().setDomain(domain);
-					Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
-					setVisible(false);
+				Account account = new Account(login,domain,txt1.getPassword());
+				if(Request.checkIfAccountExists( account, Main.conn)){
+					throw new AccountAlreadyExistsException();
 				}else{
-					new SimpleWarning("L'un des champs est trop court");
+
+					if(login.length()>2 && domain.length()>2){
+						initPsswd.setVisible(false);
+						f.initBdGui(account,passwordLengthSlider.getValue());
+
+						setVisible(false);
+					}else{
+						new SimpleWarning("L'un des champs est trop court");
+					}
 				}
 			}else {
 				new SimpleWarning("Mot de passe trop court \n min: 8");
@@ -282,6 +301,17 @@ public class AddAccountGUI extends JPanel {
 		}
 	
 	}
+
+	public JPasswordField getTxt1() {
+		return txt1;
+	}
+
+	public void setTxt1(JPasswordField txt1) {
+		this.txt1 = txt1;
+	}
+	
+
+
 	
 
 }
