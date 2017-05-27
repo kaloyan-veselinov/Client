@@ -1,8 +1,7 @@
 package KeystrokeMeasuring;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Arrays;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
@@ -46,7 +45,8 @@ public class KeyStroke extends Key {
 			setCapsLock(new Modifier(Encryption.decryptLong(encryptedValues.get(13), account.getPasswordAsString()), tempDown));
 		} else setCapsLock(null);
 
-}
+	}
+	
 	@Override
 	public double getNorme1(){
 		double norme1 = super.getNorme1();
@@ -246,6 +246,35 @@ public class KeyStroke extends Key {
 	 */
 	public double getCosineSimilarity(KeyStroke ref){
 		return this.getScalarProduct(ref) / Math.sqrt(this.getNormSquared() * ref.getNormSquared());
+	}
+	
+	public double[] getValues(){
+		double[] values = new double[14];
+		Arrays.fill(values, 0.0);
+		values[0] = getReleasePressTimes();
+		values[1] = getPressReleaseTimes();
+		values[2] = getPressure();
+		if(getShift() != null){
+			values[3] = getShift().getReleasePressTimes();
+			values[4] = getShift().getPressReleaseTimes();
+			values[5] = getShift().getLocation();
+		}
+		if(getCtrl() != null){
+			values[6] = getCtrl().getReleasePressTimes();
+			values[7] = getCtrl().getPressReleaseTimes();
+			values[8] = getCtrl().getLocation();
+		}
+		if(getAlt() != null){
+			values[3] = getAlt().getReleasePressTimes();
+			values[4] = getAlt().getPressReleaseTimes();
+			values[5] = getAlt().getLocation();
+		}
+		if(getCapsLock() != null){
+			values[3] = getCapsLock().getReleasePressTimes();
+			values[4] = getCapsLock().getPressReleaseTimes();
+			values[5] = getCapsLock().getLocation();
+		}
+		return values;
 	}
 	
 	
