@@ -38,7 +38,8 @@ import Main.Account;
 				for(int j=0;j<keysForEntry.size();j++){
 					ArrayList<String>encryptedValues = new ArrayList<String>(15);
 					
-					keys.add(new KeyStroke(new ArrayList(keysForEntry.get(j)),account));				}
+					keys.add(new KeyStroke(new ArrayList(keysForEntry.get(j)),account));				
+				}
 				if(keys.size()>0)
 				sets.add(new KeyStrokeSet (keys));
 			}

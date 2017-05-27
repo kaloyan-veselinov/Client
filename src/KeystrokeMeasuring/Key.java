@@ -24,6 +24,28 @@ public abstract class Key {
 	}
 	
 	/**
+	 * Retourne la norme au carre du vecteur
+	 * @param la norme
+	 */
+	public abstract double getNormSquared();
+	
+	/**
+	 * Calcule la norme 2 en prenant la racine de normSquared (qui represente le carre de la norme 2)
+	 * @return la norme 2
+	 */
+	public double getNorme2(){
+		return Math.sqrt(getNormSquared());
+	}
+	
+	/**
+	 * Calcule la norme 1 du vecteur
+	 * @return la norme 1
+	 */
+	public double getNorme1(){
+		return Math.abs(this.timeDown) + Math.abs(this.timeUp);
+	}
+	
+	/**
 	 * Methode permettant de calculer le temps d'appui d'une touche
 	 * @return La difference de temps entre timeUp et timeDown
 	 */
@@ -43,11 +65,7 @@ public abstract class Key {
 	 */
 	public abstract long getReleaseReleaseTimes();
 	
-	/**
-	 * Retourne la norme au carre du vecteur
-	 * @param la norme
-	 */
-	public abstract double getNormSquared();
+	
 	
 	public void setTimeUp(long timeUp) {
 		this.timeUp = timeUp;

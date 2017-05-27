@@ -1,7 +1,4 @@
-/Analyse/
-/Arduino/
-/Database/
-/Encryption/
+/Exception/
 /GUI/
 /GUIElements/
 /KeystrokeMeasuring/
@@ -9,4 +6,4 @@
 /Session/
 /Sync/
 /Warnings/
-/Exception/
+/Analyse/

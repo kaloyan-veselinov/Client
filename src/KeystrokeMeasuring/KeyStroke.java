@@ -47,73 +47,26 @@ public class KeyStroke extends Key {
 		} else setCapsLock(null);
 
 }
-	
-	public double getNorme2 (){
-		double[] values = getValuesArray();
-		double n = 0;
-		for(int i=0; i<values.length; i++){
-			n += Math.pow(values[i], 2);
-		}
-		return Math.sqrt(n);
-	}
-	
+	@Override
 	public double getNorme1(){
-		double[] values = getValuesArray();
-		double n = 0;
-		for(int i=0; i<values.length; i++){
-			n += Math.abs(values[i]);
-		}
-		return n;
+		double norme1 = super.getNorme1();
+		
+		norme1 += Math.abs(this.getPressure());
+		norme1 += Math.abs(this.getReleasePressTimes());
+		norme1 += Math.abs(this.getReleaseReleaseTimes());
+		
+		if(shift != null)
+			norme1 += shift.getNorme1();
+		if(ctrl != null)
+			norme1 += ctrl.getNorme1();
+		if(alt != null)
+			norme1 += alt.getNorme1();
+		if(capsLock != null)
+			norme1 += capsLock.getNorme1();
+		
+		return norme1;
 	}
-	
-	public double[] getValuesArray(){
-		double [] values = new double[15];
-		if(getNext()!=null){
-			values[0] = getNext().getTimeUp() - super.getTimeUp();
-			values[1] = getNext().getTimeDown()-super.getTimeDown();
-			values[2] = getNext().getPressure()-getPressure();
-			if(shift != null){
-				values[4] = getNext().getShift().getTimeUp()-shift.getTimeUp();
-				values[5] = getNext().getShift().getTimeDown()-shift.getTimeDown();
-				//values[6] = shift.getLocation();
-				values[6] = 0;
-			}else{
-				values[4] = 0;
-				values[5] = 0;
-				values[6] = 0;
-			}
-			if(ctrl!=null){
-				values[7] = getNext().getCtrl().getTimeUp()-ctrl.getTimeUp();
-				values[8] = getNext().getCtrl().getTimeDown()-ctrl.getTimeDown();
-				//values[9] = ctrl.getLocation();
-				values[9] = 0;
-			}else{
-				values[7] = 0;
-				values[8] = 0;
-				values[9] = 0;
-			}
-			if(alt!=null){
-				values[10] = getNext().getAlt().getTimeUp()- alt.getTimeUp();
-				values[11] = getNext().getAlt().getTimeDown()-alt.getTimeDown();
-				//values[12] = alt.getLocation();
-				values[12] =0;
-			}else{
-				values[10] = 0;
-				values[11] = 0;
-				values[12] = 0;
-			}
-			if(capsLock!=null){
-				values[13] = getNext().getCapsLock().getTimeUp()-capsLock.getTimeUp();
-				values[14] = getNext().getCapsLock().getTimeDown() - capsLock.getTimeDown();
-			}else{
-				values[13] = 0;
-				values[14] = 0;
-			}
-		}
-			return values;
-
-	}
-	
+		
 	@Override
 	public ArrayList<String> getEncryptedValues(String p){
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
@@ -139,81 +92,105 @@ public class KeyStroke extends Key {
 	}
 	
 	public double euclidianDistance (KeyStroke k){
-		double result,dTimeUp,dTimeDown,dPressure,dShiftUp = 0,dShiftDown = 0,dShiftLocation = 0,dCtrlUp = 0,dCtrlDown = 0,dCtrlLocation = 0,
-			dAltUp = 0,dAltDown = 0,dAltLocation = 0,dCapslockUp = 0,dCapslockDown = 0;
-		if (k.getNext()!=null & this.next!=null){
-			 dTimeUp = Math.pow((k.getNext().getTimeUp()-k.getTimeUp())-(this.getNext().getTimeUp()-this.getTimeUp()), 2);
-			 dTimeDown = Math.pow((k.getNext().getTimeDown()-k.getTimeDown())-(this.getNext().getTimeDown()-this.getTimeDown()), 2);
-			 dPressure = Math.pow((k.getNext().getPressure()-k.getPressure())-(this.getNext().getPressure()-this.getPressure()), 2);
-			if(k.getShift()!=null && k.getNext().getShift()!=null && this.getShift()!=null && this.getNext().getShift()!=null){
-				 dShiftUp = Math.pow((k.getNext().getShift().getTimeUp() - k.getShift().getTimeUp())-(this.getNext().getShift().getTimeUp()-this.getShift().getTimeUp()), 2);
-				 dShiftDown = Math.pow((k.getNext().getShift().getTimeDown() - k.getShift().getTimeDown())-(this.getNext().getShift().getTimeDown()-this.getShift().getTimeDown()), 2);
-				// dShiftLocation = Math.pow((k.getNext().getShift().getLocation()-k.getShift().getLocation())-(this.getNext().getShift().getLocation()-this.getShift().getLocation()), 2); //pas s�r qu'une distance euclidienne soit adapt�e
-			}
-			if(k.getCtrl()!=null && k.getNext().getCtrl()!=null && this.getCtrl()!=null && this.getNext().getCtrl()!=null){
-				 dCtrlUp = Math.pow((k.getNext().getCtrl().getTimeUp()-k.getCtrl().getTimeUp())-(this.getNext().getCtrl().getTimeUp()-this.getCtrl().getTimeUp()), 2);
-				 dCtrlDown = Math.pow((k.getNext().getCtrl().getTimeDown()-k.getCtrl().getTimeDown())-(this.getNext().getCtrl().getTimeDown()-this.getCtrl().getTimeDown()), 2);
-				// dCtrlLocation = Math.pow((k.getNext().getCtrl().getLocation() - k.getCtrl().getLocation()) - (this.getNext().getCtrl().getLocation()-this.getCtrl().getLocation()), 2); //idem
-			}
-			if(k.getAlt()!=null && k.getNext().getAlt()!=null && this.getAlt()!=null && this.getNext().getAlt()!=null){
-				 dAltUp = Math.pow((k.getNext().getAlt().getTimeUp()-k.getAlt().getTimeUp()) - (this.getNext().getAlt().getTimeUp() - this.getAlt().getTimeUp()), 2);
-				 dAltDown = Math.pow((k.getNext().getAlt().getTimeDown()-k.getAlt().getTimeDown()) - (this.getNext().getAlt().getTimeDown() - this.getAlt().getTimeDown()), 2);
-				// dAltLocation = Math.pow((k.getNext().getAlt().getLocation()-k.getAlt().getLocation())-(this.getNext().getAlt().getLocation() - this.getAlt().getLocation()), 2); //idem	
-			}
-			if(k.getCapsLock()!=null && k.getNext().getCapsLock()!=null && this.getCapsLock()!=null && this.getNext().getCapsLock()!=null){
-				 dCapslockUp = Math.pow((k.getNext().getCapsLock().getTimeUp() - k.getCapsLock().getTimeUp())-(this.getNext().getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp()), 2);
-				 dCapslockDown = Math.pow((k.getNext().getCapsLock().getTimeDown()-k.getCapsLock().getTimeDown())-(this.getNext().getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown()), 2);
-			}
-			result = Math.sqrt(dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
-					+dAltUp+dAltDown+dAltLocation+dCapslockUp+ dCapslockDown);
-		}else{
-			result = 0;
+		
+		double 	result,dTimeUpUp,dTimeDownUp,dTimeUpDown,dPressure,
+				dShiftUpUp = 0,dShiftDownUp = 0,dShiftUpDown = 0,dShiftLocation = 0,
+				dCtrlUpUp = 0,dCtrlDownUp = 0,dCtrlUpDown = 0,dCtrlLocation = 0,
+				dAltUpUp = 0,dAltDownUp = 0,dAltUpDown = 0,dAltLocation = 0,
+				dCapslockUpUp = 0,dCapslockDownUp = 0,dCapslockUpDown=0;
+		
+		dTimeUpUp = Math.pow(k.getReleaseReleaseTimes()-this.getReleaseReleaseTimes(), 2);
+		dTimeDownUp = Math.pow(k.getPressReleaseTimes()-this.getPressReleaseTimes(), 2);
+		dTimeUpDown = Math.pow(k.getReleasePressTimes() - this.getReleasePressTimes(), 2);
+		dPressure = Math.pow(k.getPressure()-this.getPressure(), 2);
+		
+		if(k.getShift()!=null && this.getShift()!=null){
+			dShiftUpUp = Math.pow(k.getShift().getReleaseReleaseTimes()-this.getShift().getReleaseReleaseTimes(), 2);
+			dShiftDownUp = Math.pow(k.getShift().getPressReleaseTimes()-this.getShift().getPressReleaseTimes(), 2);
+			dShiftUpDown = Math.pow(k.getShift().getReleasePressTimes() - this.getShift().getReleasePressTimes(), 2);
+			dShiftLocation = Math.pow(k.getShift().getLocation()-this.getShift().getLocation(), 2);
 		}
-
+		
+		if(k.getCtrl()!=null && this.getCtrl()!=null){
+			dCtrlUpUp = Math.pow(k.getCtrl().getReleaseReleaseTimes()-this.getCtrl().getReleaseReleaseTimes(), 2);
+			dCtrlDownUp = Math.pow(k.getCtrl().getPressReleaseTimes()-this.getCtrl().getPressReleaseTimes(), 2);
+			dCtrlUpDown = Math.pow(k.getCtrl().getReleasePressTimes() - this.getCtrl().getReleasePressTimes(), 2);
+			dCtrlLocation = Math.pow(k.getCtrl().getLocation() - this.getCtrl().getLocation(), 2);
+		}
+		
+		if(k.getAlt()!=null && this.getAlt()!=null){
+			dAltUpUp = Math.pow(k.getAlt().getReleaseReleaseTimes()-this.getAlt().getReleaseReleaseTimes(), 2);
+			dAltDownUp = Math.pow(k.getAlt().getPressReleaseTimes()-this.getAlt().getPressReleaseTimes(), 2);
+			dAltUpDown = Math.pow(k.getAlt().getReleasePressTimes() - this.getAlt().getReleasePressTimes(), 2);
+			dAltLocation = Math.pow(k.getAlt().getLocation() - this.getAlt().getLocation(), 2);
+		}
+		
+		if(k.getCapsLock()!=null && this.getCapsLock()!=null){
+			dCapslockUpUp = Math.pow(k.getCapsLock().getReleaseReleaseTimes()-this.getCapsLock().getReleaseReleaseTimes(), 2);
+			dCapslockDownUp = Math.pow(k.getCapsLock().getPressReleaseTimes()-this.getCapsLock().getPressReleaseTimes(), 2);
+			dCapslockUpDown = Math.pow(k.getCapsLock().getReleasePressTimes() - this.getCapsLock().getReleasePressTimes(), 2);
+		}
+		
+		result = Math.sqrt(	dTimeUpUp + dTimeUpDown + dTimeDownUp + dPressure
+							+ dShiftUpUp + dShiftUpDown + dShiftDownUp + dShiftLocation
+							+ dCtrlUpUp + dCtrlUpDown + dCtrlDownUp + dCtrlLocation
+							+ dAltUpUp + dAltUpDown + dAltDownUp + dAltLocation
+							+ dCapslockUpUp + dCapslockUpDown + dCapslockDownUp);
+		
 		System.out.println(result);
 		return result;
 
 	}
 	
 	public double manhattanDistance(KeyStroke k){
-		double result,dTimeUp,dTimeDown,dPressure,dShiftUp = 0,dShiftDown = 0,dShiftLocation = 0,dCtrlUp = 0,dCtrlDown = 0,dCtrlLocation = 0,
-				dAltUp = 0,dAltDown = 0,dAltLocation = 0,dCapslockUp = 0,dCapslockDown = 0;
-		if (k.getNext()!=null & this.next!=null){
-			 dTimeUp = Math.abs((k.getNext().getTimeUp()-k.getTimeUp())-(this.getNext().getTimeUp()-this.getTimeUp()));
-			 dTimeDown = Math.abs((k.getNext().getTimeDown()-k.getTimeDown())-(this.getNext().getTimeDown()-this.getTimeDown()));
-			 dPressure = Math.abs((k.getNext().getPressure()-k.getPressure())-(this.getNext().getPressure()-this.getPressure()));
-			if(k.getShift()!=null && k.getNext().getShift()!=null && this.getShift()!=null && this.getNext().getShift()!=null){
+		
+		double 	result,dTimeUpUp,dTimeDownUp,dTimeUpDown,dPressure,
+				dShiftUpUp = 0,dShiftDownUp = 0,dShiftUpDown = 0,dShiftLocation = 0,
+				dCtrlUpUp = 0,dCtrlDownUp = 0,dCtrlUpDown = 0,dCtrlLocation = 0,
+				dAltUpUp = 0,dAltDownUp = 0,dAltUpDown = 0,dAltLocation = 0,
+				dCapslockUpUp = 0,dCapslockDownUp = 0,dCapslockUpDown=0;
 
-				 dShiftUp = Math.abs((k.getNext().getShift().getTimeUp() - k.getShift().getTimeUp())-(this.getNext().getShift().getTimeUp()-this.getShift().getTimeUp()));
-				 dShiftDown = Math.abs((k.getNext().getShift().getTimeDown() - k.getShift().getTimeDown())-(this.getNext().getShift().getTimeDown()-this.getShift().getTimeDown()));
-				// dShiftLocation = Math.abs((k.getNext().getShift().getLocation()-k.getShift().getLocation())-(this.getNext().getShift().getLocation()-this.getShift().getLocation())); //pas s�r qu'une distance euclidienne soit adapt�e
-			}
-			if(k.getCtrl()!=null && k.getNext().getCtrl()!=null && this.getCtrl()!=null && this.getNext().getCtrl()!=null){
-
-				 dCtrlUp = Math.abs((k.getNext().getCtrl().getTimeUp()-k.getCtrl().getTimeUp())-(this.getNext().getCtrl().getTimeUp()-this.getCtrl().getTimeUp()));
-				 dCtrlDown = Math.abs((k.getNext().getCtrl().getTimeDown()-k.getCtrl().getTimeDown())-(this.getNext().getCtrl().getTimeDown()-this.getCtrl().getTimeDown()));
-				// dCtrlLocation = Math.abs((k.getNext().getCtrl().getLocation() - k.getCtrl().getLocation()) - (this.getNext().getCtrl().getLocation()-this.getCtrl().getLocation())); //idem
-			}
-			if(k.getAlt()!=null && k.getNext().getAlt()!=null && this.getAlt()!=null && this.getNext().getAlt()!=null){
-
-				 dAltUp = Math.abs((k.getNext().getAlt().getTimeUp()-k.getAlt().getTimeUp()) - (this.getNext().getAlt().getTimeUp() - this.getAlt().getTimeUp()));
-				 dAltDown = Math.abs((k.getNext().getAlt().getTimeDown()-k.getAlt().getTimeDown()) - (this.getNext().getAlt().getTimeDown() - this.getAlt().getTimeDown()));
-				// dAltLocation = Math.abs((k.getNext().getAlt().getLocation()-k.getAlt().getLocation())-(this.getNext().getAlt().getLocation() - this.getAlt().getLocation())); //idem
-			}
-			if(k.getCapsLock()!=null && k.getNext().getCapsLock()!=null && this.getCapsLock()!=null && this.getNext().getCapsLock()!=null){
-	
-				 dCapslockUp = Math.abs((k.getNext().getCapsLock().getTimeUp() - k.getCapsLock().getTimeUp())-(this.getNext().getCapsLock().getTimeUp()-this.getCapsLock().getTimeUp()));
-				dCapslockDown = Math.abs((k.getNext().getCapsLock().getTimeDown()-k.getCapsLock().getTimeDown())-(this.getNext().getCapsLock().getTimeDown()-this.getCapsLock().getTimeDown()));
-			}
-			
-			result = (dTimeUp+dTimeDown+dPressure+dShiftUp+dShiftDown+dShiftLocation+dCtrlUp+dCtrlDown+dCtrlLocation
-									+dAltUp+dAltDown+dAltLocation+dCapslockUp+ dCapslockDown);
-		}else{
-			result = 0;
+		dTimeUpUp = Math.abs(k.getReleaseReleaseTimes()-this.getReleaseReleaseTimes());
+		dTimeDownUp = Math.abs(k.getPressReleaseTimes()-this.getPressReleaseTimes());
+		dTimeUpDown = Math.abs(k.getReleasePressTimes() - this.getReleasePressTimes());
+		dPressure = Math.abs(k.getPressure()-this.getPressure());
+		
+		if(k.getShift()!=null && this.getShift()!=null){
+			dShiftUpUp = Math.abs(k.getShift().getReleaseReleaseTimes()-this.getShift().getReleaseReleaseTimes());
+			dShiftDownUp = Math.abs(k.getShift().getPressReleaseTimes()-this.getShift().getPressReleaseTimes());
+			dShiftUpDown = Math.abs(k.getShift().getReleasePressTimes() - this.getShift().getReleasePressTimes());
+			dShiftLocation = Math.abs(k.getShift().getLocation()-this.getShift().getLocation());
 		}
+		
+		if(k.getCtrl()!=null && this.getCtrl()!=null){
+			dCtrlUpUp = Math.abs(k.getCtrl().getReleaseReleaseTimes()-this.getCtrl().getReleaseReleaseTimes());
+			dCtrlDownUp = Math.abs(k.getCtrl().getPressReleaseTimes()-this.getCtrl().getPressReleaseTimes());
+			dCtrlUpDown = Math.abs(k.getCtrl().getReleasePressTimes() - this.getCtrl().getReleasePressTimes());
+			dCtrlLocation = Math.abs(k.getCtrl().getLocation() - this.getCtrl().getLocation());
+		}
+		
+		if(k.getAlt()!=null && this.getAlt()!=null){
+			dAltUpUp = Math.abs(k.getAlt().getReleaseReleaseTimes()-this.getAlt().getReleaseReleaseTimes());
+			dAltDownUp = Math.abs(k.getAlt().getPressReleaseTimes()-this.getAlt().getPressReleaseTimes());
+			dAltUpDown = Math.abs(k.getAlt().getReleasePressTimes() - this.getAlt().getReleasePressTimes());
+			dAltLocation = Math.abs(k.getAlt().getLocation() - this.getAlt().getLocation());
+		}
+		
+		if(k.getCapsLock()!=null && this.getCapsLock()!=null){
+			dCapslockUpUp = Math.abs(k.getCapsLock().getReleaseReleaseTimes()-this.getCapsLock().getReleaseReleaseTimes());
+			dCapslockDownUp = Math.abs(k.getCapsLock().getPressReleaseTimes()-this.getCapsLock().getPressReleaseTimes());
+			dCapslockUpDown = Math.abs(k.getCapsLock().getReleasePressTimes() - this.getCapsLock().getReleasePressTimes());
+		}
+		
+		result = dTimeUpUp + dTimeUpDown + dTimeDownUp + dPressure
+				+ dShiftUpUp + dShiftUpDown + dShiftDownUp + dShiftLocation
+				+ dCtrlUpUp + dCtrlUpDown + dCtrlDownUp + dCtrlLocation
+				+ dAltUpUp + dAltUpDown + dAltDownUp + dAltLocation
+				+ dCapslockUpUp + dCapslockUpDown + dCapslockDownUp;
+		
 		System.out.println(result);
 		return result;
-}
+	}
 	
 	
 	@Override
