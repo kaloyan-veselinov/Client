@@ -1,6 +1,11 @@
-/Main/
 /Analyse/
+/Arduino/
 /Database/
 /Encryption/
 /GUI/
+/GUIElements/
 /KeystrokeMeasuring/
+/Main/
+/Session/
+/Sync/
+/Warnings/
