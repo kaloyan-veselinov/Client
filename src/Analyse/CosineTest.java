@@ -11,15 +11,14 @@ import Main.Account;
 
 public class CosineTest {
 	
-	private static final double cosineSimilarityThreshold = 0.8; 
-	private static final double hitrateThreshold = 0.9;
+	private static final double cosineSimilarityThreshold = 0.9; 
+	
 
 	public static boolean test(KeyStrokeSet testSet, Account account ) throws BadLoginException {
 		try{
 			LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
-			//LinkedList<LinkedList<Double>> similarityMatrix = new LinkedList<LinkedList<Double>>();
 			Iterator<KeyStrokeSet> setsIterator = sets.iterator();
-			//LinkedList<Double> averageSimilarity = new LinkedList<Double>();
+			LinkedList<Double> averageSimilarity = new LinkedList<Double>();
 			
 			int hitrate = 0;
 			int nbChars = 0;
@@ -33,7 +32,6 @@ public class CosineTest {
 					
 					Iterator<KeyStroke> tempIterator = temp.iterator();
 					Iterator<KeyStroke> testIterator = testSet.getSet().iterator();
-					//LinkedList<Double> tempSimilarities = new LinkedList<Double>();
 					
 					double somme = 0.0;
 				
@@ -45,17 +43,13 @@ public class CosineTest {
 						
 					}
 					
-					//similarityMatrix.add(tempSimilarities);
-					if(somme / temp.size() > cosineSimilarityThreshold)
-						hitrate++;
-					nbChars++;					
+					if(somme/temp.size() < cosineSimilarityThreshold)
+						return false;
 				
 				} else return false; //si pas la bonne taille, le mot de passe est forcemment faux
-			}
+			} return true;
 			
-			if(hitrate/nbChars > hitrateThreshold)
-				return true;
-			else return false;
+			
 		
 		}catch (EncryptionOperationNotPossibleException e){
 			throw new BadLoginException();
