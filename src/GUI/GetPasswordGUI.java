@@ -189,9 +189,10 @@ public class GetPasswordGUI extends JPanel{
 	
 			
 			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
-			//try {
+			try {
 				//if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
 				if(GaussTest.test(new KeyStrokeSet(ksl),account)){
+				//if(CosineTest.test(new KeyStrokeSet(ksl), account)){
 					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
 					f.showPasswordPane(PasswordGetter.getPassword(account));
 					Main.sessionManager.endCurrentSession();
@@ -201,10 +202,10 @@ public class GetPasswordGUI extends JPanel{
 					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
 				}
-			/*} catch (BadLoginException e) {
+			} catch (BadLoginException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 		}else{
 			new SimpleWarning("L'un des champs est trop court");
 		}
