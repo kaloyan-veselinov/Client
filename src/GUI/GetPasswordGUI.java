@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -16,19 +15,17 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import Analyse.DistanceTest;
+import Analyse.GaussTest;
 import Analyse.KeyStrokeSet;
+import Exception.BadLoginException;
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.KeyStroke;
 import KeystrokeMeasuring.TimingManager;
-
+import Main.Account;
+import Main.Main;
 import Main.PasswordGetter;
 import Main.PasswordTry;
 import Warnings.SimpleWarning;
-import Main.Account;
-import Main.Main;
-
-import Exception.BadLoginException;
 
 @SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel{
@@ -46,8 +43,6 @@ public class GetPasswordGUI extends JPanel{
 	
 	TimingManager timingManager;
 
-	
-	@SuppressWarnings("unused")
 	private MenuGUI f;
 	
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f){
@@ -162,8 +157,8 @@ public class GetPasswordGUI extends JPanel{
 	private void tryConnection(){
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
-		ArrayList<KeyStroke> ks = new ArrayList(timingManager.getKeyStrokes());
-		LinkedList<KeyStroke> ksl = new LinkedList(ks);
+		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
+		LinkedList<KeyStroke> ksl = new LinkedList<KeyStroke>(ks);
 		System.out.println("ksl :" + ksl.size());
 		String login = idField.getText();
 		if(login.endsWith(" ")){
@@ -194,8 +189,9 @@ public class GetPasswordGUI extends JPanel{
 	
 			
 			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
-			try {
-				if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
+			//try {
+				//if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
+				if(GaussTest.test(new KeyStrokeSet(ksl),account)){
 					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
 					f.showPasswordPane(PasswordGetter.getPassword(account));
 					Main.sessionManager.endCurrentSession();
@@ -205,10 +201,10 @@ public class GetPasswordGUI extends JPanel{
 					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
 				}
-			} catch (BadLoginException e) {
+			/*} catch (BadLoginException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}else{
 			new SimpleWarning("L'un des champs est trop court");
 		}

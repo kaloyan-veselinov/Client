@@ -1,18 +1,18 @@
 package Database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import Main.Main;
 import javax.swing.JOptionPane;
+
+import Encryption.Encryption;
 import Main.Account;
 import Session.Session;
-import Encryption.Encryption;
 
 
 // C'est moche mais bon ça marche...
@@ -136,18 +136,19 @@ public class Insert {
 
 					for(int j=0; j<s.getPasswordTries().get(i).getKeys().size();j++){
 						//System.out.println("Ajout de la touche " + j + " pour l'entree " + entreeId);
-						ArrayList<String>encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(s.getAccount().getPasswordAsString());
+						
+						ArrayList<String> encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(s.getAccount().getPasswordAsString());
+												
 						toucheStatement.setInt(j*16+1,entreeId);
 						
 						//TODO moddifier avec un iterator 
 						int k=0;
-						for (k=0; k<encryptedValues.size();k++){
-							
+						for (k=0; k<encryptedValues.size();k++)						
 							toucheStatement.setString(j*16 +k+2,encryptedValues.get(k));
-						}
 						
 						while(k+2<17){
-							toucheStatement.setString(j*16+k+2, Encryption.encryptText("NULL", s.getAccount().getPasswordAsString()));							k++;
+							toucheStatement.setString(j*16+k+2, Encryption.encryptText("NULL", s.getAccount().getPasswordAsString()));
+							k++;
 						}
 
 					}
@@ -172,7 +173,8 @@ public class Insert {
        
        
 	}
-public static String addCompteSystem(String identifiant, String password,Connection conn){ 
+	
+	public static String addCompteSystem(String identifiant, String password,Connection conn){ 
 		
 		PreparedStatement insertAccountSystem = null;
 		Statement ps = null;
