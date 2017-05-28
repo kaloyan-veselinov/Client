@@ -18,10 +18,7 @@ public class CosineTest {
 		try{
 			LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
 			Iterator<KeyStrokeSet> setsIterator = sets.iterator();
-			LinkedList<Double> averageSimilarity = new LinkedList<Double>();
 			
-			int hitrate = 0;
-			int nbChars = 0;
 			
 			//On definit la matrice de similarite avec les similarites cosinus de chaque touche de chaque entree, on calcule aussi les similarites moyennes pour chaque entree
 			while(setsIterator.hasNext()){

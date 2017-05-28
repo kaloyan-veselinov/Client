@@ -19,10 +19,10 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException{
 		conn = ConnectionBD.connect();
 		sessionManager =new SessionManager();
-	//	GUI initGui = new GUI(); //initialisation de l'interface
+		//	GUI initGui = new GUI(); //initialisation de l'interface
 		@SuppressWarnings("unused")
 		MenuGUI mg = new MenuGUI(); 
-		SyncUtil sync =new SyncUtil();
+		SyncUtil sync = new SyncUtil();
 		//sync.start();
 	}
 	//permet de tester si deux mots de passe correspondent
