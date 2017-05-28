@@ -3,6 +3,9 @@ package Analyse;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+
+import Exception.BadLoginException;
 import KeystrokeMeasuring.KeyStroke;
 import Main.Account;
 
@@ -11,39 +14,44 @@ public class GaussTest {
 	private static final double gaussianCoef = 3; //si 1 niveau confiance de 67%, si 2 niveau de confiance 95%, si 3 niveau de confiance 99% 
 	private static final int nbParams = 15;
 	
-	public static boolean test(KeyStrokeSet testSet, Account account){
+	public static boolean test(KeyStrokeSet testSet, Account account) throws BadLoginException {
 		
-		boolean isTheSamePerson = true;
-		
-		LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
-		
-		double[][] avgMatrix = getAvgMatrix(sets);
-		double[][] sdMatrix = getStandardDeviationMatrix(sets,avgMatrix);
-		
-		Iterator<KeyStroke> keyIter = testSet.getSet().iterator();
-		int keyIndex = 0;
-		
-		while(isTheSamePerson && keyIter.hasNext()){
+		try{
 			
-			double[] values = keyIter.next().getValues();
-			int i=0;
+			boolean isTheSamePerson = true;
 			
-			while(i<nbParams && isTheSamePerson){
+			LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
 			
-				double min = avgMatrix[keyIndex][i] - gaussianCoef*sdMatrix[keyIndex][i];
-				double max = avgMatrix[keyIndex][i] + gaussianCoef*sdMatrix[keyIndex][i];
-				System.out.println(min+"|"+max+"|"+values[i]);
-				if(values[i]<min || values[i]>max)
-					isTheSamePerson = false;
-				i++;
-					
-			}
+			double[][] avgMatrix = getAvgMatrix(sets);
+			double[][] sdMatrix = getStandardDeviationMatrix(sets,avgMatrix);
 			
-			keyIndex++;
+			Iterator<KeyStroke> keyIter = testSet.getSet().iterator();
+			int keyIndex = 0;
 			
-		}
+			while(isTheSamePerson && keyIter.hasNext()){
 				
-		return isTheSamePerson;
+				double[] values = keyIter.next().getValues();
+				int i=0;
+				
+				while(i<nbParams && isTheSamePerson){
+				
+					double min = avgMatrix[keyIndex][i] - gaussianCoef*sdMatrix[keyIndex][i];
+					double max = avgMatrix[keyIndex][i] + gaussianCoef*sdMatrix[keyIndex][i];
+					if(values[i]<min || values[i]>max)
+						isTheSamePerson = false;
+					i++;
+						
+				}
+				
+				keyIndex++;
+				
+			}
+					
+			return isTheSamePerson;
+		
+		}catch (EncryptionOperationNotPossibleException e){
+			throw new BadLoginException();
+		}
 		
 	}
 	
@@ -65,7 +73,6 @@ public class GaussTest {
 				KeyStroke curr = strokesIter.next();
 				double[] values = curr.getValues();
 				for(int i=0; i<values.length; i++){
-					//System.out.println(keyIndex + "|" + i + "|" + values[i]);
 					avgMatrix[keyIndex][i] += (values[i] / ((double)sets.size()));}
 				keyIndex++;	
 			
