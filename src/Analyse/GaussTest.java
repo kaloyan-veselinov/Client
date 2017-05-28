@@ -9,9 +9,9 @@ import Main.Account;
 public class GaussTest {
 	
 	private static final double gaussianCoef = 3; //si 1 niveau confiance de 67%, si 2 niveau de confiance 95%, si 3 niveau de confiance 99% 
-	private static final int nbParams = 14;
+	private static final int nbParams = 15;
 	
-	public boolean test(KeyStrokeSet testSet, Account account){
+	public static boolean test(KeyStrokeSet testSet, Account account){
 		
 		boolean isTheSamePerson = true;
 		
@@ -32,10 +32,14 @@ public class GaussTest {
 			
 				double min = avgMatrix[keyIndex][i] - gaussianCoef*sdMatrix[keyIndex][i];
 				double max = avgMatrix[keyIndex][i] + gaussianCoef*sdMatrix[keyIndex][i];
-				if(values[i]<=min || values[i]>=max)
+				System.out.println(min+"|"+max+"|"+values[i]);
+				if(values[i]<min || values[i]>max)
 					isTheSamePerson = false;
+				i++;
 					
 			}
+			
+			keyIndex++;
 			
 		}
 				
@@ -43,7 +47,7 @@ public class GaussTest {
 		
 	}
 	
-	private double[][] getAvgMatrix(LinkedList<KeyStrokeSet> sets){
+	private static double[][] getAvgMatrix(LinkedList<KeyStrokeSet> sets){
 		
 		//On definit la matrice des moyennes pour chaque parametre de chaque touche
 		double[][] avgMatrix = new double[sets.getFirst().getSet().size()][nbParams];
@@ -58,13 +62,16 @@ public class GaussTest {
 			int keyIndex = 0;
 			
 			while(strokesIter.hasNext()){
-			
-				double[] values = strokesIter.next().getValues();
-				for(int i=0; i<values.length; i++)					
-					avgMatrix[keyIndex][i] += (values[i] / ((double)sets.size()));
+				KeyStroke curr = strokesIter.next();
+				double[] values = curr.getValues();
+				for(int i=0; i<values.length; i++){
+					//System.out.println(keyIndex + "|" + i + "|" + values[i]);
+					avgMatrix[keyIndex][i] += (values[i] / ((double)sets.size()));}
 				keyIndex++;	
 			
 			}
+			
+			System.out.println("End of sets iteration");
 		
 		}
 		
@@ -72,7 +79,7 @@ public class GaussTest {
 		
 	}
 	
-	public double[][] getStandardDeviationMatrix(LinkedList<KeyStrokeSet> sets, double[][] avgMatrix){
+	public static double[][] getStandardDeviationMatrix(LinkedList<KeyStrokeSet> sets, double[][] avgMatrix){
 		double[][] standardDeviationMatrix = new double[sets.getFirst().getSet().size()][nbParams];
 		
 		//On reinitialise l'iterateur de sets

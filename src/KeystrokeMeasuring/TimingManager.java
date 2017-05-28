@@ -5,14 +5,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JPasswordField;
 
 import Arduino.PressionManager;
-import Database.Request;
-import Encryption.Encryption;
-import GUI.GetPasswordGUI;
-import Main.Main;
 import Main.Account;
+import Main.Main;
 import Main.PasswordTry;
 
 public class TimingManager implements KeyListener {
@@ -144,7 +142,6 @@ public class TimingManager implements KeyListener {
 			synchronized(this){
 				this.notifyAll();
 			}
-			pressureThread.notify();
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE ||arg0.getKeyCode() == KeyEvent.VK_DELETE ){
