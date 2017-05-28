@@ -17,7 +17,7 @@ public class GaussTest {
 	public static boolean test(KeyStrokeSet testSet, Account account) throws BadLoginException {
 		
 		try{
-		
+			
 			boolean isTheSamePerson = true;
 			
 			LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
