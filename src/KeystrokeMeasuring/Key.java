@@ -37,18 +37,6 @@ public abstract class Key {
 	 */
 	public abstract long getReleasePressTimes();
 	
-	/**
-	 * Methode permettant de calculer le temps moyen entre le relachement d'une touche et 
-	 * @return le temps entre le relachement de la touche et le relachement de la suivante
-	 */
-	public abstract long getReleaseReleaseTimes();
-	
-	/**
-	 * Retourne la norme au carre du vecteur
-	 * @param la norme
-	 */
-	public abstract double getNormSquared();
-	
 	public void setTimeUp(long timeUp) {
 		this.timeUp = timeUp;
 	}
