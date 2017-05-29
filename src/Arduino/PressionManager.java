@@ -49,20 +49,22 @@ public class PressionManager implements Runnable {
 
 	@Override
 	public void run() {
+		BufferedReader vcpInput = null;
+		ArrayList<Mesure> tabMesures = null;
+		if (!(end)) {
+			try {
+				vcpChannel.open();
+			} catch (SerialPortException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-		try {
-			vcpChannel.open();
-		} catch (SerialPortException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			tabMesures = new ArrayList<Mesure>(); // mesures
+																	// brutes de
+																	// pression
+
+			vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
 		}
-
-		ArrayList<Mesure> tabMesures = new ArrayList<Mesure>(); // mesures
-																// brutes de
-																// pression
-
-		BufferedReader vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
-
 		while (!stop && tm.isArduinoConnected()) {
 
 			try {
@@ -113,6 +115,8 @@ public class PressionManager implements Runnable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch(NullPointerException e){
+			
 		}
 
 	}
