@@ -5,14 +5,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JPasswordField;
 
 import Arduino.PressionManager;
-import Database.Request;
-import Encryption.Encryption;
-import GUI.GetPasswordGUI;
-import Main.Main;
 import Main.Account;
+import Main.Main;
 import Main.PasswordTry;
 
 public class TimingManager implements KeyListener {
@@ -20,7 +18,7 @@ public class TimingManager implements KeyListener {
 	private Account account;
 	private final JPasswordField pf;
 	
-	private PressionManager pm;
+	private final PressionManager pm;
 	private Thread pressureThread;
 	
 	private boolean arduinoConnected = true;
@@ -63,7 +61,8 @@ public class TimingManager implements KeyListener {
 	public void keyPressed(KeyEvent arg0) {
 		
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
-			
+			pm.setEnd(true);
+			pressureThread.interrupt();
 			int j;
 			int modifiersCount;
 			int modifiersAdded=0;
@@ -129,13 +128,13 @@ public class TimingManager implements KeyListener {
 
 			
 			if(pm!=null && arduinoConnected){
-				pm.setEnd(true);
-				ArrayList<Double> d = pm.getTabTriee();
+				ArrayList<Double> d = new ArrayList<Double> (pm.getTabTriee());
 				System.out.println(d.size());
 				for(int i=0; i<account.getPasswordAsString().length(); i++){
 					double test =d.get(i);
 					keyStrokes.get(i).setPressure(test);
-				} 
+				}
+				pm.setEnd(false);
 			}
 				
 			
@@ -144,10 +143,10 @@ public class TimingManager implements KeyListener {
 			synchronized(this){
 				this.notifyAll();
 			}
-			pressureThread.notify();
 			strokes.add(new ModifierListener(System.nanoTime(),arg0));
 			pf.addKeyListener(strokes.get(strokes.size()-1));
 		}else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE ||arg0.getKeyCode() == KeyEvent.VK_DELETE ){
+			pm.setEnd(true);
 			strokes.clear();
 			keyStrokes.clear();
 		}
