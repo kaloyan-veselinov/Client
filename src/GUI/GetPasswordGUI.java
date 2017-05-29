@@ -98,7 +98,7 @@ public class GetPasswordGUI extends JPanel{
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE){
 					psswdField.setText("");
 					timingManager.getAccount().setPassword(new String(""));
-					password = "";
+					
 				}else if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
 					tryConnection();
 				}
@@ -115,7 +115,6 @@ public class GetPasswordGUI extends JPanel{
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				timingManager.getAccount().setPassword(timingManager.getAccount().getPasswordAsString()+arg0.getKeyChar());
-				password = new String (password + arg0.getKeyChar());				
 			}
 			
 		});
@@ -207,10 +206,10 @@ public class GetPasswordGUI extends JPanel{
 			domain = domain.substring(0, i+1);
 		} 
 		if(login.length()>2 && domain.length()>2){
+			password =new String(psswdField.getPassword());
 			Account account = new Account(login,domain,password);
 			System.out.println(password);
 			Main.sessionManager.getCurrentSession().setAccount(account);
-			Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(timingManager.getKeyStrokes()));
 			System.out.println("PasswordTry ajouté");
 			//timingManager.getStrokes().clear();
 			//timingManager.getKeyStrokes().clear();
@@ -238,6 +237,9 @@ public class GetPasswordGUI extends JPanel{
 		}else{
 			new SimpleWarning("L'un des champs est trop court");
 		}
+		psswdField.setText("");
+		timingManager.getKeyStrokes().clear();
+		timingManager.getStrokes().clear();
 	}
 	
 	public JTextField getDomainField() {

@@ -131,7 +131,6 @@ public class TimingManager implements KeyListener {
 			} 
 				if(new String(pf.getPassword()).equals(account.getPasswordAsString()))
 				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
-				pf.setText("");
 
 			
 			if(pm!=null && arduinoConnected){
