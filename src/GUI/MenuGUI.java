@@ -26,6 +26,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 	BDGUI bdGui;
 	PasswordPane passwordPane;
 	SystemConnectionPane systemConnectionPane;
+	DeleteAccountPane deleteAccountPane;
 
 	
 	GetPasswordGUI getPsswdPane;
@@ -155,6 +156,16 @@ public class MenuGUI extends JFrame implements WindowListener {
 		getPsswdPane.getDomainField().grabFocus();
 	}
 	
+	public void initDeleteAccountPane(){
+		deleteAccountPane=new DeleteAccountPane(menuPane,this);
+		mainPane.add(deleteAccountPane);
+		layout.putConstraint(SpringLayout.WEST, deleteAccountPane, 0, SpringLayout.WEST,mainPane);
+		layout.putConstraint(SpringLayout.EAST, deleteAccountPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, deleteAccountPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, deleteAccountPane, 0, SpringLayout.NORTH, mainPane);
+		deleteAccountPane.setVisible(true);
+		deleteAccountPane.getDomainField().grabFocus();
+	}
 	public void showMenuPane(){
 
 		menuPane.setVisible(true);
@@ -205,6 +216,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 		this.requestPsswdPane = requestPsswdPane;
 	}
 
+	@Override
 	public SpringLayout getLayout() {
 		return layout;
 	}

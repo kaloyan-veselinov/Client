@@ -11,11 +11,9 @@ import javax.swing.SpringLayout;
 
 import Database.Insert;
 import KeystrokeMeasuring.TimingManager;
-import Main.Entry;
 import Main.Main;
 import Main.Account;
 import Main.PasswordGetter;
-import Main.PasswordTry;
 
 @SuppressWarnings("serial")
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
@@ -50,9 +48,10 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		progressBar = new JPanel(){
 			
 		
+			@Override
 			public void paintComponent (Graphics g){
 				g.setColor(Color.white);
-				g.fillRect((int)(0), 0,350-20, 50);
+				g.fillRect((0), 0,350-20, 50);
 				
 				for(int i=0; i<Main.sessionManager.getCurrentSession().getPasswordTries().size(); i++){
 
@@ -84,6 +83,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 						progressBar.repaint();
 						timingManager.getKeyStrokes().clear();
 						timingManager.getStrokes().clear();
+						psswd.setText("");
 						//System.out.println("KeyStrokes : " +timingManager.getKeyStrokes().size() + " Strokes : " + timingManager.getStrokes().size());
 
 					}else if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE){
