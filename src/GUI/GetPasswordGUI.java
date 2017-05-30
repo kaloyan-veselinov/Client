@@ -3,8 +3,12 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,15 +18,17 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import Analyse.DistanceTest;
+import Analyse.GaussTest;
 import Analyse.KeyStrokeSet;
+import Exception.BadLoginException;
 import GUIElements.CancelButton;
+import KeystrokeMeasuring.KeyStroke;
 import KeystrokeMeasuring.TimingManager;
-
+import Main.Account;
+import Main.Main;
 import Main.PasswordGetter;
 import Main.PasswordTry;
 import Warnings.SimpleWarning;
-import Main.Password;
-import Main.Main;
 
 @SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel{
@@ -40,11 +46,13 @@ public class GetPasswordGUI extends JPanel{
 	
 	TimingManager timingManager;
 
-	
-	@SuppressWarnings("unused")
 	private MenuGUI f;
 	
+	private String password;
+	
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f){
+		password = "";
+		this.f=f;
 		SpringLayout layout = f.getLayout();
 		setLayout(layout);
 		
@@ -53,15 +61,15 @@ public class GetPasswordGUI extends JPanel{
 		cancel = new CancelButton(menuPane,this);
 		this.add(cancel);
 		
-		domainLabel = new JLabel ("Domain : ");
+		domainLabel = new JLabel ("Domaine : ");
 		domainLabel.setForeground(Color.white);
 		this.add(domainLabel);
 		
-		idLabel = new JLabel("ID : ");
+		idLabel = new JLabel("Identifiant : ");
 		idLabel.setForeground(Color.white);
 		this.add(idLabel);
 		
-		psswdLabel = new JLabel("Password : ");
+		psswdLabel = new JLabel("Mot de passe : ");
 		psswdLabel.setForeground(Color.white);
 		this.add(psswdLabel);
 		
@@ -71,7 +79,7 @@ public class GetPasswordGUI extends JPanel{
 		idField = new JTextField();
 		this.add(idField);
 		
-		getPsswd = new JButton("Get Password");
+		getPsswd = new JButton("Récupérer le mot de passe");
 
 		
 		psswdField = new JPasswordField();
@@ -85,28 +93,17 @@ public class GetPasswordGUI extends JPanel{
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
+				
+				System.out.println(new String (psswdField.getPassword()));
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE){
 					psswdField.setText("");
-				
+					timingManager.getAccount().setPassword(new String(""));
+					
 				}else if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
-					Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(timingManager.getKeyStrokes()));
-					Main.sessionManager.getCurrentSession().setPassword(new String (psswdField.getPassword()));
-					Main.sessionManager.getCurrentSession().setUserId(idField.getText());
-					System.out.println("PasswordTry ajouté");
-					timingManager.getStrokes().clear();
-					timingManager.getKeyStrokes().clear();
-					
-
-					
-					int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
-					if(DistanceTest.test(Main.sessionManager.getCurrentSession().getPasswordTries().get(i).toKeyStrokeSet()
-							, idField.getText(),domainField.getText(), new String ( psswdField.getPassword()))){
-					
-						f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
-					}else{
-						new SimpleWarning("Maniere d'ecrire non reconnue");
-					}
+					tryConnection();
 				}
+					
+				
 			}
 
 			@Override
@@ -117,35 +114,33 @@ public class GetPasswordGUI extends JPanel{
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				timingManager.getAccount().setPassword(timingManager.getAccount().getPasswordAsString()+arg0.getKeyChar());
 			}
 			
 		});
 		
+		psswdField.addFocusListener((new FocusListener(){
 
-		getPsswd = new JButton("Get Password");
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				// TODO Auto-generated method stub
+				timingManager.setAccount(new Account(idField.getText(),domainField.getText(),""));
+				
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}));
+		
+
 		getPsswd.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent arg0) {
-				
-				Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(timingManager.getKeyStrokes()));
-				Main.sessionManager.getCurrentSession().setPassword(new String (psswdField.getPassword()));
-				Main.sessionManager.getCurrentSession().setUserId(idField.getText());
-				System.out.println("PasswordTry ajouté");
-				timingManager.getStrokes().clear();
-				timingManager.getKeyStrokes().clear();
-				
-
-				
-				int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
-				if(DistanceTest.test(Main.sessionManager.getCurrentSession().getPasswordTries().get(i).toKeyStrokeSet()
-						, idField.getText(),domainField.getText(), new String ( psswdField.getPassword()))){
-				
-					f.showPasswordPane(PasswordGetter.getPassword(new String(psswdField.getPassword()), idField.getText(), domainField.getText()));
-				}else{
-					new SimpleWarning("Maniere d'ecrire non reconnue");
-				}				
+				tryConnection()	;			
 			}
 			
 			
@@ -184,6 +179,87 @@ public class GetPasswordGUI extends JPanel{
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
 		//setVisible(false);
+	}
+	
+	private void tryConnection(){
+		Main.sessionManager.getCurrentSession().reshceduleEnd();
+
+		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
+		LinkedList<KeyStroke> ksl = new LinkedList<KeyStroke>(ks);
+		System.out.println("ksl :" + ksl.size());
+		String login = idField.getText();
+		if(login.endsWith(" ")){
+			int i = login.length()-1;
+			do{
+				i--;
+			}
+			while(login.charAt(i)==' ');
+			login = login.substring(0, i+1);
+		} 
+		String domain = domainField.getText();
+		if(domain.endsWith(" ")){
+			int i = domain.length()-1;
+			do{
+				i--;
+			}
+			while(domain.charAt(i)==' ');
+			domain = domain.substring(0, i+1);
+		} 
+		if(login.length()>2 && domain.length()>2){
+			password =new String(psswdField.getPassword());
+			Account account = new Account(login,domain,password);
+			System.out.println(password);
+			Main.sessionManager.getCurrentSession().setAccount(account);
+			System.out.println("PasswordTry ajouté");
+			//timingManager.getStrokes().clear();
+			//timingManager.getKeyStrokes().clear();
+			
+	
+			
+			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size()-1;
+			try {
+				//if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
+				if(DistanceTest.test(new KeyStrokeSet(ksl),account)){
+				//if(CosineTest.test(new KeyStrokeSet(ksl), account)){
+					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
+					f.showPasswordPane(PasswordGetter.getPassword(account));
+					Main.sessionManager.endCurrentSession();
+
+				}else{
+					new SimpleWarning("Maniere d'ecrire non reconnue");
+					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
+
+				}
+			} catch (BadLoginException e) {
+				// TODO Auto-generated catch block
+				System.out.println(account.getLogin()+"|" + account.getDomain() +"|"+account.getPasswordAsString());
+			}
+		}else{
+			new SimpleWarning("L'un des champs est trop court");
+		}
+		psswdField.setText("");
+		timingManager.getKeyStrokes().clear();
+		timingManager.getStrokes().clear();
+	}
+	
+	public JTextField getDomainField() {
+		return domainField;
+	}
+
+	public void setDomainField(JTextField domainField) {
+		this.domainField = domainField;
+}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public void close(){
+		timingManager.close();
 	}
 
 }

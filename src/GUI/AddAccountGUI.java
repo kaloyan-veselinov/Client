@@ -2,7 +2,7 @@ package GUI;
 
 import GUIElements.CancelButton;
 import Main.Main;
-import Main.Password;
+import Main.Account;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +12,11 @@ import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import Database.Request;
+
 import java.awt.event.FocusListener;
+import Exception.AccountAlreadyExistsException;
 
 import Warnings.SimpleWarning;
 
@@ -44,8 +48,10 @@ public class AddAccountGUI extends JPanel {
 	JLabel passwordLengthLabel;
 	JTextField passwordLengthField;
 	JSlider passwordLengthSlider;
+	MenuGUI f;
 	
 	public AddAccountGUI(final JPanel menuPane,final MenuGUI f){
+		this.f=f;
 		setBackground(Color.darkGray);
 		layout = (SpringLayout) menuPane.getLayout();
 	//	setResizable(false);
@@ -54,16 +60,16 @@ public class AddAccountGUI extends JPanel {
 		cancel = new CancelButton(menuPane,this);
 		this.add(cancel);
 		//premier champ de mot de passe
-		JLabel label1 =  new JLabel("Enter password: ");
+		JLabel label1 =  new JLabel("Mot de Passe: ");
 		label1.setForeground(Color.white);
 		txt1 = new JPasswordField("", 15);
 		
 		//deuxieme champ de mot de passe 
-		JLabel label2 =  new JLabel("Confirm password: ");
+		JLabel label2 =  new JLabel("Confirmer le mot de passe: ");
 		label2.setForeground(Color.white);
 		txt2 = new JPasswordField("", 15);
 		
-		domainLabel = new JLabel("Domain :");
+		domainLabel = new JLabel("Domaine :");
 		domainLabel.setForeground(Color.white);
 		this.add(domainLabel);
 		
@@ -71,7 +77,7 @@ public class AddAccountGUI extends JPanel {
 		this.add(domainField);
 		
 		//champ d'identifiant :
-		userIdLabel = new JLabel ("Id : ");
+		userIdLabel = new JLabel ("Identifiant : ");
 		userIdLabel.setForeground(Color.white);
 		userIdField = new JTextField("");
 		//on ajoute un key listener pour gerer la validation avec la touche entree
@@ -79,27 +85,13 @@ public class AddAccountGUI extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					// on verifie que les deux mots de passe correspondent
-					psswdMatch = Main.passwordMatch(txt1.getPassword(),txt2.getPassword());
-					if(psswdMatch == true){ //si oui on passe a la suite
-						if(txt1.getPassword().length>=8){
-							initPsswd.setVisible(false);
-							Main.p = new Password (txt2.getPassword(),userIdField.getText());
-							Main.userId = userIdField.getText();
-							f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
-							Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
-							Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
-							Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
-							setVisible(false);
-						}else {
-							new SimpleWarning("Mot de passe trop court \n min: 8");
-						}
-					}else{ // sinon on recommence
-						new SimpleWarning("Les mots de passe ne correspondent pas");
-
-						txt1.setText("");
-						txt2.setText("");
+					try {
+						tryCreateAccount();
+					} catch (AccountAlreadyExistsException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+
 				}
 				
 			}
@@ -119,23 +111,15 @@ public class AddAccountGUI extends JPanel {
 		txt2.addKeyListener(userIdField.getKeyListeners()[0]);
 		domainField.addKeyListener(userIdField.getKeyListeners()[0]);
 		// ici meme chose qu'avec la touche entre mais avec un bouton 
-		final JButton button1 = new JButton("Create Account");
+		final JButton button1 = new JButton("Créer");
 		button1.setSize(15,10);
 		button1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				psswdMatch = Main.passwordMatch(txt1.getPassword(), txt2.getPassword())	;
-				if (psswdMatch == true){
-					Main.p = new Password (txt2.getPassword(),userIdField.getText());
-					Main.userId = userIdField.getText();
-					f.initBdGui(Main.p,domainField.getText(),passwordLengthSlider.getValue());
-					Main.sessionManager.getCurrentSession().setUserId(userIdField.getText());
-					Main.sessionManager.getCurrentSession().setDomain(domainField.getText());
-					Main.sessionManager.getCurrentSession().setPassword(new String (txt1.getPassword()));
-
-					setVisible(false);
-				}else{
-					txt1.setText("");
-					txt2.setText("");
+				try {
+					tryCreateAccount();
+				} catch (AccountAlreadyExistsException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -260,10 +244,77 @@ public class AddAccountGUI extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, passwordLengthField, 30, SpringLayout.EAST, passwordLengthSlider);
 		layout.putConstraint(SpringLayout.SOUTH, passwordLengthField, 0, SpringLayout.SOUTH, passwordLengthSlider);
 		
+		txt1.requestFocus();
 		//setContentPane(mainPanel);
 		setVisible(false);
 	}
 	
 
+	private void tryCreateAccount() throws AccountAlreadyExistsException{
+		Main.sessionManager.getCurrentSession().reshceduleEnd();
+		
+
+		// on verifie que les deux mots de passe correspondent
+		psswdMatch = Main.passwordMatch(txt1.getPassword(),txt2.getPassword());
+		if(psswdMatch == true){ //si oui on passe a la suite
+			if(txt1.getPassword().length>=8){
+				String login = userIdField.getText();
+				if(login.endsWith(" ")){
+					int i = login.length()-1;
+					do{
+						i--;
+					}
+					while(login.charAt(i)==' ');
+					login = login.substring(0, i+1);
+				} 
+				String domain = domainField.getText();
+				if(domain.endsWith(" ")){
+					int i = domain.length()-1;
+					do{
+						i--;
+					}
+					while(domain.charAt(i)==' ');
+					domain = domain.substring(0, i+1);
+				}
+				Account account = new Account(login,domain,txt1.getPassword());
+				if(Request.checkIfAccountExists( account, Main.conn)){
+					throw new AccountAlreadyExistsException();
+				}else{
+
+					if(login.length()>2 && domain.length()>2){
+						initPsswd.setVisible(false);
+						f.initBdGui(account,passwordLengthSlider.getValue());
+
+						setVisible(false);
+					}else{
+						new SimpleWarning("L'un des champs est trop court");
+					}
+				}
+			}else {
+				new SimpleWarning("Mot de passe trop court \n min: 8");
+			}
+		}else{ // sinon on recommence
+			new SimpleWarning("Les mots de passe ne correspondent pas");
+
+			txt1.setText("");
+			txt2.setText("");
+		}
 	
+	}
+
+	public JPasswordField getTxt1() {
+		return txt1;
+	}
+
+	public void setTxt1(JPasswordField txt1) {
+		this.txt1 = txt1;
+	}
+	
+	public void close(){
+		bdGUI.close();
+	}
+
+
+	
+
 }

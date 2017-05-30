@@ -1,15 +1,17 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-import Main.Password;
+import Main.Account;
 
 @SuppressWarnings("serial")
-public class MenuGUI extends JFrame {
+public class MenuGUI extends JFrame implements WindowListener {
 	
 	public JPanel mainPane;
 	public MenuPane menuPane;
@@ -111,8 +113,8 @@ public class MenuGUI extends JFrame {
 		systemConnectionPane.setVisible(false);
 	}
 	
-	public void initBdGui(Password p,String domaine,int passwordLength){
-		bdGui = new BDGUI(p,domaine,passwordLength,this);
+	public void initBdGui(Account account,int passwordLength){
+		bdGui = new BDGUI(account,passwordLength,this);
 		mainPane.add(bdGui);
 		layout.putConstraint(SpringLayout.WEST, bdGui, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, bdGui, 0, SpringLayout.EAST, mainPane);
@@ -150,6 +152,7 @@ public class MenuGUI extends JFrame {
 		layout.putConstraint(SpringLayout.SOUTH, getPsswdPane, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, getPsswdPane, 0, SpringLayout.NORTH, mainPane);
 		getPsswdPane.setVisible(true);
+		getPsswdPane.getDomainField().grabFocus();
 	}
 	
 	public void showMenuPane(){
@@ -264,6 +267,50 @@ public class MenuGUI extends JFrame {
 
 	public void setGetPsswdPane(GetPasswordGUI getPsswdPane) {
 		this.getPsswdPane = getPsswdPane;
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		if(getPsswdPane != null)
+			getPsswdPane.close();
+		if(createAccountPane != null)
+			createAccountPane.close(); 		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

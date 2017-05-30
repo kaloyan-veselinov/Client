@@ -3,7 +3,6 @@ package KeystrokeMeasuring;
 import java.util.ArrayList;
 
 import Encryption.Encryption;
-import Main.Password;
 
 public abstract class Key {
 	private long timeUp, timeDown;
@@ -17,10 +16,10 @@ public abstract class Key {
 		return timeUp;
 	}
 	
-	public ArrayList<String> getEncryptedValues(Password p){
+	public ArrayList<String> getEncryptedValues(String p){
 		ArrayList<String> encryptedValues = new ArrayList<String>();
-		encryptedValues.add(Encryption.encryptLong(timeUp, new String(p.getPassword())));
-		encryptedValues.add(Encryption.encryptLong(timeDown, new String(p.getPassword())));
+		encryptedValues.add(Encryption.encryptLong(timeUp, p));
+		encryptedValues.add(Encryption.encryptLong(timeDown, p));
 		return encryptedValues;
 	}
 	
@@ -37,18 +36,6 @@ public abstract class Key {
 	 * @return la difference de temps Release-Press
 	 */
 	public abstract long getReleasePressTimes();
-	
-	/**
-	 * Methode permettant de calculer le temps moyen entre le relachement d'une touche et 
-	 * @return le temps entre le relachement de la touche et le relachement de la suivante
-	 */
-	public abstract long getReleaseReleaseTimes();
-	
-	/**
-	 * Retourne la norme au carre du vecteur
-	 * @param la norme
-	 */
-	public abstract double getNormSquared();
 	
 	public void setTimeUp(long timeUp) {
 		this.timeUp = timeUp;

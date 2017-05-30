@@ -22,10 +22,8 @@ public abstract class KeyStrokeListener implements KeyListener {
 
 	
 	public void keyReleased(KeyEvent arg0) {
-		if (arg0.getKeyCode() == e.getKeyCode()){
-			this.setUpTime(System.currentTimeMillis());
-			
-		}
+		if (arg0.getKeyCode() == e.getKeyCode())
+			this.setUpTime(System.nanoTime());
 	}
 
 	

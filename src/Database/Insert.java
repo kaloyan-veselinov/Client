@@ -1,18 +1,18 @@
 package Database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import Main.Main;
 import javax.swing.JOptionPane;
-import Main.Password;
-import Session.Session;
+
 import Encryption.Encryption;
+import Main.Account;
+import Session.Session;
 
 
 // C'est moche mais bon ça marche...
@@ -20,13 +20,12 @@ import Encryption.Encryption;
 public class Insert {
 
 	
-	public static void addCompte(Password p,String domain,int passwordLength,Connection conn){
-		
+	public static void addCompte(Account account,int passwordLength,Connection conn){		
 		System.out.println("Ajout d'un compte");
-		String ePassword = Encryption.encryptPassword(p.toString());
-		int  eLogin = p.getUserID().hashCode();
-		int hDomain = domain.hashCode();
-		String ePasswordLength = Encryption.encryptInt(passwordLength, p.toString());
+		String ePassword = Encryption.encryptPassword(account.getPasswordAsString());
+		int  eLogin = account.getLoginHash();
+		int hDomain = account.getDomainHash();
+		String ePasswordLength = Encryption.encryptInt(passwordLength, account.getPasswordAsString());
 		
 		
         
@@ -36,14 +35,18 @@ public class Insert {
        
        
        try {
+    	   Statement begin = conn.createStatement();
+			begin.executeQuery("Start Transaction;");
 			PreparedStatement compteStatement = conn.prepareStatement(compte);
 			compteStatement.setString(1, String.valueOf(eLogin));
 			compteStatement.setString(2, ePassword);
 			compteStatement.setString(3, String.valueOf(hDomain));
 			compteStatement.setString(4, ePasswordLength);
-			compteStatement.setString(5, String.valueOf(Main.currentSystemAccount.getLogin().hashCode()));
+			compteStatement.setString(5, String.valueOf(account.getSysAccount().getSysLoginHash()));
 			compteStatement.executeUpdate();
 			System.out.println("Compte ajouté");
+			Statement commit = conn.createStatement();
+	        commit.executeQuery("Commit;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Erreur lors de l'ajout du compte");
@@ -62,9 +65,9 @@ public class Insert {
 		
 		// on recupere le compte associe a la session
 		
-		int userId = s.getUserId().hashCode();
+		int userId = s.getAccount().getLoginHash();
 		
-		int domain = s.getDomain().hashCode();
+		int domain = s.getAccount().getDomainHash();
 		
 		String account = "SELECT Compte.Index FROM Compte WHERE Login = \""+userId+
 				"\" and domainHash = " + domain+";"; 
@@ -90,6 +93,8 @@ public class Insert {
         Statement accountStatement;
 		try {
 			accountStatement = conn.createStatement();
+			Statement begin = conn.createStatement();
+			begin.executeQuery("Start Transaction;");
 			 res =accountStatement.executeQuery(account);
 		        
 		        int accountId = 0;
@@ -110,6 +115,7 @@ public class Insert {
 				}
 				System.out.println("Ajout des donnéees");
 				for (int i=0; i<s.getPasswordTries().size();i++){
+					System.out.println("Ajout entree " + i+" pour la session " +sessionId );
 					PreparedStatement entreeStatement = conn.prepareStatement(entree);
 					entreeStatement.setInt(1,sessionId);
 					entreeStatement.setString(2,s.getLocal());
@@ -126,26 +132,27 @@ public class Insert {
 					
 					String allTouche = touche + String.join(",", Collections.nCopies(s.getPasswordTries().get(i).getKeys().size()-1, toucheValues))+";";
 					PreparedStatement toucheStatement = conn.prepareStatement(allTouche);
+					System.out.println("Size " + s.getPasswordTries().get(i).getKeys().size());
 
 					for(int j=0; j<s.getPasswordTries().get(i).getKeys().size();j++){
-						ArrayList<String>encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(new Password(
-								s.getPassword().toCharArray(),s.getUserId()));
+						//System.out.println("Ajout de la touche " + j + " pour l'entree " + entreeId);
+						
+						ArrayList<String> encryptedValues = s.getPasswordTries().get(i).getKeys().get(j).getEncryptedValues(s.getAccount().getPasswordAsString());
+												
 						toucheStatement.setInt(j*16+1,entreeId);
 						
 						//TODO moddifier avec un iterator 
 						int k=0;
-						for (k=0; k<encryptedValues.size();k++){
-							
+						for (k=0; k<encryptedValues.size();k++)						
 							toucheStatement.setString(j*16 +k+2,encryptedValues.get(k));
-						}
 						
 						while(k+2<17){
-							toucheStatement.setString(j*16+k+2, Encryption.encryptText("NULL", s.getPassword()));
+							toucheStatement.setString(j*16+k+2, Encryption.encryptText("NULL", s.getAccount().getPasswordAsString()));
 							k++;
 						}
 
 					}
-					toucheStatement.executeUpdate();
+					System.out.println(toucheStatement.executeUpdate());
 
 				}
 		} catch (SQLException e) {
@@ -154,10 +161,20 @@ public class Insert {
 		}
        
         System.out.println("Session ajoutée");
+        Statement commit;
+		try {
+			commit = conn.createStatement();
+	        commit.executeQuery("Commit;");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
        
        
 	}
-public static String addCompteSystem(String identifiant, String password,Connection conn){ 
+	
+	public static String addCompteSystem(String identifiant, String password,Connection conn){ 
 		
 		PreparedStatement insertAccountSystem = null;
 		Statement ps = null;
@@ -169,6 +186,8 @@ public static String addCompteSystem(String identifiant, String password,Connect
 		String getLogin = "SELECT Login FROM CompteSystem";
         
         try { //on verifie que la cle (login) n existe pas deja
+        	Statement begin = conn.createStatement();
+    		begin.executeQuery("Start Transaction;");
 			ps = conn.createStatement();
 			res =ps.executeQuery(getLogin);
 			while(res.next()){
@@ -208,6 +227,8 @@ public static String addCompteSystem(String identifiant, String password,Connect
 	
 	        try {
 	        	insertAccountSystem.executeUpdate();
+	        	Statement commit = conn.createStatement();
+		        commit.executeQuery("Commit;");
 				
 			} catch (SQLException e1) {
 				System.err.println("Could not execute updates");
