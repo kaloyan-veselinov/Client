@@ -17,48 +17,7 @@ public class GaussTest {
 													// niveau de confiance 99%
 	private static final int nbParams = 15;
 
-	public static boolean test(KeyStrokeSet testSet, Account account) throws BadLoginException {
-
-		try {
-
-			boolean isTheSamePerson = true;
-
-			LinkedList<KeyStrokeSet> sets = KeyStrokeSet.buildReferenceSet(account);
-
-			double[][] avgMatrix = getAvgMatrix(sets);
-			double[][] sdMatrix = getStandardDeviationMatrix(sets, avgMatrix);
-
-			Iterator<KeyStroke> keyIter = testSet.getSet().iterator();
-			int keyIndex = 0;
-
-			while (isTheSamePerson && keyIter.hasNext()) {
-
-				double[] values = keyIter.next().getValues();
-				int i = 0;
-
-				while (i < nbParams && isTheSamePerson) {
-
-					double min = avgMatrix[keyIndex][i] - gaussianCoef * sdMatrix[keyIndex][i];
-					double max = avgMatrix[keyIndex][i] + gaussianCoef * sdMatrix[keyIndex][i];
-					if (values[i] < min || values[i] > max)
-						isTheSamePerson = false;
-					i++;
-
-				}
-
-				keyIndex++;
-
-			}
-
-			return isTheSamePerson;
-
-		} catch (EncryptionOperationNotPossibleException e) {
-			throw new BadLoginException();
-		}
-
-	}
-
-	private static double[][] getAvgMatrix(LinkedList<KeyStrokeSet> sets) {
+	protected static double[][] getAvgMatrix(LinkedList<KeyStrokeSet> sets) {
 
 		// On definit la matrice des moyennes pour chaque parametre de chaque
 		// touche
@@ -92,7 +51,7 @@ public class GaussTest {
 
 	}
 
-	public static double[][] getStandardDeviationMatrix(LinkedList<KeyStrokeSet> sets, double[][] avgMatrix) {
+	protected static double[][] getStandardDeviationMatrix(LinkedList<KeyStrokeSet> sets, double[][] avgMatrix) {
 		double[][] standardDeviationMatrix = new double[sets.getFirst().getSet().size()][nbParams];
 
 		// On reinitialise l'iterateur de sets
@@ -124,6 +83,14 @@ public class GaussTest {
 
 		return standardDeviationMatrix;
 
+	}
+
+	public static double getGaussiancoef() {
+		return gaussianCoef;
+	}
+
+	public static int getNbparams() {
+		return nbParams;
 	}
 
 }
