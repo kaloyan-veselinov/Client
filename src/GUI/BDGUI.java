@@ -26,6 +26,8 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 	Account account;
 	int passwordLength;
 	public JPanel progressBar;
+	private TimingManager timingManager;
+
 	
 	
 	MenuGUI f;
@@ -64,7 +66,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		progressBar.repaint();
 		
 		label1.setForeground(Color.white);
-		TimingManager timingManager = new TimingManager(account,psswd);		
+		timingManager = new TimingManager(account,psswd);		
 		psswd.addKeyListener(timingManager);
 		psswd.addKeyListener(new KeyListener(){
 
@@ -151,6 +153,10 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		f.showPasswordPane(generatedPassword);
 		f.hideBdGui();
 
+	}
+	
+	public void close(){
+		timingManager.close();
 	}
 	
 

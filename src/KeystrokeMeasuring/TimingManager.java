@@ -173,7 +173,9 @@ public class TimingManager implements KeyListener {
 	public void keyTyped(KeyEvent arg0) {}
 	
 
-
+	public void close (){
+		pm.close();
+	}
 
 	public ArrayList<KeyStrokeListener> getStrokes() {
 		return strokes;

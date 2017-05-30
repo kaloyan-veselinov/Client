@@ -310,6 +310,9 @@ public class AddAccountGUI extends JPanel {
 		this.txt1 = txt1;
 	}
 	
+	public void close(){
+		bdGUI.close();
+	}
 
 
 	
