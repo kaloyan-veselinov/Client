@@ -3,11 +3,7 @@ package Analyse;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-
-import Exception.BadLoginException;
 import KeystrokeMeasuring.KeyStroke;
-import Main.Account;
 
 public class GaussTest {
 
@@ -37,7 +33,7 @@ public class GaussTest {
 				double[] values = curr.getValues();
 				for (int i = 0; i < values.length; i++) {
 					if (i < avgMatrix[keyIndex].length)
-						avgMatrix[keyIndex][i] += (values[i] / ((double) sets.size()));
+						avgMatrix[keyIndex][i] += (values[i] / (sets.size()));
 				}
 				keyIndex++;
 
@@ -69,7 +65,7 @@ public class GaussTest {
 				double[] values = strokesIter.next().getValues();
 				for (int i = 0; i < values.length; i++)
 					standardDeviationMatrix[keyIndex][i] += Math.pow(values[i] - avgMatrix[keyIndex][i], 2)
-							/ ((double) sets.size());
+							/ (sets.size());
 				keyIndex++;
 
 			}
