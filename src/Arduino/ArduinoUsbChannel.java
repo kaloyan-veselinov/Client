@@ -51,7 +51,7 @@ public class ArduinoUsbChannel {
         }
         System.err.println();
 
-        return myVirtualComPort;
+        return "/dev/ttyACM0";
     }
 
     public void open() throws SerialPortException, IOException {
