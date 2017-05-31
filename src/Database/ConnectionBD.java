@@ -5,10 +5,20 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ConnectionBD.
+ */
 public class ConnectionBD {
 
+	/** La connexion. */
 	protected static Connection conn;
 	
+	/**
+	 * Initianise la cponnexion en desactivant l'autocommit des transactions
+	 *
+	 * @return La connection au serveur Mysql
+	 */
 	public static Connection connect(){
 		conn = null;
 		try {
@@ -31,7 +41,7 @@ public class ConnectionBD {
 		}
         System.out.println("Driver Found...");
         try {
-			conn = DriverManager.getConnection("jdbc:mysql://5.196.123.198:3306/P2I", "G222_B", "G222_B");
+			conn = DriverManager.getConnection("jdbc:mysql://217.182.207.5:3306/P2I", "G222_B", "G222_B");
         	
 		} catch (SQLException e1) {
 			System.err.println("Could not connect to the database");
@@ -53,6 +63,9 @@ public class ConnectionBD {
         return conn;
 	}
 	
+	/**
+	 * Ferme la connexion
+	 */
 	public static void closeConnection(){
 		try{
 			conn.close();

@@ -51,7 +51,8 @@ public class ArduinoUsbChannel {
         }
         System.err.println();
 
-        return myVirtualComPort;
+        //return myVirtualComPort;
+        return null;
     }
 
     public void open() throws SerialPortException, IOException {
@@ -68,7 +69,8 @@ public class ArduinoUsbChannel {
         serialPort.addEventListener(new SerialPortEventListener() {
 
             
-            public void serialEvent(SerialPortEvent event) {
+            @Override
+			public void serialEvent(SerialPortEvent event) {
                 if (event.isRXCHAR()) {//If data is available
 
                     try {
@@ -105,9 +107,10 @@ public class ArduinoUsbChannel {
         this.writingThread = new Thread(new Runnable() {
 
             
-            public void run() {
+            @Override
+			public void run() {
 
-                PipedInputStream input = (PipedInputStream) ArduinoUsbChannel.this.vcpInputInnerStream;
+                PipedInputStream input = ArduinoUsbChannel.this.vcpInputInnerStream;
 
                 try {
 
