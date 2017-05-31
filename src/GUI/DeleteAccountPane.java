@@ -21,6 +21,8 @@ import javax.swing.SpringLayout;
 import Analyse.DistanceTest;
 import Analyse.KeyStrokeSet;
 import Database.Delete;
+import Database.Request;
+import Encryption.Encryption;
 import Exception.BadLoginException;
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.KeyStroke;
@@ -97,7 +99,12 @@ public class DeleteAccountPane extends JPanel {
 					timingManager.getAccount().setPassword(new String(""));
 
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					tryConnection();
+					try {
+						tryConnection();
+					} catch (BadLoginException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 			}
@@ -137,7 +144,12 @@ public class DeleteAccountPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				tryConnection();
+				try {
+					tryConnection();
+				} catch (BadLoginException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -175,7 +187,7 @@ public class DeleteAccountPane extends JPanel {
 		// setVisible(false);
 	}
 
-	private void tryConnection() {
+	private void tryConnection() throws BadLoginException {
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
 		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
@@ -200,6 +212,14 @@ public class DeleteAccountPane extends JPanel {
 		if (login.length() > 2 && domain.length() > 2) {
 			password = new String(psswdField.getPassword());
 			Account account = new Account(login, domain, password);
+			boolean b = false;
+			try {
+				String ePassword = Request.getEncryptedPassword(account, Main.conn);
+				b = Encryption.checkPassword(ePassword, password);
+
+			} catch (BadLoginException e) {
+			}
+			if(b){
 			System.out.println(password);
 			Main.sessionManager.getCurrentSession().setAccount(account);
 			System.out.println("PasswordTry ajouté");
@@ -226,6 +246,9 @@ public class DeleteAccountPane extends JPanel {
 				// TODO Auto-generated catch block
 				System.out
 						.println(account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
+			}
+			}else{
+				throw new BadLoginException();
 			}
 		} else {
 			new SimpleWarning("L'un des champs est trop court");

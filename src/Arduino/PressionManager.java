@@ -33,8 +33,8 @@ public class PressionManager implements Runnable {
 
 		console.log("RECHERCHE d'un port disponible...");
 		port = ArduinoUsbChannel.getOneComPort();
-
-		if(port != null){
+		System.out.println("port : " + port);
+		if(port != null	){
 			try {
 				vcpChannel = new ArduinoUsbChannel(port);
 			} catch (IOException e) {
@@ -71,7 +71,7 @@ public class PressionManager implements Runnable {
 													// pression
 
 			vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
-		}
+		
 		while (!stop && tm.isArduinoConnected()) {
 
 			try {
@@ -125,6 +125,7 @@ public class PressionManager implements Runnable {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 
+		}
 		}
 
 	}
