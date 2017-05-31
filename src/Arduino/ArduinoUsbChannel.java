@@ -51,8 +51,8 @@ public class ArduinoUsbChannel {
         }
         System.err.println();
 
-        return myVirtualComPort;
-        //return null;
+        //return myVirtualComPort;
+        return null;
     }
 
     public void open() throws SerialPortException, IOException {
