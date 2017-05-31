@@ -98,7 +98,12 @@ public class GetPasswordGUI extends JPanel{
 					timingManager.getAccount().setPassword(new String(""));
 					
 				}else if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
-					tryConnection();
+					try {
+						tryConnection();
+					} catch (BadLoginException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 					
 				
@@ -139,7 +144,12 @@ public class GetPasswordGUI extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				tryConnection()	;			
+				try {
+					tryConnection()	;
+				} catch (BadLoginException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
 			}
 			
 			
@@ -180,7 +190,7 @@ public class GetPasswordGUI extends JPanel{
 		//setVisible(false);
 	}
 	
-	private void tryConnection(){
+	private void tryConnection() throws BadLoginException{
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
 		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
@@ -230,8 +240,8 @@ public class GetPasswordGUI extends JPanel{
 
 				}
 			} catch (BadLoginException e) {
-				// TODO Auto-generated catch block
-				System.out.println(account.getLogin()+"|" + account.getDomain() +"|"+account.getPasswordAsString());
+				throw new BadLoginException();
+				//System.out.println(account.getLogin()+"|" + account.getDomain() +"|"+account.getPasswordAsString());
 			}
 		}else{
 			new SimpleWarning("L'un des champs est trop court");
