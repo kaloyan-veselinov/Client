@@ -31,25 +31,52 @@ import Main.Account;
 import Main.Main;
 import Warnings.SimpleWarning;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DeleteAccountPane.
+ */
 @SuppressWarnings("serial")
 public class DeleteAccountPane extends JPanel {
+	
+	/** The domain label. */
 	private JLabel domainLabel;
+	
+	/** The id label. */
 	private JLabel idLabel;
+	
+	/** The psswd label. */
 	private JLabel psswdLabel;
 
+	/** The domain field. */
 	private JTextField domainField;
+	
+	/** The id field. */
 	private JTextField idField;
+	
+	/** The psswd field. */
 	private JPasswordField psswdField;
 
+	/** The get psswd. */
 	private JButton getPsswd;
+	
+	/** The cancel. */
 	private JButton cancel;
 
+	/** The timing manager. */
 	TimingManager timingManager;
 
+	/** The frame */
 	private MenuGUI f;
 
+	/** The password. */
 	private String password;
 
+	/**
+	 * Instantiates a new delete account pane.
+	 *
+	 * @param menuPane the menu pane
+	 * @param f the frame
+	 */
 	public DeleteAccountPane(JPanel menuPane, final MenuGUI f) {
 		password = "";
 		this.f = f;
@@ -187,6 +214,11 @@ public class DeleteAccountPane extends JPanel {
 		// setVisible(false);
 	}
 
+	/**
+	 * Try connection.
+	 *
+	 * @throws BadLoginException les informations saisis ne sont pas correctes
+	 */
 	private void tryConnection() throws BadLoginException {
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
@@ -258,6 +290,11 @@ public class DeleteAccountPane extends JPanel {
 		timingManager.getStrokes().clear();
 	}
 
+	/**
+	 * Delete account.
+	 *
+	 * @param account the account
+	 */
 	private void deleteAccount(Account account) {
 		int accountIndex = Delete.getAccountIndex(account);
 		LinkedList<Integer> sessionsIndexes = Delete.getSessionsForAccount(accountIndex);
@@ -281,22 +318,45 @@ public class DeleteAccountPane extends JPanel {
 		Delete.deleteAccount(accountIndex);
 	}
 
+	/**
+	 * Gets the domain field.
+	 *
+	 * @return the domain field
+	 */
 	public JTextField getDomainField() {
 		return domainField;
 	}
 
+	/**
+	 * Sets the domain field.
+	 *
+	 * @param domainField the new domain field
+	 */
 	public void setDomainField(JTextField domainField) {
 		this.domainField = domainField;
 	}
 
+	/**
+	 * Gets the password.
+	 *
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Sets the password.
+	 *
+	 * @param password the new password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		timingManager.close();
 	}

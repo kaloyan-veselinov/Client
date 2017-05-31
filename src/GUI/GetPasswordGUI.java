@@ -30,26 +30,52 @@ import Main.Main;
 import Main.PasswordGetter;
 import Warnings.SimpleWarning;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GetPasswordGUI.
+ */
 @SuppressWarnings("serial")
 public class GetPasswordGUI extends JPanel {
 
+	/** The domain label. */
 	private JLabel domainLabel;
+	
+	/** The id label. */
 	private JLabel idLabel;
+	
+	/** The psswd label. */
 	private JLabel psswdLabel;
 
+	/** The domain field. */
 	private JTextField domainField;
+	
+	/** The id field. */
 	private JTextField idField;
+	
+	/** The psswd field. */
 	private JPasswordField psswdField;
 
+	/** The get psswd. */
 	private JButton getPsswd;
+	
+	/** The cancel. */
 	private JButton cancel;
 
+	/** The timing manager. */
 	TimingManager timingManager;
 
+	/** The frame */
 	private MenuGUI f;
 
+	/** The password. */
 	private String password;
 
+	/**
+	 * Instantiates a new gets the password GUI.
+	 *
+	 * @param menuPane the menu pane
+	 * @param f the frame
+	 */
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
 		password = "";
 		this.f = f;
@@ -187,6 +213,11 @@ public class GetPasswordGUI extends JPanel {
 		// setVisible(false);
 	}
 
+	/**
+	 * Try connection.
+	 *
+	 * @throws BadLoginException les informations saisies ne sont pas correctes
+	 */
 	private void tryConnection() throws BadLoginException {
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
@@ -258,22 +289,45 @@ public class GetPasswordGUI extends JPanel {
 		timingManager.getStrokes().clear();
 	}
 
+	/**
+	 * Gets the domain field.
+	 *
+	 * @return the domain field
+	 */
 	public JTextField getDomainField() {
 		return domainField;
 	}
 
+	/**
+	 * Sets the domain field.
+	 *
+	 * @param domainField the new domain field
+	 */
 	public void setDomainField(JTextField domainField) {
 		this.domainField = domainField;
 	}
 
+	/**
+	 * Gets the password.
+	 *
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Sets the password.
+	 *
+	 * @param password the new password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		timingManager.close();
 	}
