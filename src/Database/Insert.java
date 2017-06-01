@@ -15,21 +15,11 @@ import Main.Account;
 import Session.Session;
 
 
+// C'est moche mais bon ça marche...
 
-// TODO: Auto-generated Javadoc
-/**
- * Class qui contient les methodes necessaires a l'insertion dans la bd
- */
 public class Insert {
 
 	
-	/**
-	 * ajoute un compte
-	 *
-	 * @param account le compte a ajouter
-	 * @param passwordLength La logueur du mot de passe a ajouter
-	 * @param conn La connection a la bd
-	 */
 	public static void addCompte(Account account,int passwordLength,Connection conn){		
 		System.out.println("Ajout d'un compte");
 		String ePassword = Encryption.encryptPassword(account.getPasswordAsString());
@@ -68,12 +58,6 @@ public class Insert {
 		
 	
 	
-	/**
-	 * Ajoute une session et son contenu
-	 *
-	 * @param s la session
-	 * @param conn la connexion a la bd
-	 */
 	public static  void addSession(Session s,Connection conn){
 		
 		System.out.println("Ajout d'un nouvelle session");
@@ -190,14 +174,6 @@ public class Insert {
        
 	}
 	
-	/**
-	 * Ajoute un compte Systeme
-	 *
-	 * @param identifiant l'identifiant du compte
-	 * @param password le mot de passe du compte
-	 * @param conn la connexion a la bd
-	 * @return un message
-	 */
 	public static String addCompteSystem(String identifiant, String password,Connection conn){ 
 		
 		PreparedStatement insertAccountSystem = null;

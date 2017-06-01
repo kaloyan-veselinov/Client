@@ -13,19 +13,8 @@ import java.sql.PreparedStatement;
 import Main.Main;
 import Main.Account;
 
-// TODO: Auto-generated Javadoc
-/**
- * La classe contenant les requetes pour la bd
- */
 public class Request {
 	
-	/**
-	 * recupere le hash du login du compte et son mot de passe pour un nom de domaine
-	 *
-	 * @param i le nom de domaine
-	 * @param conn la connexion a la bd
-	 * @return les resultset contenant les mot de passe maitre et le hash du login
-	 */
 	public static ResultSet getLogin (int i,Connection conn){
    
       
@@ -47,13 +36,6 @@ public class Request {
         return rs;
 	}
 	
-	/**
-	 * retourne les 50 dernieres entrees reussies
-	 *
-	 * @param account le compte pour lequel on siuhaite recuperer les entrees
-	 * @param conn la connexion a la bd
-	 * @return les indexes des entrees sous la forme d'un tableau
-	 */
 	public static int[] getLastSuccessfulEntries (Account account,Connection conn){		
 		int loginHash = account.getLoginHash();
 		int domainHash = account.getDomainHash();
@@ -88,13 +70,6 @@ public class Request {
         return indexes;
 	}
 	
-	/**
-	 * Recupere les valeures stockees dans la table touche associe a l'index de son entree
-	 *
-	 * @param entryIndex l'index de l'entree
-	 * @param conn la connexion a la bd
-	 * @return une liste de liste de chaine de caracteres contenant les mesures chiffrees
-	 */
 	public static ArrayList<ArrayList<String>> getTouchesForEntry(int entryIndex,Connection conn){
 		String request = "Select * From Touche Where Touche.Entree_Index = ?;";
 
@@ -125,14 +100,6 @@ public class Request {
         
 	}
 	
-	/**
-	 * Retoune le mot de passe d'un compte systeme
-	 *
-	 * @param login le login du compte
-	 * @param conn la connexion a la bd
-	 * @return le mot de passe
-	 * @throws BadLoginException Le login fourni n'existe pas
-	 */
 	public static String getPasswordForSystemAccount(String login,Connection conn) throws BadLoginException{
 		
 		login = String.valueOf(login.hashCode());
@@ -161,14 +128,6 @@ public class Request {
 		return password;
 	}
 	
-	/**
-	 * retourne le mot de passe associe a un compte
-	 *
-	 * @param account le compte pour lequel on souhaite recuperer le mdp
-	 * @param conn la connexion a la bd
-	 * @return le mot de passe
-	 * @throws BadLoginException le compte n'existe pas
-	 */
 	public static String getEncryptedPassword (Account account,Connection conn) throws BadLoginException{		
 		int loginHash = account.getLoginHash();
 		int domainHash = account.getDomainHash();
@@ -199,13 +158,6 @@ public class Request {
 		}
 	}
 	
-	/**
-	 * Verifie qu'un compte existe
-	 *
-	 * @param account le compte a verifier
-	 * @param conn la connexion a la bd
-	 * @return true si oui
-	 */
 	public static boolean checkIfAccountExists(Account account,Connection conn){
 		int sysLoginHash = account.getSysAccount().getSysLoginHash();
 		int loginHash = account.getLoginHash();
