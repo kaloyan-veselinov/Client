@@ -21,21 +21,11 @@ import Main.Main;
 import Main.SystemAccount;
 import Warnings.SimpleWarning;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class SystemConnectionPane.
- */
 @SuppressWarnings("serial")
 public class SystemConnectionPane extends JPanel{
 	
-	/** The frame. */
 	MenuGUI frame;
 	
-	/**
-	 * Instantiates a new system connection pane.
-	 *
-	 * @param frame the frame
-	 */
 	public SystemConnectionPane(MenuGUI frame){
 		this.frame=frame;
 		setBackground(Color.DARK_GRAY);
@@ -125,12 +115,6 @@ public class SystemConnectionPane extends JPanel{
 
 	}
 	
-	/**
-	 * Try connection.
-	 *
-	 * @param loginField the login field
-	 * @param passwordField the password field
-	 */
 	private void tryConnection(JTextField loginField, JPasswordField passwordField){
 		String login = loginField.getText();
 		if(login.endsWith(" ")){

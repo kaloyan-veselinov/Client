@@ -20,71 +20,36 @@ import Exception.AccountAlreadyExistsException;
 
 import Warnings.SimpleWarning;
 
-// TODO: Auto-generated Javadoc
-/**
- * L'interface perpermettant d'ajouter un compte 
- */
 @SuppressWarnings("serial")
 public class AddAccountGUI extends JPanel {
 	
-	/** The main panel. */
 	//les panels
 	JPanel mainPanel;
-	
-	/** The init psswd. */
 	JPanel initPsswd;
 	
-	/** The cancel. */
 	JButton cancel;
 	
-	/** The bd GUI. */
 	BDGUI bdGUI;
 	
-	/** The psswd match. */
 	// variable verifiant la corrspondance des mots de passe
 	boolean psswdMatch;
-	
-	/** The txt 1. */
 	//premier champ de mot de passe
 	JPasswordField  txt1;
-	
-	/** The txt 2. */
 	//deuxieme champ de mot de passe
 	JPasswordField txt2;
 	
-	/** The user id label. */
 	JLabel userIdLabel; // label pour l'identifiant
-	
-	/** The user id field. */
 	JTextField userIdField; // champ pour l'identifiant
 	
-	/** The domain label. */
 	JLabel domainLabel;
-	
-	/** The domain field. */
 	JTextField domainField;
-	
-	/** The layout. */
 	SpringLayout layout;
 	
-	/** The password length label. */
 	JLabel passwordLengthLabel;
-	
-	/** Filed permettant de choisir la longueur du mot de passe à générer */
 	JTextField passwordLengthField;
-	
-	/** Le slider permettant de choisir la longueur du mot de passe à générer */
 	JSlider passwordLengthSlider;
-	
-	/** La fenêtre */
 	MenuGUI f;
 	
-	/**
-	 * Instantiates a new adds the account GUI.
-	 *
-	 * @param menuPane the menu pane
-	 * @param f la fenêtre
-	 */
 	public AddAccountGUI(final JPanel menuPane,final MenuGUI f){
 		this.f=f;
 		setBackground(Color.darkGray);
@@ -293,11 +258,6 @@ public class AddAccountGUI extends JPanel {
 	}
 	
 
-	/**
-	 * Tente d'ajouter le compte.
-	 *
-	 * @throws AccountAlreadyExistsException si le compte existe déja
-	 */
 	private void tryCreateAccount() throws AccountAlreadyExistsException{
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 		
@@ -350,27 +310,14 @@ public class AddAccountGUI extends JPanel {
 	
 	}
 
-	/**
-	 * Gets the txt 1.
-	 *
-	 * @return the txt 1
-	 */
 	public JPasswordField getTxt1() {
 		return txt1;
 	}
 
-	/**
-	 * Sets the txt 1.
-	 *
-	 * @param txt1 the new txt 1
-	 */
 	public void setTxt1(JPasswordField txt1) {
 		this.txt1 = txt1;
 	}
 	
-	/**
-	 * Close.
-	 */
 	public void close(){
 		bdGUI.close();
 	}
