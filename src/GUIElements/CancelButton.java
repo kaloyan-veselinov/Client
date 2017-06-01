@@ -12,12 +12,6 @@ public class CancelButton extends JButton implements ActionListener{
 	private JPanel prevPane;
 	private JPanel currentPane;
 	
-	/**
-	 * Instantiates a new cancel button.
-	 *
-	 * @param prev the previous Pane
-	 * @param current the current Pane
-	 */
 	public CancelButton(JPanel prev , JPanel current){
 		super("Annuler");
 		prevPane = prev;

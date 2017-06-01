@@ -8,27 +8,13 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MenuPane.
- */
 @SuppressWarnings("serial")
 public class MenuPane extends JPanel {
 
-	/** The create button. */
 	JButton create;
-	
-	/** The request button. */
 	JButton request;
-	
-	/** The delete account. */
 	JButton deleteAccount;
 
-	/**
-	 * Instantiates a new menu pane.
-	 *
-	 * @param f the frame
-	 */
 	public MenuPane(final MenuGUI f) {
 		setBackground(Color.DARK_GRAY);
 		SpringLayout layout = f.layout;

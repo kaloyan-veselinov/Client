@@ -9,19 +9,8 @@ import java.util.LinkedList;
 
 import Main.Account;
 
-// TODO: Auto-generated Javadoc
-/**
- * Classe contenant les methodes permettant d'effacer des 
- * donnees de la base
- */
 public class Delete {
 	
-	/**
-	 * Supprime les entrees de Toches associees a un index de la table Entree.
-	 *
-	 * @param entry l'index pour lequel on souhqite supprimer des donnees
-	 * @return le nombre de donnees effacees
-	 */
 	public static int deleteTouchesForEntry(int entry){
 		Connection conn = Main.Main.conn;
 		
@@ -42,12 +31,6 @@ public class Delete {
 		return 0;
 	}
 	
-	/**
-	 * Retourne les entrees associees a un index de session
-	 *
-	 * @param sessio l'index de la sesison
-	 * @return les indexes d'entrees associees a la session
-	 */
 	public static LinkedList<Integer> getEntriesForSession(int session){
 		Connection conn = Main.Main.conn;
 		String entries = "Select Entree.Index From Entree Where Entree.Session_index = ?";
@@ -67,11 +50,6 @@ public class Delete {
 		return entriesIndexes;
 	}
 	
-	/**
-	 * Supprime les entrees associes a une session
-	 *
-	 * @param session l'index de la session
-	 */
 	public static void deleteEntriesForSession(int session){
 		Connection conn = Main.Main.conn;
 
@@ -90,12 +68,6 @@ public class Delete {
 		}
 	}
 	
-	/**
-	 * retourne les indexes des sessions associes a un compte
-	 *
-	 * @param account l'index du compte
-	 * @return the sessions les indexes des sessions
-	 */
 	public static LinkedList<Integer> getSessionsForAccount(int account){
 		Connection conn = Main.Main.conn;
 		String sessions = "Select Session.index From Session Where Session.Compte_Index"
@@ -115,11 +87,6 @@ public class Delete {
 		return sessionsIndexes;
 	}
 	
-	/**
-	 * supprime les sessions associes a un compte
-	 *
-	 * @param account l'index du compte
-	 */
 	public static void deleteSessionsForAccount(int account){
 		Connection conn = Main.Main.conn;
 		
@@ -139,11 +106,6 @@ public class Delete {
 		
 	}
 	
-	/**
-	 * supprime un compte
-	 *
-	 * @param account l'index du compte
-	 */
 	public static void deleteAccount(int account){
 		Connection conn = Main.Main.conn;
 		String query = "Delete from Compte Where Compte.Index = ?;";
@@ -162,12 +124,6 @@ public class Delete {
 		
 	}
 	
-	/**
-	 * Retourn l'index d'un compte
-	 *
-	 * @param account le compte pour lequel on cherche l'index
-	 * @return l'index du compte.
-	 */
 	public static int getAccountIndex(Account account){
 		Connection conn = Main.Main.conn;
 		String query = "Select Compte.Index From Compte Where Compte.Login = ?"

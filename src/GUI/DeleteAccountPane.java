@@ -21,8 +21,6 @@ import javax.swing.SpringLayout;
 import Analyse.DistanceTest;
 import Analyse.KeyStrokeSet;
 import Database.Delete;
-import Database.Request;
-import Encryption.Encryption;
 import Exception.BadLoginException;
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.KeyStroke;
@@ -31,52 +29,25 @@ import Main.Account;
 import Main.Main;
 import Warnings.SimpleWarning;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DeleteAccountPane.
- */
 @SuppressWarnings("serial")
 public class DeleteAccountPane extends JPanel {
-	
-	/** The domain label. */
 	private JLabel domainLabel;
-	
-	/** The id label. */
 	private JLabel idLabel;
-	
-	/** The psswd label. */
 	private JLabel psswdLabel;
 
-	/** The domain field. */
 	private JTextField domainField;
-	
-	/** The id field. */
 	private JTextField idField;
-	
-	/** The psswd field. */
 	private JPasswordField psswdField;
 
-	/** The get psswd. */
 	private JButton getPsswd;
-	
-	/** The cancel. */
 	private JButton cancel;
 
-	/** The timing manager. */
 	TimingManager timingManager;
 
-	/** The frame */
 	private MenuGUI f;
 
-	/** The password. */
 	private String password;
 
-	/**
-	 * Instantiates a new delete account pane.
-	 *
-	 * @param menuPane the menu pane
-	 * @param f the frame
-	 */
 	public DeleteAccountPane(JPanel menuPane, final MenuGUI f) {
 		password = "";
 		this.f = f;
@@ -126,12 +97,7 @@ public class DeleteAccountPane extends JPanel {
 					timingManager.getAccount().setPassword(new String(""));
 
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					try {
-						tryConnection();
-					} catch (BadLoginException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					tryConnection();
 				}
 
 			}
@@ -171,12 +137,7 @@ public class DeleteAccountPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					tryConnection();
-				} catch (BadLoginException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				tryConnection();
 			}
 
 		});
@@ -214,12 +175,7 @@ public class DeleteAccountPane extends JPanel {
 		// setVisible(false);
 	}
 
-	/**
-	 * Try connection.
-	 *
-	 * @throws BadLoginException les informations saisis ne sont pas correctes
-	 */
-	private void tryConnection() throws BadLoginException {
+	private void tryConnection() {
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
 
 		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
@@ -244,14 +200,6 @@ public class DeleteAccountPane extends JPanel {
 		if (login.length() > 2 && domain.length() > 2) {
 			password = new String(psswdField.getPassword());
 			Account account = new Account(login, domain, password);
-			boolean b = false;
-			try {
-				String ePassword = Request.getEncryptedPassword(account, Main.conn);
-				b = Encryption.checkPassword(ePassword, password);
-
-			} catch (BadLoginException e) {
-			}
-			if(b){
 			System.out.println(password);
 			Main.sessionManager.getCurrentSession().setAccount(account);
 			System.out.println("PasswordTry ajouté");
@@ -261,26 +209,25 @@ public class DeleteAccountPane extends JPanel {
 			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size() - 1;
 			try {
 				// if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
-				if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
-					// if(CosineTest.test(new KeyStrokeSet(ksl), account)){
-					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
-					Main.sessionManager.endCurrentSession();
-					deleteAccount(account);
-					f.menuPane.setVisible(true);
-					this.setVisible(false);
+				if (ksl.size() > 0 && i>=0) {
+					if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+						// if(CosineTest.test(new KeyStrokeSet(ksl), account)){
+						Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
+						Main.sessionManager.endCurrentSession();
+						deleteAccount(account);
+						f.menuPane.setVisible(true);
+						this.setVisible(false);
 
-				} else {
-					new SimpleWarning("Maniere d'ecrire non reconnue");
-					Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
+					} else {
+						new SimpleWarning("Maniere d'ecrire non reconnue");
+						Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
+					}
 				}
 			} catch (BadLoginException e) {
 				// TODO Auto-generated catch block
 				System.out
 						.println(account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
-			}
-			}else{
-				throw new BadLoginException();
 			}
 		} else {
 			new SimpleWarning("L'un des champs est trop court");
@@ -290,11 +237,6 @@ public class DeleteAccountPane extends JPanel {
 		timingManager.getStrokes().clear();
 	}
 
-	/**
-	 * Delete account.
-	 *
-	 * @param account the account
-	 */
 	private void deleteAccount(Account account) {
 		int accountIndex = Delete.getAccountIndex(account);
 		LinkedList<Integer> sessionsIndexes = Delete.getSessionsForAccount(accountIndex);
@@ -318,45 +260,22 @@ public class DeleteAccountPane extends JPanel {
 		Delete.deleteAccount(accountIndex);
 	}
 
-	/**
-	 * Gets the domain field.
-	 *
-	 * @return the domain field
-	 */
 	public JTextField getDomainField() {
 		return domainField;
 	}
 
-	/**
-	 * Sets the domain field.
-	 *
-	 * @param domainField the new domain field
-	 */
 	public void setDomainField(JTextField domainField) {
 		this.domainField = domainField;
 	}
 
-	/**
-	 * Gets the password.
-	 *
-	 * @return the password
-	 */
 	public String getPassword() {
 		return password;
 	}
 
-	/**
-	 * Sets the password.
-	 *
-	 * @param password the new password
-	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	/**
-	 * Close.
-	 */
 	public void close() {
 		timingManager.close();
 	}
