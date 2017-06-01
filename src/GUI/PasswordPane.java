@@ -13,11 +13,22 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PasswordPane.
+ */
 @SuppressWarnings("serial")
 public class PasswordPane extends JPanel {
 	
+	/** The layout. */
 	SpringLayout layout;
 	
+	/**
+	 * Instantiates a new password pane.
+	 *
+	 * @param generatedPassword the generated password
+	 * @param f the frame
+	 */
 	public PasswordPane(String generatedPassword,final MenuGUI f){
 		super();
 		layout = (SpringLayout) f.mainPane.getLayout();

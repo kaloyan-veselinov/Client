@@ -15,23 +15,48 @@ import Main.Main;
 import Main.Account;
 import Main.PasswordGetter;
 
+// TODO: Auto-generated Javadoc
+/**
+ * L'interface per,ettant de remplir la base de donnée à l'initialisation d'un compte.
+ */
 @SuppressWarnings("serial")
 public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de passe pour la BD 
 									//(qui pour le moment est juste un fichier csv)
 	
-	JPanel mainPanel; // le panel principal
+	/** The main panel. */
+ JPanel mainPanel; // le panel principal
+	
+	/** Le champ de mdp. */
 	JPasswordField psswd; // le champ de mot de passe
+	
+	/** Le compte. */
 	Account account;
+	
+	/** The password length. */
 	int passwordLength;
+	
+	/** The progress bar. */
 	public JPanel progressBar;
+	
+	/** The timing manager. */
 	private TimingManager timingManager;
 
 	
 	
+	/** La fenêtre */
 	MenuGUI f;
+	
+	/** The valid tries. */
 	int validTries = 0;
 	
 	
+	/**
+	 * Instantiates a new bdgui.
+	 *
+	 * @param account Le compte
+	 * @param passwordLength La logueur du mdp à) générer
+	 * @param f la fenêtre
+	 */
 	public BDGUI(Account account,int passwordLength, MenuGUI f){
 		//On initialise tout
 		this.f=f;
@@ -140,6 +165,9 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		setVisible(false);
 	}
 	
+	/**
+	 * Rempli la bd avec les essais saisis
+	 */
 	private void flushSession(){
 
 		for(int i=0; i<Main.sessionManager.getCurrentSession().getPasswordTries().size();i++){
@@ -155,6 +183,9 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 
 	}
 	
+	/**
+	 * Close.
+	 */
 	public void close(){
 		timingManager.close();
 	}

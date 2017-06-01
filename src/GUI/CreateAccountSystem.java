@@ -20,24 +20,46 @@ import Main.Main;
 import Main.SystemAccount;
 import Warnings.SimpleWarning;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CreateAccountSystem.
+ */
 @SuppressWarnings("serial")
 public class CreateAccountSystem extends JPanel{
 	
+	/** The id label. */
 	private JLabel idLabel;
+	
+	/** Le premier champ de mot de passe */
 	private JLabel passwordLabel1;
+	
+	/** Le second champ de mot de passe */
 	private JLabel passwordLabel2;
 	
+	/** The id field. */
 	private JTextField idField;
+	
+	/** Le premier champ de mot de passe */
 	private JPasswordField passwordField1;
+	
+	/** Le second champ de mot de passe */
 	private JPasswordField passwordField2;
 	
+	/** The connexion. */
 	private JButton connexion;
 	
+	/** The frame. */
 	private MenuGUI frame;
 	
+	/** The psswd match. */
 	// variable verifiant la correspondance des mots de passe
 		boolean psswdMatch;
 	
+	/**
+	 * Instantiates a new creates the account system.
+	 *
+	 * @param f la fenêtre
+	 */
 	public CreateAccountSystem (final MenuGUI f){
 		this.frame = f;
 		setBackground(Color.DARK_GRAY);
@@ -154,6 +176,11 @@ public class CreateAccountSystem extends JPanel{
 		
 	}
 	
+	/**
+	 * Crée le compte
+	 *
+	 * @throws AccountAlreadyExistsException the account already exists 
+	 **/
 	private void tryCreateAccount() throws AccountAlreadyExistsException{
 		psswdMatch = Main.passwordMatch(passwordField1.getPassword(), passwordField2.getPassword())	;
 		String pswd = new String(passwordField1.getPassword());  

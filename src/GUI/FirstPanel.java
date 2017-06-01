@@ -8,14 +8,28 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FirstPanel.
+ */
 @SuppressWarnings("serial")
 public class FirstPanel extends JPanel{
 	
+	/** The frame. */
 	@SuppressWarnings("unused")
 	private final MenuGUI frame;
+	
+	/** The connection. */
 	private JButton connection;
+	
+	/** The create account. */
 	private JButton createAccount;
 	
+	/**
+	 * Instantiates a new first panel.
+	 *
+	 * @param frame the frame
+	 */
 	public FirstPanel (final MenuGUI frame){
 		this.frame = frame;
 		setBackground(Color.DARK_GRAY);
