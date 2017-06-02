@@ -51,6 +51,8 @@ public class GetPasswordGUI extends JPanel {
 
 	private String password;
 
+	private boolean premiereEntree = true;
+
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
 		password = "";
 		this.f = f;
@@ -105,7 +107,7 @@ public class GetPasswordGUI extends JPanel {
 					} catch (BadLoginException e) {
 						// TODO Auto-generated catch block
 					}
-					timingManager.getAccount().setPassword(new String());
+					// timingManager.getAccount().setPassword(new String());
 					// TODO fixer le nettoyage du password
 				}
 
@@ -119,9 +121,19 @@ public class GetPasswordGUI extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				timingManager.getAccount()
-						.setPassword(timingManager.getAccount().getPasswordAsString() + arg0.getKeyChar());
+				if ((int)arg0.getKeyChar() != 10) {
+					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int)(arg0.getKeyChar()));
+					String entree = new String();
+					if (premiereEntree) {
+						entree = String.valueOf(arg0.getKeyChar());
+					} else {
+						entree = timingManager.getAccount().getPasswordAsString();
+						entree += arg0.getKeyChar();
 
+					}
+					timingManager.getAccount().setPassword(entree);
+					premiereEntree = false;
+				}
 			}
 
 		});
@@ -131,7 +143,7 @@ public class GetPasswordGUI extends JPanel {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				// TODO Auto-generated method stub
-				timingManager.setAccount(new Account(idField.getText(), domainField.getText(), ""));
+				timingManager.setAccount(new Account(idField.getText(), domainField.getText(), new String()));
 
 			}
 
@@ -249,7 +261,7 @@ public class GetPasswordGUI extends JPanel {
 				} else
 					System.err.println("PasswordTries null");
 			} else {
-				psswdField.setText("");
+				psswdField.setText(new String());
 				timingManager.getKeyStrokes().clear();
 				timingManager.getStrokes().clear();
 				throw new BadLoginException();
@@ -258,9 +270,11 @@ public class GetPasswordGUI extends JPanel {
 			new SimpleWarning("L'un des champs est trop court");
 		}
 
-		psswdField.setText("");
+		psswdField.setText(new String());
 		timingManager.getKeyStrokes().clear();
 		timingManager.getStrokes().clear();
+		timingManager.getAccount().setPassword(new String());
+		premiereEntree = true;
 	}
 
 	public JTextField getDomainField() {

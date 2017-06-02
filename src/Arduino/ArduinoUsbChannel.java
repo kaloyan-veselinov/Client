@@ -51,7 +51,7 @@ public class ArduinoUsbChannel {
 		}
 		System.err.println();
 		// return myVirtualComPort;
-		// return "/dev/ttyACM3";
+		// return "/dev/ttyACM4";
 		return null;
 	}
 
