@@ -7,12 +7,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class CancelButton extends JButton implements ActionListener{
-	
+public class CancelButton extends JButton implements ActionListener {
+
 	private JPanel prevPane;
 	private JPanel currentPane;
-	
-	public CancelButton(JPanel prev , JPanel current){
+
+	public CancelButton(JPanel prev, JPanel current) {
 		super("Annuler");
 		prevPane = prev;
 		currentPane = current;
@@ -24,7 +24,7 @@ public class CancelButton extends JButton implements ActionListener{
 		// TODO Auto-generated method stub
 		currentPane.setVisible(false);
 		prevPane.setVisible(true);
-		
+
 	}
 
 }

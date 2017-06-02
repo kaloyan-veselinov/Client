@@ -240,7 +240,7 @@ public class DeleteAccountPane extends JPanel {
 					System.out.println(
 							account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
 				}
-			}else{
+			} else {
 				psswdField.setText("");
 				timingManager.getKeyStrokes().clear();
 				timingManager.getStrokes().clear();
