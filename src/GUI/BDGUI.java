@@ -73,7 +73,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
 					Main.sessionManager.getCurrentSession().reshceduleEnd();
-
+					timingManager.build();
 					
 						
 						if(Main.sessionManager.getCurrentSession().getPasswordTries().size()>=15){
@@ -149,7 +149,7 @@ public class BDGUI extends JPanel{ //fenetre ou se fait la saisie des mots de pa
 		String generatedPassword = PasswordGetter.generatePassword(account,passwordLength);
 		Main.sessionManager.getCurrentSession().setAccount(account);
 		Main.sessionManager.getCurrentSession().setSuccess(true);
-		Main.sessionManager.endCurrentSession();
+		Main.sessionManager.newSession();
 		f.showPasswordPane(generatedPassword);
 		f.hideBdGui();
 

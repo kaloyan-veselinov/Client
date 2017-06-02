@@ -21,6 +21,7 @@ import javax.swing.SpringLayout;
 import Analyse.DistanceTest;
 import Analyse.KeyStrokeSet;
 import Database.Delete;
+import Database.Request;
 import Exception.BadLoginException;
 import GUIElements.CancelButton;
 import KeystrokeMeasuring.KeyStroke;
@@ -97,7 +98,11 @@ public class DeleteAccountPane extends JPanel {
 					timingManager.getAccount().setPassword(new String(""));
 
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					tryConnection();
+					try {
+						tryConnection();
+					} catch (BadLoginException e) {
+						// TODO Auto-generated catch block
+					}
 				}
 
 			}
@@ -137,7 +142,11 @@ public class DeleteAccountPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				tryConnection();
+				try {
+					tryConnection();
+				} catch (BadLoginException e) {
+					// TODO Auto-generated catch block
+				}
 			}
 
 		});
@@ -175,8 +184,9 @@ public class DeleteAccountPane extends JPanel {
 		// setVisible(false);
 	}
 
-	private void tryConnection() {
+	private void tryConnection() throws BadLoginException {
 		Main.sessionManager.getCurrentSession().reshceduleEnd();
+		timingManager.build();
 
 		ArrayList<KeyStroke> ks = new ArrayList<KeyStroke>(timingManager.getKeyStrokes());
 		LinkedList<KeyStroke> ksl = new LinkedList<KeyStroke>(ks);
@@ -205,29 +215,36 @@ public class DeleteAccountPane extends JPanel {
 			System.out.println("PasswordTry ajouté");
 			// timingManager.getStrokes().clear();
 			// timingManager.getKeyStrokes().clear();
+			if (Request.checkIfAccountExists(account, Main.conn)) {
+				int i = Main.sessionManager.getCurrentSession().getPasswordTries().size() - 1;
+				try {
+					// if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
+					if (ksl.size() > 0 && i >= 0) {
+						if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+							// if(CosineTest.test(new KeyStrokeSet(ksl),
+							// account)){
+							Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
+							Main.sessionManager.newSession();
+							deleteAccount(account);
+							f.menuPane.setVisible(true);
+							this.setVisible(false);
 
-			int i = Main.sessionManager.getCurrentSession().getPasswordTries().size() - 1;
-			try {
-				// if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
-				if (ksl.size() > 0 && i>=0) {
-					if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
-						// if(CosineTest.test(new KeyStrokeSet(ksl), account)){
-						Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
-						Main.sessionManager.endCurrentSession();
-						deleteAccount(account);
-						f.menuPane.setVisible(true);
-						this.setVisible(false);
+						} else {
+							new SimpleWarning("Maniere d'ecrire non reconnue");
+							Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
-					} else {
-						new SimpleWarning("Maniere d'ecrire non reconnue");
-						Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
-
+						}
 					}
+				} catch (BadLoginException e) {
+					// TODO Auto-generated catch block
+					System.out.println(
+							account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
 				}
-			} catch (BadLoginException e) {
-				// TODO Auto-generated catch block
-				System.out
-						.println(account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
+			}else{
+				psswdField.setText("");
+				timingManager.getKeyStrokes().clear();
+				timingManager.getStrokes().clear();
+				throw new BadLoginException();
 			}
 		} else {
 			new SimpleWarning("L'un des champs est trop court");
