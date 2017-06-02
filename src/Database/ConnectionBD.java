@@ -8,8 +8,8 @@ import java.sql.Statement;
 public class ConnectionBD {
 
 	protected static Connection conn;
-	
-	public static Connection connect(){
+
+	public static Connection connect() {
 		conn = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -18,7 +18,7 @@ public class ConnectionBD {
 			e1.printStackTrace();
 			System.exit(0);
 
-		} catch (InstantiationException  e1) {
+		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.exit(0);
@@ -29,39 +29,36 @@ public class ConnectionBD {
 			System.exit(0);
 
 		}
-        System.out.println("Driver Found...");
-        try {
+		System.out.println("Driver Found...");
+		try {
 			conn = DriverManager.getConnection("jdbc:mysql://217.182.207.5:3306/P2I", "G222_B", "G222_B");
-        	
+
 		} catch (SQLException e1) {
 			System.err.println("Could not connect to the database");
 			e1.printStackTrace();
 			System.exit(0);
 		}
-        System.out.println("Connected...");
-        
-        Statement st = null;
-        try {
-            st = conn.createStatement();
+		System.out.println("Connected...");
+
+		Statement st = null;
+		try {
+			st = conn.createStatement();
 
 			st.executeUpdate("SET autocommit=0;");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        return conn;
+
+		return conn;
 	}
-	
-	public static void closeConnection(){
-		try{
+
+	public static void closeConnection() {
+		try {
 			conn.close();
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-		
-    
+
 }
-
-

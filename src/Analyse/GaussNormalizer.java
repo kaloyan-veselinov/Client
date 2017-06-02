@@ -12,7 +12,7 @@ public class GaussNormalizer {
 	private LinkedList<KeyStrokeSet> sets;
 
 	public GaussNormalizer(LinkedList<KeyStrokeSet> bruteSets) {
-		
+
 		sets = new LinkedList<KeyStrokeSet>(bruteSets);
 		System.out.println(bruteSets.size() + "|" + sets.size());
 		avgMatrix = GaussTest.getAvgMatrix(sets);
@@ -43,14 +43,14 @@ public class GaussNormalizer {
 	}
 
 	protected LinkedList<KeyStrokeSet> getNormalizedSets() {
-		
+
 		LinkedList<KeyStrokeSet> normSets = new LinkedList<KeyStrokeSet>();
 		Iterator<KeyStrokeSet> setsIter = sets.iterator();
-		
+
 		while (setsIter.hasNext()) {
 			normSets.add(normalizeKeyStrokeSet(setsIter.next()));
 		}
-		
+
 		return new LinkedList<KeyStrokeSet>(normSets);
 	}
 

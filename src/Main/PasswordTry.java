@@ -7,29 +7,28 @@ import Analyse.KeyStrokeSet;
 import KeystrokeMeasuring.KeyStroke;
 
 public class PasswordTry {
-	
-	private ArrayList <KeyStroke> keys;
+
+	private ArrayList<KeyStroke> keys;
 	private boolean success;
 	private String userId;
 	private String domain;
 	private String password;
-	
 
 	@SuppressWarnings("unchecked")
-	public PasswordTry(ArrayList <KeyStroke> keys){
-		this.keys=new ArrayList<KeyStroke>(keys);
+	public PasswordTry(ArrayList<KeyStroke> keys) {
+		this.keys = new ArrayList<KeyStroke>(keys);
 	}
-	
-	
-	public KeyStrokeSet toKeyStrokeSet(){
-		LinkedList l = new LinkedList(keys);
-		return new KeyStrokeSet( l);
-	}
-	public PasswordTry(ArrayList <KeyStroke> keys, boolean success){
 
-		this.keys=new ArrayList<KeyStroke>(keys);
+	public KeyStrokeSet toKeyStrokeSet() {
+		LinkedList l = new LinkedList(keys);
+		return new KeyStrokeSet(l);
 	}
-	
+
+	public PasswordTry(ArrayList<KeyStroke> keys, boolean success) {
+
+		this.keys = new ArrayList<KeyStroke>(keys);
+	}
+
 	public ArrayList<KeyStroke> getKeys() {
 		return keys;
 	}

@@ -248,7 +248,7 @@ public class GetPasswordGUI extends JPanel {
 					}
 				} else
 					System.err.println("PasswordTries null");
-			}else{
+			} else {
 				psswdField.setText("");
 				timingManager.getKeyStrokes().clear();
 				timingManager.getStrokes().clear();
