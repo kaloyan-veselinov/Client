@@ -28,7 +28,6 @@ public class SessionManager {
 		}
 		prevSessions.add(new Session(currentSession,this));
 		System.out.println("Ending current session : " + currentSession.isSuccess());
-
 		
 	}
 	
