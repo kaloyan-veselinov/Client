@@ -1,16 +1,16 @@
 package Session;
 
 public class TimeUpdater extends Thread {
-	
+
 	private Session s;
-	
-	public TimeUpdater(Session s){
+
+	public TimeUpdater(Session s) {
 		this.s = s;
 	}
 
 	@Override
 	public void run() {
-		while(s.getRunning()){
+		while (s.getRunning()) {
 			s.getCurrentTime().setTime(System.currentTimeMillis());
 			s.checkEnd();
 			try {

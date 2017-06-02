@@ -1,12 +1,11 @@
 package Main;
 
-public class SystemAccount{
-	
+public class SystemAccount {
+
 	private String login;
 	private int sysLoginHash;
 
-	
-	public SystemAccount(String login){
+	public SystemAccount(String login) {
 		this.setLogin(login);
 		this.setSysLoginHash(login.hashCode());
 	}
@@ -26,8 +25,5 @@ public class SystemAccount{
 	public void setSysLoginHash(int sysLoginHash) {
 		this.sysLoginHash = sysLoginHash;
 	}
-
-	
-	
 
 }

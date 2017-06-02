@@ -8,8 +8,8 @@ public class Account {
 	private int loginHash;
 	private int domainHash;
 	private SystemAccount sysAccount;
-	
-	public Account (String login,String domain, String password){
+
+	public Account(String login, String domain, String password) {
 		this.setLogin(login);
 		this.setDomain(domain);
 		this.setPassword(password);
@@ -17,11 +17,11 @@ public class Account {
 		this.setDomainHash(domain.hashCode());
 		this.setSysAccount(Main.currentSystemAccount);
 	}
-	
-	public Account (String login,String domain, char[] password){
+
+	public Account(String login, String domain, char[] password) {
 		this.setLogin(login);
 		this.setDomain(domain);
-		this.setPassword(new String (password));
+		this.setPassword(new String(password));
 		this.setLoginHash(login.hashCode());
 		this.setDomainHash(domain.hashCode());
 		this.setSysAccount(Main.currentSystemAccount);
@@ -46,8 +46,8 @@ public class Account {
 	public String getPasswordAsString() {
 		return password;
 	}
-	
-	public char[] getPasswordAsArray(){
+
+	public char[] getPasswordAsArray() {
 		return password.toCharArray();
 	}
 
@@ -78,7 +78,5 @@ public class Account {
 	public void setSysAccount(SystemAccount sysAccount) {
 		this.sysAccount = sysAccount;
 	}
-	
-	
-	
+
 }

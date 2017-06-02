@@ -8,36 +8,31 @@ public abstract class KeyStrokeListener implements KeyListener {
 	private KeyEvent e;
 	private long downTime;
 	private long upTime;
-	
-	public KeyStrokeListener (long downTime, KeyEvent e){
+
+	public KeyStrokeListener(long downTime, KeyEvent e) {
 		this.setDownTime(downTime);
-		this.e=e;
+		this.e = e;
 	}
-	
-	
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		if (arg0.getKeyCode() == e.getKeyCode())
 			this.setUpTime(System.nanoTime());
 	}
 
-	
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	}
-	
 
-	
-	public KeyEvent getE(){
+	}
+
+	public KeyEvent getE() {
 		return e;
 	}
 
@@ -56,7 +51,5 @@ public abstract class KeyStrokeListener implements KeyListener {
 	public void setUpTime(long upTime) {
 		this.upTime = upTime;
 	}
-	
-	
 
 }

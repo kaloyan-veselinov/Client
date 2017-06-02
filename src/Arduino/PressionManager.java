@@ -29,7 +29,7 @@ public class PressionManager implements Runnable {
 		setEnd(false);
 		setTriee(false);
 		setWait(true);
-		
+
 		this.tm = tm;
 
 		String port = null;
@@ -38,7 +38,7 @@ public class PressionManager implements Runnable {
 
 		System.err.println("RECHERCHE d'un port disponible...");
 		port = ArduinoUsbChannel.getOneComPort();
-		//TODO mettre la methode de recherche de port dans TimingManager
+		// TODO mettre la methode de recherche de port dans TimingManager
 		if (port != null) {
 			try {
 				vcpChannel = new ArduinoUsbChannel(port);
@@ -59,14 +59,14 @@ public class PressionManager implements Runnable {
 
 	@Override
 	public void run() {
-		
+
 		BufferedReader vcpInput = null;
-		
+
 		try {
 			vcpChannel.open();
 		} catch (SerialPortException | IOException e1) {
 			e1.printStackTrace(System.err);
-			
+
 		}
 
 		tabMesures = new LinkedList<Mesure>(); // mesures
@@ -95,16 +95,17 @@ public class PressionManager implements Runnable {
 				setTriee(false);
 
 				System.err.println("Entree boucle de lecture des pressions");
-				
+
 				while (!end) {
-					try{
+					try {
 						String line;
-	
+
 						if ((line = vcpInput.readLine()) != null) {
 							insertionTab(line);
 							System.out.println("Data from Arduino: " + line);
 						}
-				}catch(InterruptedIOException e){}
+					} catch (InterruptedIOException e) {
+					}
 
 				}
 
@@ -189,7 +190,7 @@ public class PressionManager implements Runnable {
 		setTriee(true);
 
 		tm.resume();
-		
+
 		tabMesures.clear();
 
 	}
@@ -250,5 +251,4 @@ public class PressionManager implements Runnable {
 		this.connected = connected;
 	}
 
-	
 }

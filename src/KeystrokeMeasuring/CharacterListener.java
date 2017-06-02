@@ -2,7 +2,7 @@ package KeystrokeMeasuring;
 
 import java.awt.event.KeyEvent;
 
-public class CharacterListener extends KeyStrokeListener{
+public class CharacterListener extends KeyStrokeListener {
 	private boolean shift;
 	private boolean ctrl;
 	private boolean alt;
@@ -10,7 +10,7 @@ public class CharacterListener extends KeyStrokeListener{
 	private boolean capsLock;
 	private int modifiersCounter;
 
-	public CharacterListener(long downTime, KeyEvent e, boolean capsLock){
+	public CharacterListener(long downTime, KeyEvent e, boolean capsLock) {
 		super(downTime, e);
 		this.setModifiersCounter(0);
 		this.setShift(e.isShiftDown());
@@ -19,14 +19,14 @@ public class CharacterListener extends KeyStrokeListener{
 		this.setAltGraph(e.isAltGraphDown());
 		this.setCapsLock(capsLock);
 	}
-	
+
 	public boolean isShift() {
 		return shift;
 	}
 
 	public void setShift(boolean shift) {
 		this.shift = shift;
-		if(shift)
+		if (shift)
 			modifiersCounter++;
 	}
 
@@ -36,7 +36,7 @@ public class CharacterListener extends KeyStrokeListener{
 
 	public void setCtrl(boolean ctrl) {
 		this.ctrl = ctrl;
-		if(ctrl)
+		if (ctrl)
 			modifiersCounter++;
 	}
 
@@ -46,7 +46,7 @@ public class CharacterListener extends KeyStrokeListener{
 
 	public void setAlt(boolean alt) {
 		this.alt = alt;
-		if(alt)
+		if (alt)
 			modifiersCounter++;
 	}
 
@@ -56,7 +56,7 @@ public class CharacterListener extends KeyStrokeListener{
 
 	public void setCapsLock(boolean capsLock) {
 		this.capsLock = capsLock;
-		if(capsLock)
+		if (capsLock)
 			modifiersCounter++;
 	}
 
@@ -74,7 +74,7 @@ public class CharacterListener extends KeyStrokeListener{
 
 	public void setAltGraph(boolean altGraph) {
 		this.altGraph = altGraph;
-		if(altGraph)
+		if (altGraph)
 			modifiersCounter++;
 	}
 

@@ -10,12 +10,12 @@ import KeystrokeMeasuring.KeyStroke;
 import Main.Account;
 
 public class SimpleGaussTest {
-	
+
 	private static final double gaussianCoef = 3; // si 1 niveau confiance de
 	// 67%, si 2 niveau de
 	// confiance 95%, si 3
 	// niveau de confiance 99%
-	
+
 	public static boolean test(KeyStrokeSet testSet, Account account) throws BadLoginException {
 
 		try {
