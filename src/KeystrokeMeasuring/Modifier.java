@@ -20,6 +20,12 @@ public class Modifier extends Key {
 		this.location = location;
 	}
 
+	public Modifier() {
+		super(0, 0);
+		this.location = 0;
+		this.associatedKeyStroke = new KeyStroke('щ',0,0);
+	}
+
 	/**
 	 * Constructeur pour CapsLock
 	 * 

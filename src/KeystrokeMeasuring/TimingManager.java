@@ -126,7 +126,7 @@ public class TimingManager implements KeyListener {
 									|| (cListener.isCapsLock() && capsNotAdded))) {
 						do {
 							j--;
-						} while (!(strokes.get(j) instanceof ModifierListener));
+						} while (!(strokes.get(j) instanceof ModifierListener) && j>0);
 
 						if (strokes.get(j).getE().getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT)
 							tempLocation = -1;

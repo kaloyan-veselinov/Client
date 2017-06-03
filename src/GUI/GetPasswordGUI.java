@@ -7,7 +7,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -17,10 +16,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import Analyse.CosineTest;
 import Analyse.DistanceTest;
 import Analyse.KeyStrokeSet;
-import Analyse.NormalizedGaussTest;
 import Database.Request;
 import Exception.BadLoginException;
 import GUIElements.CancelButton;
@@ -121,8 +118,8 @@ public class GetPasswordGUI extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				if ((int)arg0.getKeyChar() != 10) {
-					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int)(arg0.getKeyChar()));
+				if ((int) arg0.getKeyChar() != 10) {
+					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int) (arg0.getKeyChar()));
 					String entree = new String();
 					if (premiereEntree) {
 						entree = String.valueOf(arg0.getKeyChar());
@@ -236,10 +233,9 @@ public class GetPasswordGUI extends JPanel {
 				if (i >= 0) {
 					try {
 						if (ksl.size() > 0) {
-							// if (CosineTest.test(new KeyStrokeSet(ksl),
-							// account))
-							// {
-							if (NormalizedGaussTest.test(new KeyStrokeSet(ksl), account)) {
+							if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+								// if (NormalizedGaussTest.test(new
+								// KeyStrokeSet(ksl), account)) {
 								// if(CosineTest.test(new KeyStrokeSet(ksl),
 								// account)){
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);

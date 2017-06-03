@@ -21,6 +21,13 @@ public class KeyStroke extends Key {
 		super(timeUp, timeDown);
 		this.setC(c);
 		this.setNext(null);
+		if (timeUp > 0) {
+			this.setShift(new Modifier());
+			this.setCtrl(new Modifier());
+			this.setAlt(new Modifier());
+			this.setCapsLock(new Modifier());
+		}
+		// System.out.println(this);
 	}
 
 	public KeyStroke(ArrayList<String> encryptedValues, Account account)
@@ -32,29 +39,31 @@ public class KeyStroke extends Key {
 		setPressure(Encryption.decryptValue(encryptedValues.get(2), account.getPasswordAsString()));
 		setModifierSequence(Encryption.decryptInt(encryptedValues.get(3), account.getPasswordAsString()));
 		long tempDown = Encryption.decryptLong(encryptedValues.get(5), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setShift(new Modifier(Encryption.decryptLong(encryptedValues.get(4), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(6), account.getPasswordAsString())));
 		} else
-			setShift(null);
+			setShift(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(8), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setCtrl(new Modifier(Encryption.decryptLong(encryptedValues.get(7), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(9), account.getPasswordAsString())));
 		} else
-			setCtrl(null);
+			setCtrl(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(11), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setAlt(new Modifier(Encryption.decryptLong(encryptedValues.get(10), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(12), account.getPasswordAsString())));
 		} else
-			setAlt(null);
+			setAlt(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(14), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setCapsLock(new Modifier(Encryption.decryptLong(encryptedValues.get(13), account.getPasswordAsString()),
 					tempDown));
 		} else
-			setCapsLock(null);
+			setCapsLock(new Modifier());
+
+		// System.out.println(this);
 
 	}
 
@@ -236,14 +245,11 @@ public class KeyStroke extends Key {
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
 		encryptedValues.add(Encryption.encryptValue(pressure, p));
 		encryptedValues.add(Encryption.encryptInt(modifierSequence, p));
-		if (shift != null)
-			encryptedValues.addAll(shift.getEncryptedValues(p));
-		if (ctrl != null)
-			encryptedValues.addAll(ctrl.getEncryptedValues(p));
-		if (alt != null)
-			encryptedValues.addAll(alt.getEncryptedValues(p));
-		if (capsLock != null)
-			encryptedValues.addAll(capsLock.getEncryptedValues(p));
+		encryptedValues.addAll(shift.getEncryptedValues(p));
+		encryptedValues.addAll(ctrl.getEncryptedValues(p));
+		encryptedValues.addAll(alt.getEncryptedValues(p));
+		encryptedValues.addAll(capsLock.getEncryptedValues(p));
+
 		return encryptedValues;
 	}
 

@@ -7,6 +7,7 @@ import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import KeystrokeMeasuring.TimingManager;
 import jssc.SerialPortException;
@@ -65,8 +66,7 @@ public class PressionManager implements Runnable {
 		try {
 			vcpChannel.open();
 		} catch (SerialPortException | IOException e1) {
-			e1.printStackTrace(System.err);
-
+			System.exit(-1);
 		}
 
 		tabMesures = new LinkedList<Mesure>(); // mesures
@@ -101,9 +101,16 @@ public class PressionManager implements Runnable {
 						String line;
 
 						if ((line = vcpInput.readLine()) != null) {
-							insertionTab(line);
-							//System.out.println("Data from Arduino: " + line);
+							try {
+								insertionTab(line);
+							} catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+								tabMesures.clear();
+								insertionTab("s_0.0_0");
+								break;
+							}
+							// System.out.println("Data from Arduino: " + line);
 						}
+
 					} catch (InterruptedIOException e) {
 					}
 
@@ -111,7 +118,11 @@ public class PressionManager implements Runnable {
 
 				System.err.println("Sortie boucle de lecture des pressions");
 
-				triTab();
+				try{
+					triTab();
+				}catch(NoSuchElementException e){
+					break;
+				}
 
 				setWait(true);
 
@@ -151,12 +162,12 @@ public class PressionManager implements Runnable {
 
 			tabMesures.add(new Mesure(cmpt, p, ident));
 
-			//System.err.println(s + " inseree");
+			// System.err.println(s + " inseree");
 
 		}
 	}
 
-	public void triTab() {
+	public void triTab() throws NoSuchElementException {
 
 		System.err.println("Debut du tri des mesures");
 

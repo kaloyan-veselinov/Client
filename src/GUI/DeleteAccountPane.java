@@ -48,6 +48,8 @@ public class DeleteAccountPane extends JPanel {
 	private MenuGUI f;
 
 	private String password;
+	
+	private boolean premiereEntree = true;
 
 	public DeleteAccountPane(JPanel menuPane, final MenuGUI f) {
 		password = "";
@@ -88,14 +90,13 @@ public class DeleteAccountPane extends JPanel {
 		System.out.println(Thread.currentThread());
 
 		psswdField.addKeyListener(new KeyListener() {
-
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 
 				System.out.println(new String(psswdField.getPassword()));
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE) {
 					psswdField.setText("");
-					timingManager.getAccount().setPassword(new String(""));
+					timingManager.getAccount().setPassword(new String());
 
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					try {
@@ -103,6 +104,8 @@ public class DeleteAccountPane extends JPanel {
 					} catch (BadLoginException e) {
 						// TODO Auto-generated catch block
 					}
+					// timingManager.getAccount().setPassword(new String());
+					// TODO fixer le nettoyage du password
 				}
 
 			}
@@ -115,8 +118,19 @@ public class DeleteAccountPane extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				timingManager.getAccount()
-						.setPassword(timingManager.getAccount().getPasswordAsString() + arg0.getKeyChar());
+				if ((int) arg0.getKeyChar() != 10) {
+					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int) (arg0.getKeyChar()));
+					String entree = new String();
+					if (premiereEntree) {
+						entree = String.valueOf(arg0.getKeyChar());
+					} else {
+						entree = timingManager.getAccount().getPasswordAsString();
+						entree += arg0.getKeyChar();
+
+					}
+					timingManager.getAccount().setPassword(entree);
+					premiereEntree = false;
+				}
 			}
 
 		});
@@ -252,6 +266,7 @@ public class DeleteAccountPane extends JPanel {
 		psswdField.setText("");
 		timingManager.getKeyStrokes().clear();
 		timingManager.getStrokes().clear();
+		premiereEntree = true;
 	}
 
 	private void deleteAccount(Account account) {
