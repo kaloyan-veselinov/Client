@@ -5,22 +5,14 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema G222_B_BD3
 -- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema P2I
--- -----------------------------------------------------
+USE `G222_B_BD3` ;
 
 -- -----------------------------------------------------
--- Schema P2I
+-- Table `G222_B_BD3`.`CompteSystem`
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `P2I` DEFAULT CHARACTER SET utf8 ;
-USE `P2I` ;
-
--- -----------------------------------------------------
--- Table `P2I`.`CompteSystem`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `P2I`.`CompteSystem` (
+CREATE TABLE IF NOT EXISTS `G222_B_BD3`.`CompteSystem` (
   `Login` VARCHAR(45) NOT NULL,
   `Password` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`Login`),
@@ -30,9 +22,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `P2I`.`Compte`
+-- Table `G222_B_BD3`.`Compte`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `P2I`.`Compte` (
+CREATE TABLE IF NOT EXISTS `G222_B_BD3`.`Compte` (
   `Login` INT(11) NOT NULL,
   `masterPassword` VARCHAR(100) NOT NULL,
   `Index` INT(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `P2I`.`Compte` (
   INDEX `fk_Compte_CompteSystem_idx` (`CompteSystem_Login` ASC),
   CONSTRAINT `fk_Compte_CompteSystem`
     FOREIGN KEY (`CompteSystem_Login`)
-    REFERENCES `P2I`.`CompteSystem` (`Login`)
+    REFERENCES `G222_B_BD3`.`CompteSystem` (`Login`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -52,9 +44,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `P2I`.`Session`
+-- Table `G222_B_BD3`.`Session`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `P2I`.`Session` (
+CREATE TABLE IF NOT EXISTS `G222_B_BD3`.`Session` (
   `index` INT(11) NOT NULL AUTO_INCREMENT,
   `sucess` TINYINT(4) NULL DEFAULT NULL,
   `Compte_Index` INT(11) NOT NULL,
@@ -62,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `P2I`.`Session` (
   INDEX `fk_Session_Compte1_idx` (`Compte_Index` ASC),
   CONSTRAINT `fk_Session_Compte1`
     FOREIGN KEY (`Compte_Index`)
-    REFERENCES `P2I`.`Compte` (`Index`)
+    REFERENCES `G222_B_BD3`.`Compte` (`Index`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -71,9 +63,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `P2I`.`Entree`
+-- Table `G222_B_BD3`.`Entree`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `P2I`.`Entree` (
+CREATE TABLE IF NOT EXISTS `G222_B_BD3`.`Entree` (
   `Index` INT(11) NOT NULL AUTO_INCREMENT,
   `Local` VARCHAR(45) NULL DEFAULT NULL,
   `try` INT(11) NULL DEFAULT NULL,
@@ -82,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `P2I`.`Entree` (
   INDEX `fk_Entree_Session1_idx` (`Session_index` ASC),
   CONSTRAINT `fk_Entree_Session1`
     FOREIGN KEY (`Session_index`)
-    REFERENCES `P2I`.`Session` (`index`)
+    REFERENCES `G222_B_BD3`.`Session` (`index`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -91,9 +83,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `P2I`.`Touche`
+-- Table `G222_B_BD3`.`Touche`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `P2I`.`Touche` (
+CREATE TABLE IF NOT EXISTS `G222_B_BD3`.`Touche` (
   `timeUp` VARCHAR(45) NULL DEFAULT NULL,
   `timeDown` VARCHAR(45) NULL DEFAULT NULL,
   `pressure` VARCHAR(45) NULL DEFAULT NULL,
@@ -113,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `P2I`.`Touche` (
   INDEX `fk_Touche_Entree1_idx` (`Entree_Index` ASC),
   CONSTRAINT `fk_Touche_Entree1`
     FOREIGN KEY (`Entree_Index`)
-    REFERENCES `P2I`.`Entree` (`Index`)
+    REFERENCES `G222_B_BD3`.`Entree` (`Index`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
