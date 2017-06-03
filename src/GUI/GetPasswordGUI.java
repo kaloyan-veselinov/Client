@@ -238,6 +238,7 @@ public class GetPasswordGUI extends JPanel  {
 								Main.sessionManager.newSession();
 								f.showPasswordPane(PasswordGetter.getPassword(account));
 								setVisible(false);
+								close();
 
 							} else {
 								new SimpleWarning("Maniere d'ecrire non reconnue");

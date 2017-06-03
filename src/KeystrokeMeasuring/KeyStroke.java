@@ -10,8 +10,8 @@ import Main.Account;
 
 public class KeyStroke extends Key {
 
-	private double pressure;
-	private int modifierSequence;
+	private double pressure = 0;
+	private int modifierSequence = 0;
 	private char c;
 	private Modifier shift, ctrl, alt, capsLock;
 	private KeyStroke next;
@@ -27,6 +27,7 @@ public class KeyStroke extends Key {
 			this.setAlt(new Modifier());
 			this.setCapsLock(new Modifier());
 		}
+		
 	}
 
 	public KeyStroke(ArrayList<String> encryptedValues, Account account)
@@ -61,9 +62,10 @@ public class KeyStroke extends Key {
 					tempDown));
 		} else
 			setCapsLock(new Modifier());
-
 		
 	}
+	
+	
 
 	/**
 	 * Constructeur si on utilise des donnees traitees pour creer le KeyStroke
@@ -240,8 +242,17 @@ public class KeyStroke extends Key {
 		encryptedValues.addAll(ctrl.getEncryptedValues(p));
 		encryptedValues.addAll(alt.getEncryptedValues(p));
 		encryptedValues.addAll(capsLock.getEncryptedValues(p));
-
-		return encryptedValues;
+		return new ArrayList<String>(encryptedValues);
+	}
+	
+	public void print(){
+		super.print();
+		System.out.print(pressure + "|" + modifierSequence + "|");
+		shift.print();
+		ctrl.print();
+		alt.print();
+		capsLock.print();
+		System.out.println("");
 	}
 
 	public double getPressure() {

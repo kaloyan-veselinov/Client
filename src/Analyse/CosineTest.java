@@ -1,5 +1,6 @@
 package Analyse;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -11,7 +12,7 @@ import Main.Account;
 
 public class CosineTest {
 
-	private static final double cosineSimilarityThreshold = 0.7;
+	private static final double cosineSimilarityThreshold = 0.75;
 
 	public static boolean test(KeyStrokeSet bruteTestSet, Account account) throws BadLoginException {
 		try {
@@ -21,6 +22,7 @@ public class CosineTest {
 			LinkedList<KeyStrokeSet> sets = gn.getNormalizedSets();
 			KeyStrokeSet testSet = gn.normalizeKeyStrokeSet(bruteTestSet);
 			Iterator<KeyStrokeSet> setsIterator = sets.iterator();
+			double meanCosineSimilarity = 0.0;
 
 			// On definit la matrice de similarite avec les similarites cosinus
 			// de chaque touche de chaque entree, on calcule aussi les
@@ -45,16 +47,16 @@ public class CosineTest {
 
 					}
 					double cosineSimilarity = somme / temp.size();
-					System.out.println("Similarity: " + cosineSimilarity);
-					if (cosineSimilarity < cosineSimilarityThreshold)
-						return false;
+					meanCosineSimilarity += cosineSimilarity / sets.size();
 
 				} else
 					return false; // si pas la bonne taille, le mot de passe est
 									// forcemment faux
 			}
-			return true;
-
+			System.out.println("Similarity: " + meanCosineSimilarity);
+			
+			return meanCosineSimilarity > cosineSimilarityThreshold;
+			
 		} catch (EncryptionOperationNotPossibleException e) {
 			throw new BadLoginException();
 		}

@@ -51,4 +51,8 @@ public abstract class Key {
 	public void setTimeDown(long timeDown) {
 		this.timeDown = timeDown;
 	}
+	
+	public void print(){
+		System.out.print(timeUp + "|" + timeDown + "|");
+	}
 }

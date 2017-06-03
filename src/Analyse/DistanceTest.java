@@ -12,7 +12,7 @@ import Main.Account;
 public class DistanceTest {
 
 	// TODO régler les valeurs des seuils
-	private static final double euclidianRatioThreshold = 0.5;
+	private static final double euclidianRatioThreshold = 0.45;
 
 	// TODO fusionner login,domain et password dans une instace ce compte
 	public static boolean test(KeyStrokeSet bruteTestSet, Account account) throws BadLoginException {

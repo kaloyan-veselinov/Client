@@ -58,8 +58,6 @@ public class PressionManager implements Runnable {
 	@Override
 	public void run() {
 
-		
-
 		try {
 			vcpChannel.open();
 		} catch (SerialPortException | IOException e1) {
@@ -129,7 +127,12 @@ public class PressionManager implements Runnable {
 
 		}
 
-		
+		try {
+			vcpInput.close();
+			vcpChannel.close();
+		} catch (IOException | NullPointerException e) {
+			System.out.println("PressionManager closing");
+		}
 
 	}
 
@@ -206,12 +209,6 @@ public class PressionManager implements Runnable {
 
 	public void close() {
 		setStop(true);
-		try {
-			vcpInput.close();
-			vcpChannel.close();
-		} catch (IOException | NullPointerException e) {
-			System.out.println("PressionManager closing");
-		}
 	}
 
 	public synchronized void resume() {

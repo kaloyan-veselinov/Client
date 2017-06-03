@@ -122,6 +122,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 
 	public void hideBdGui() {
 		bdGui.setVisible(false);
+		bdGui.close();
 	}
 
 	public void showPasswordPane(String generatedPassword) {
@@ -130,9 +131,11 @@ public class MenuGUI extends JFrame implements WindowListener {
 		if (bdGui != null) {
 			if (bdGui.isVisible()) {
 				bdGui.setVisible(false);
+				bdGui.close();
 			}
 		} else if (getPsswdPane.isVisible()) {
 			getPsswdPane.setVisible(false);
+			getPsswdPane.close();
 		}
 		layout.putConstraint(SpringLayout.WEST, passwordPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, passwordPane, 0, SpringLayout.EAST, mainPane);
@@ -285,12 +288,12 @@ public class MenuGUI extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		if (getPsswdPane != null)
-			getPsswdPane.close();
-		if (createAccountPane != null)
-			createAccountPane.close();
+		if (bdGui != null)
+			bdGui.close();
 		if (deleteAccountPane != null)
 			deleteAccountPane.close();
+		if (getPsswdPane != null)
+			getPsswdPane.close();
 	}
 
 	@Override

@@ -40,9 +40,13 @@ public class Modifier extends Key {
 	@Override
 	public ArrayList<String> getEncryptedValues(String p) {
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
-		if (location != 0)
-			encryptedValues.add(Encryption.encryptInt(location, p));
-		return encryptedValues;
+		encryptedValues.add(Encryption.encryptInt(location, p));
+		return new ArrayList<String>(encryptedValues);
+	}
+	
+	public void print(){
+		super.print();
+		System.out.print(location + "|");
 	}
 
 	@Override
