@@ -98,7 +98,7 @@ public class TimingManager implements KeyListener {
 		pm.close();
 	}
 
-	public void build() {
+	public synchronized void build() {
 		pm.setEnd(true);
 		pressureThread.interrupt();
 		int j;

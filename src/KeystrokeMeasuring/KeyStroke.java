@@ -232,6 +232,7 @@ public class KeyStroke extends Key {
 
 	@Override
 	public ArrayList<String> getEncryptedValues(String p) {
+		System.out.println("encrypted with password " + p);
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
 		encryptedValues.add(Encryption.encryptValue(pressure, p));
 		encryptedValues.add(Encryption.encryptInt(modifierSequence, p));

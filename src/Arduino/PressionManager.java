@@ -102,7 +102,7 @@ public class PressionManager implements Runnable {
 
 						if ((line = vcpInput.readLine()) != null) {
 							insertionTab(line);
-							System.out.println("Data from Arduino: " + line);
+							//System.out.println("Data from Arduino: " + line);
 						}
 					} catch (InterruptedIOException e) {
 					}
@@ -151,7 +151,7 @@ public class PressionManager implements Runnable {
 
 			tabMesures.add(new Mesure(cmpt, p, ident));
 
-			System.err.println(s + " inseree");
+			//System.err.println(s + " inseree");
 
 		}
 	}
