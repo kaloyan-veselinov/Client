@@ -31,8 +31,8 @@ public class ConnectionBD {
 		}
 		System.out.println("Driver Found...");
 		try {
-			//conn = DriverManager.getConnection("jdbc:mysql://217.182.207.5:3306/P2I", "G222_B", "G222_B");
-			conn = DriverManager.getConnection("jdbc:mysql://PC-TP-MYSQL.insa-lyon.fr:3306/G222_B_BD3", "G222_B", "G222_B");
+			conn = DriverManager.getConnection("jdbc:mysql://217.182.207.5:3306/P2I", "G222_B", "G222_B");
+			//conn = DriverManager.getConnection("jdbc:mysql://PC-TP-MYSQL.insa-lyon.fr:3306/G222_B_BD3", "G222_B", "G222_B");
 
 		} catch (SQLException e1) {
 			System.err.println("Could not connect to the database");

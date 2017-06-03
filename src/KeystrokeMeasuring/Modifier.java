@@ -23,7 +23,7 @@ public class Modifier extends Key {
 	public Modifier() {
 		super(0, 0);
 		this.location = 0;
-		this.associatedKeyStroke = new KeyStroke('щ',0,0);
+		this.associatedKeyStroke = new KeyStroke('щ', 0, 0);
 	}
 
 	/**
@@ -47,7 +47,11 @@ public class Modifier extends Key {
 
 	@Override
 	public long getReleasePressTimes() {
-		return this.getTimeUp() - this.getAssociatedKeyStroke().getTimeUp();
+		if (this.getPressReleaseTimes() != 0) {
+			return this.getTimeUp() - this.getAssociatedKeyStroke().getTimeUp();
+		} else {
+			return 0;
+		}
 	}
 
 	public int getLocation() {

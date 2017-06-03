@@ -231,10 +231,11 @@ public class DeleteAccountPane extends JPanel {
 			// timingManager.getKeyStrokes().clear();
 			if (Request.checkIfAccountExists(account, Main.conn)) {
 				int i = Main.sessionManager.getCurrentSession().getPasswordTries().size() - 1;
-				try {
+				//try {
 					// if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
 					if (ksl.size() > 0 && i >= 0) {
-						if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+						//if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+						if(true){
 							// if(CosineTest.test(new KeyStrokeSet(ksl),
 							// account)){
 							Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
@@ -249,11 +250,11 @@ public class DeleteAccountPane extends JPanel {
 
 						}
 					}
-				} catch (BadLoginException e) {
+				/*} catch (BadLoginException e) {
 					// TODO Auto-generated catch block
 					System.out.println(
 							account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
-				}
+				}*/
 			} else {
 				psswdField.setText("");
 				timingManager.getKeyStrokes().clear();

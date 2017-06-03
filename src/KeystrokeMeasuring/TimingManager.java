@@ -41,8 +41,10 @@ public class TimingManager implements KeyListener {
 		keyStrokes = new ArrayList<KeyStroke>(account.getPasswordAsString().length());
 		t = Toolkit.getDefaultToolkit();
 		pm = new PressionManager(this);
-		pressureThread = new Thread(pm);
-		pressureThread.start();
+		if (arduinoConnected) {
+			pressureThread = new Thread(pm);
+			pressureThread.start();
+		}
 	}
 
 	public TimingManager(JPasswordField pf) {
@@ -53,8 +55,10 @@ public class TimingManager implements KeyListener {
 		keyStrokes = new ArrayList<KeyStroke>(16);
 		t = Toolkit.getDefaultToolkit();
 		pm = new PressionManager(this);
-		pressureThread = new Thread(pm);
-		pressureThread.start();
+		if (arduinoConnected) {
+			pressureThread = new Thread(pm);
+			pressureThread.start();
+		}
 	}
 
 	@Override
@@ -64,20 +68,20 @@ public class TimingManager implements KeyListener {
 		} else if (arg0.getKeyCode() == KeyEvent.VK_SHIFT || arg0.getKeyCode() == KeyEvent.VK_CAPS_LOCK
 				|| arg0.getKeyCode() == KeyEvent.VK_ALT || arg0.getKeyCode() == KeyEvent.VK_ALT_GRAPH
 				|| arg0.getKeyCode() == KeyEvent.VK_CONTROL) {
-			if (pm != null) {
+			if (arduinoConnected) {
 				pm.resume();
 			}
 			strokes.add(new ModifierListener(System.nanoTime(), arg0));
 			pf.addKeyListener(strokes.get(strokes.size() - 1));
 		} else if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE) {
-			if (pm != null) {
+			if (arduinoConnected) {
 				pm.setEnd(true);
 			}
 			strokes.clear();
 			keyStrokes.clear();
 		} else { // si ce n'est pas la touche entre, on prend en comte le
 					// caractere
-			if (pm != null) {
+			if (arduinoConnected) {
 				pm.setEnd(false);
 				pm.resume();
 			}
@@ -99,8 +103,10 @@ public class TimingManager implements KeyListener {
 	}
 
 	public synchronized void build() {
-		pm.setEnd(true);
-		pressureThread.interrupt();
+		if (arduinoConnected) {
+			pm.setEnd(true);
+			pressureThread.interrupt();
+		}
 		int j;
 		int modifiersCount;
 		int tempLocation = 0;
@@ -126,7 +132,7 @@ public class TimingManager implements KeyListener {
 									|| (cListener.isCapsLock() && capsNotAdded))) {
 						do {
 							j--;
-						} while (!(strokes.get(j) instanceof ModifierListener) && j>0);
+						} while (!(strokes.get(j) instanceof ModifierListener) && j > 0);
 
 						if (strokes.get(j).getE().getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT)
 							tempLocation = -1;
@@ -204,19 +210,11 @@ public class TimingManager implements KeyListener {
 			}
 
 		}
-		System.out.println("pf pass: " + new String(pf.getPassword()) + "\n" + "account pass: "
-				+ account.getPasswordAsString() + "\n" + "keyStroke size: " + keyStrokes.size());
-		System.out.println(new String(pf.getPassword()).equals(account.getPasswordAsString()));
-		System.out.println(new String(pf.getPassword()).length());
-		System.out.println(account.getPasswordAsString().length());
-
+		
 		if (new String(pf.getPassword()).equals(account.getPasswordAsString()) && keyStrokes.size() > 0) {
 			Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
 			System.err.println("PasswordTry ajouté");
-		} else {
-			System.out.println(
-					new String(pf.getPassword()) + "|" + account.getPasswordAsString() + "|" + keyStrokes.size());
-		}
+		} 
 
 	}
 
