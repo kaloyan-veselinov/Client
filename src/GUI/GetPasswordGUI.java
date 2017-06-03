@@ -7,6 +7,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -29,7 +31,7 @@ import Main.PasswordGetter;
 import Warnings.SimpleWarning;
 
 @SuppressWarnings("serial")
-public class GetPasswordGUI extends JPanel {
+public class GetPasswordGUI extends JPanel  {
 
 	private JLabel domainLabel;
 	private JLabel idLabel;
@@ -86,14 +88,11 @@ public class GetPasswordGUI extends JPanel {
 		timingManager = new TimingManager(psswdField);
 		psswdField.addKeyListener(timingManager);
 
-		System.out.println(Thread.currentThread());
-
 		psswdField.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 
-				System.out.println(new String(psswdField.getPassword()));
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE) {
 					psswdField.setText("");
 					timingManager.getAccount().setPassword(new String());
@@ -119,7 +118,6 @@ public class GetPasswordGUI extends JPanel {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if ((int) arg0.getKeyChar() != 10) {
-					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int) (arg0.getKeyChar()));
 					String entree = new String();
 					if (premiereEntree) {
 						entree = String.valueOf(arg0.getKeyChar());
@@ -195,7 +193,6 @@ public class GetPasswordGUI extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
-		// setVisible(false);
 	}
 
 	private void tryConnection() throws BadLoginException {
@@ -204,7 +201,6 @@ public class GetPasswordGUI extends JPanel {
 		timingManager.build();
 
 		LinkedList<KeyStroke> ksl = new LinkedList<KeyStroke>(timingManager.getKeyStrokes());
-		System.out.println("ksl :" + ksl.size());
 		String login = idField.getText();
 		if (login.endsWith(" ")) {
 			int i = login.length() - 1;

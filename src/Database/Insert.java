@@ -120,12 +120,9 @@ public class Insert {
 								Collections.nCopies(s.getPasswordTries().get(i).getKeys().size() - 1, toucheValues))
 						+ ";";
 				PreparedStatement toucheStatement = conn.prepareStatement(allTouche);
-				System.out.println("Size " + s.getPasswordTries().get(i).getKeys().size());
-
+				
 				for (int j = 0; j < s.getPasswordTries().get(i).getKeys().size(); j++) {
-					// System.out.println("Ajout de la touche " + j + " pour
-					// l'entree " + entreeId);
-
+					
 					ArrayList<String> encryptedValues = s.getPasswordTries().get(i).getKeys().get(j)
 							.getEncryptedValues(s.getAccount().getPasswordAsString());
 

@@ -27,7 +27,6 @@ public class KeyStroke extends Key {
 			this.setAlt(new Modifier());
 			this.setCapsLock(new Modifier());
 		}
-		// System.out.println(this);
 	}
 
 	public KeyStroke(ArrayList<String> encryptedValues, Account account)
@@ -63,8 +62,7 @@ public class KeyStroke extends Key {
 		} else
 			setCapsLock(new Modifier());
 
-		// System.out.println(this);
-
+		
 	}
 
 	/**
@@ -218,12 +216,6 @@ public class KeyStroke extends Key {
 	 * @return La similarite cosinus
 	 */
 	public double getCosineSimilarity(KeyStroke ref) {
-		if (this.getNorme2() == 0) {
-			System.out.println("this nulle");
-		}
-		if (this.getNorme2() == 0) {
-			System.out.println("ref nulle");
-		}
 		if (this.getNorme2() != 0 && this.getNorme2() != 0)
 			return this.getScalarProduct(ref) / (this.getNorme2() * ref.getNorme2());
 		else
@@ -241,7 +233,6 @@ public class KeyStroke extends Key {
 
 	@Override
 	public ArrayList<String> getEncryptedValues(String p) {
-		System.out.println("encrypted with password " + p);
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
 		encryptedValues.add(Encryption.encryptValue(pressure, p));
 		encryptedValues.add(Encryption.encryptInt(modifierSequence, p));

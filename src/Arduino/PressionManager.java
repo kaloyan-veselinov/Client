@@ -17,6 +17,7 @@ public class PressionManager implements Runnable {
 	private ArrayList<Double> tabTriee;
 	private LinkedList<Mesure> tabMesures;
 	private ArduinoUsbChannel vcpChannel;
+	private BufferedReader vcpInput;
 	private final TimingManager tm;
 	private boolean stop;
 	private boolean end;
@@ -51,17 +52,13 @@ public class PressionManager implements Runnable {
 					+ "sans mesure de pressions");
 			tm.setArduinoConnected(false);
 			this.setEnd(true);
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException ex) {
-			}
 		}
 	}
 
 	@Override
 	public void run() {
 
-		BufferedReader vcpInput = null;
+		
 
 		try {
 			vcpChannel.open();
@@ -118,9 +115,9 @@ public class PressionManager implements Runnable {
 
 				System.err.println("Sortie boucle de lecture des pressions");
 
-				try{
+				try {
 					triTab();
-				}catch(NoSuchElementException e){
+				} catch (NoSuchElementException e) {
 					break;
 				}
 
@@ -132,13 +129,7 @@ public class PressionManager implements Runnable {
 
 		}
 
-		try {
-			vcpInput.close();
-			vcpChannel.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-		}
+		
 
 	}
 
@@ -215,6 +206,12 @@ public class PressionManager implements Runnable {
 
 	public void close() {
 		setStop(true);
+		try {
+			vcpInput.close();
+			vcpChannel.close();
+		} catch (IOException | NullPointerException e) {
+			System.out.println("PressionManager closing");
+		}
 	}
 
 	public synchronized void resume() {

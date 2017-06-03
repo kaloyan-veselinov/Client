@@ -46,7 +46,6 @@ public class KeyStrokeSet {
 				sets.add(new KeyStrokeSet(keys));
 			System.out.print("#");
 		}
-		// System.out.println("sets" + sets.size());
 		System.out.println("\n");
 		return sets;
 	}

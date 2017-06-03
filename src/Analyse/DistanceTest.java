@@ -1,17 +1,18 @@
 package Analyse;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
-import Main.Account;
-
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+
 import Exception.BadLoginException;
+import KeystrokeMeasuring.KeyStroke;
+import Main.Account;
 
 public class DistanceTest {
 
 	// TODO régler les valeurs des seuils
-	private static final double euclidianRatioThreshold = 1;
-	private static final double manhattanRatioThreshold = 0.1;
+	private static final double euclidianRatioThreshold = 0.5;
 
 	// TODO fusionner login,domain et password dans une instace ce compte
 	public static boolean test(KeyStrokeSet bruteTestSet, Account account) throws BadLoginException {
@@ -22,42 +23,38 @@ public class DistanceTest {
 			LinkedList<KeyStrokeSet> sets = gn.getNormalizedSets();
 			KeyStrokeSet testSet = gn.normalizeKeyStrokeSet(bruteTestSet);
 			double[][] euclidianDistances = buildEuclidianDistances(testSet, sets);
-			double[][] manhattanDistances = buildManhattanDistances(testSet, sets);
 			double[] avgEuclidianDistance = new double[euclidianDistances.length];
-			double[] avgManhattanDistance = new double[manhattanDistances.length];
 			double[] avgEuclidianDistanceRatio = new double[euclidianDistances.length];
-			double[] avgManhattanDistanceRatio = new double[manhattanDistances.length];
 			double avgEuclidianRatio = 0;
-			double avgManhatanRatio = 0;
-			int i;
-			for (i = 0; i < euclidianDistances.length; i++) {
+			Iterator<KeyStrokeSet> setsIter = sets.iterator();
+			int i = 0;
+			while (setsIter.hasNext()) {
 				avgEuclidianDistance[i] = 0;
-				avgManhattanDistance[i] = 0;
-				for (int j = 0; j < testSet.getSet().size(); j++) {
-					if (testSet.getSet().get(j).getNorme2() != 0 && testSet.getSet().get(j).getNorme1() != 0
-							&& j < testSet.getSet().size() && i < euclidianDistances.length
+				KeyStrokeSet tempSet = setsIter.next();
+				Iterator<KeyStroke> tempIter = tempSet.getSet().iterator();
+				Iterator<KeyStroke> testIter = testSet.getSet().iterator();
+				int j = 0;
+				while (testIter.hasNext()) {
+					KeyStroke testStroke = testIter.next();
+					KeyStroke refStroke = tempIter.next();
+					if (testStroke.getNorme2() != 0 && i < euclidianDistances.length
 							&& j < euclidianDistances[i].length) {
 						avgEuclidianDistance[i] += euclidianDistances[i][j];
-						avgManhattanDistance[i] += manhattanDistances[i][j];
 						avgEuclidianDistanceRatio[i] += euclidianDistances[i][j]
-								/ (testSet.getSet().get(j).getNorme2() + sets.get(i).getSet().get(j).getNorme2());
-						avgManhattanDistanceRatio[i] += manhattanDistances[i][j]
-								/ (testSet.getSet().get(j).getNorme1() + sets.get(i).getSet().get(j).getNorme1());
+								/ (testStroke.getNorme2() + refStroke.getNorme2());
 					}
+					j++;
 
 				}
 				avgEuclidianDistanceRatio[i] /= euclidianDistances[i].length;
-				avgManhattanDistance[i] /= manhattanDistances[i].length;
 				avgEuclidianDistance[i] /= euclidianDistances[i].length;
-				avgManhattanDistance[i] /= manhattanDistances[i].length;
 
 				avgEuclidianRatio += avgEuclidianDistanceRatio[i];
-				avgManhatanRatio += avgManhattanDistanceRatio[i];
+				i++;
 
 			}
 			avgEuclidianRatio /= (euclidianDistances.length);
-			avgManhatanRatio /= (euclidianDistances.length);
-			System.out.println("avgRE : " + avgEuclidianRatio + " avgRM : " + avgManhatanRatio);
+			System.out.println("avg Euclidiant Distance : " + avgEuclidianRatio);
 
 			return (avgEuclidianRatio < euclidianRatioThreshold);
 		} catch (EncryptionOperationNotPossibleException e) {
@@ -65,37 +62,26 @@ public class DistanceTest {
 		}
 	}
 
-	// TODO convertir en ArrayList pour gagner du temps à l'exécution?
 	private static double[][] buildEuclidianDistances(KeyStrokeSet testSet, LinkedList<KeyStrokeSet> sets) {
-		// System.out.println("size : " + sets.get(0).getSet().size() );
 		double[][] distances = new double[sets.size()][];
-		for (int i = 0; i < distances.length; i++) {
-			distances[i] = new double[sets.get(i).getSet().size()];
-			for (int j = 0; j < distances[i].length; j++) {
+		Iterator<KeyStrokeSet> setsIter = sets.iterator();
+		int i = 0;
+		while (setsIter.hasNext()) {
+			KeyStrokeSet tempSet = setsIter.next();
+			distances[i] = new double[tempSet.getSet().size()];
+			Iterator<KeyStroke> tempIter = tempSet.getSet().iterator();
+			Iterator<KeyStroke> testIter = testSet.getSet().iterator();
+			int j = 0;
+			while (tempIter.hasNext()) {
 				if (j < testSet.getSet().size()) {
-					distances[i][j] = testSet.getSet().get(j).euclidianDistance(sets.get(i).getSet().get(j));
+					distances[i][j] = testIter.next().euclidianDistance(tempIter.next());
 				} else {
 					System.out.println(testSet.getSet().size());
 					distances[i][j] = 0;
 				}
+				j++;
 			}
-		}
-		return distances;
-	}
-
-	// TODO convertir en ArrayList pour gagner du temps à l'exécution?
-	private static double[][] buildManhattanDistances(KeyStrokeSet testSet, LinkedList<KeyStrokeSet> sets) {
-		double[][] distances = new double[sets.size()][];
-		for (int i = 0; i < distances.length; i++) {
-			distances[i] = new double[sets.get(i).getSet().size()];
-			for (int j = 0; j < distances[i].length; j++) {
-				if (j < testSet.getSet().size()) {
-					distances[i][j] = testSet.getSet().get(j).manhattanDistance(sets.get(i).getSet().get(j));
-				} else {
-					distances[i][j] = 0;
-				}
-
-			}
+			i++;
 		}
 		return distances;
 	}

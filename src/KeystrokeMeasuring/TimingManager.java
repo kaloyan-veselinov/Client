@@ -41,22 +41,21 @@ public class TimingManager implements KeyListener {
 		keyStrokes = new ArrayList<KeyStroke>(account.getPasswordAsString().length());
 		t = Toolkit.getDefaultToolkit();
 		pm = new PressionManager(this);
+		pressureThread = new Thread(pm);
 		if (arduinoConnected) {
-			pressureThread = new Thread(pm);
 			pressureThread.start();
 		}
 	}
 
 	public TimingManager(JPasswordField pf) {
-		System.out.println(Thread.currentThread());
 
 		this.pf = pf;
 		strokes = new ArrayList<KeyStrokeListener>(16);
 		keyStrokes = new ArrayList<KeyStroke>(16);
 		t = Toolkit.getDefaultToolkit();
 		pm = new PressionManager(this);
+		pressureThread = new Thread(pm);
 		if (arduinoConnected) {
-			pressureThread = new Thread(pm);
 			pressureThread.start();
 		}
 	}
@@ -120,8 +119,6 @@ public class TimingManager implements KeyListener {
 				Arrays.fill(modifiersOrder, 0);
 				keyStrokes.add(new KeyStroke(strokes.get(i).getE().getKeyChar(), strokes.get(i).getUpTime(),
 						strokes.get(i).getDownTime()));
-				// TODO add pressure
-				// keyStrokes.get(keyStrokes.size()-1).setPressure(getPressure());
 				CharacterListener cListener = (CharacterListener) strokes.get(i);
 				if (modifiersCount > 0) {
 					j = i;
@@ -145,7 +142,6 @@ public class TimingManager implements KeyListener {
 									strokes.get(j).getDownTime(), tempLocation));
 							modifiersOrder[modifiersCount - modifiersAdded] = 1;
 							shiftNotAdded = false;
-							System.out.println("shift added");
 						} else if (keyCode == KeyEvent.VK_CONTROL && cListener.isCtrl() && ctrlNotAdded) {
 							keyStrokes.get(keyStrokes.size() - 1).setCtrl(new Modifier(strokes.get(j).getUpTime(),
 									strokes.get(j).getDownTime(), tempLocation));
@@ -182,26 +178,23 @@ public class TimingManager implements KeyListener {
 
 			while (!pm.isTriee()) {
 				try {
-					System.err.println("Waiting PressionManager");
 					this.wait();
 				} catch (InterruptedException e) {
 				}
 			}
-			System.err.println("Done waiting PressionManager");
-
 			if (arduinoConnected) {
 				ArrayList<Double> d = new ArrayList<Double>(pm.getTabTriee());
 				pm.getTabTriee().clear();
-				System.out.println(d.size());
 				if (d.size() == keyStrokes.size()) {
 					for (int i = 0; i < keyStrokes.size(); i++) {
 						double test = d.get(i);
 						keyStrokes.get(i).setPressure(test);
 
 					}
-					System.err.println("pressure set");
 				} else {
-					System.err.println("Tailles pas compatibles");
+					System.err.println(
+							"Le nombre de pressions ne correspond pas au nombre de caracteres! \n nombre de pressions: "
+									+ d.size() + "|nombre de caracteres: " + keyStrokes.size());
 					keyStrokes.clear(); // si la taille correspond pas, on
 										// efface les keystrokes
 					strokes.clear();
@@ -210,11 +203,10 @@ public class TimingManager implements KeyListener {
 			}
 
 		}
-		
+
 		if (new String(pf.getPassword()).equals(account.getPasswordAsString()) && keyStrokes.size() > 0) {
 			Main.sessionManager.getCurrentSession().addPasswordTry(new PasswordTry(keyStrokes));
-			System.err.println("PasswordTry ajouté");
-		} 
+		}
 
 	}
 

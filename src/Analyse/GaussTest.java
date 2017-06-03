@@ -14,7 +14,7 @@ public class GaussTest {
 	private static final int nbParams = 15;
 
 	protected static double[][] getAvgMatrix(LinkedList<KeyStrokeSet> sets) {
-		System.out.println("gauss test" + sets.size());
+		
 		// On definit la matrice des moyennes pour chaque parametre de chaque
 		// touche
 		double[][] avgMatrix = new double[sets.getFirst().getSet().size()][nbParams];
@@ -38,8 +38,6 @@ public class GaussTest {
 				keyIndex++;
 
 			}
-
-			System.out.println("End of sets iteration");
 
 		}
 

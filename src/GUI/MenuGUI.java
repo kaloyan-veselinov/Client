@@ -289,6 +289,8 @@ public class MenuGUI extends JFrame implements WindowListener {
 			getPsswdPane.close();
 		if (createAccountPane != null)
 			createAccountPane.close();
+		if (deleteAccountPane != null)
+			deleteAccountPane.close();
 	}
 
 	@Override
